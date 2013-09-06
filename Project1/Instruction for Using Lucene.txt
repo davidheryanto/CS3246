@@ -1,0 +1,11 @@
+1. Open a JAVA Integrated Development Environment (IDE), for example Eclipse and Netbeans with the latest jre installed. 
+2. Create a new java project. 
+3. Add the library in the download/lib folder into the build path. 
+4. Add the source code in the download/src folder into the project. 
+5. Run main.java to see an example of the basic functions executed.  
+   There are two basic classes in search to perform indexing and searching: Indexer.java and SearchEngine.java. 
+   An instance of Indexer will index the content (information about 40 hotels) in HotelDatabase.java, generating the index in a folder name index-directory.
+   An instance of SearchEngine will search the content from the index stored in index-directory. 
+
+6.    
+   
