@@ -29,8 +29,8 @@ public class SearchEngine {
 	/** Creates a new instance of SearchEngine */
 
 	public SearchEngine() throws IOException {
-		FSDirectory idx = FSDirectory.open(new File("index-directory"));
-		searcher = new IndexSearcher(idx);
+		FSDirectory indexDir = FSDirectory.open(new File("index-directory"));
+		searcher = new IndexSearcher(indexDir);
 
 	}
 
@@ -41,14 +41,16 @@ public class SearchEngine {
 				new StandardAnalyzer(Version.LUCENE_CURRENT))
 				.parse(queryString);
 
+		long startTime = System.currentTimeMillis();
 		TopDocs topDocs = searcher.search(query, noOfTopDocs);
-
+		long endTime = System.currentTimeMillis();
+		
 //		System.out.println(topDocs);
 		ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 		if (VERBOSE)
-			System.out.println("Total hits in topDocs: " + topDocs.totalHits
-					+ "\n");
-
+			System.out.printf("Total hits in topDocs: %d (in %f ms)%n", 
+					topDocs.totalHits, 
+					(double) (endTime - startTime));
 		for (int i = 0; i < scoreDocs.length; i++) {
 			Document doc = searcher.doc(scoreDocs[i].doc); // This retrieves the
 		}

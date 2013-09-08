@@ -23,7 +23,6 @@ import org.apache.lucene.util.Version;
 
 
 public class Indexer {
-    
     /** Creates a new instance of Indexer */
     public Indexer() {
     }
@@ -40,11 +39,11 @@ public class Indexer {
                 System.exit(1);
             }
         	
-        	FSDirectory idx = FSDirectory.open(new File("index-directory"));
+        	FSDirectory indexDir = FSDirectory.open(new File("index-directory"));
     		IndexWriterConfig indexWriterConfig = new IndexWriterConfig(
-    				Version.LUCENE_CURRENT, new StandardAnalyzer(Version.LUCENE_CURRENT));
+    				Version.LUCENE_36, new StandardAnalyzer(Version.LUCENE_36));
 
-    		 indexWriter = new IndexWriter(idx, indexWriterConfig);
+    		 indexWriter = new IndexWriter(indexDir, indexWriterConfig);
             
         }
         return indexWriter;
@@ -61,12 +60,23 @@ public class Indexer {
         System.out.println("Indexing hotel: " + hotel);
         indexWriter = getIndexWriter(false);
         Document doc = new Document();
-        doc.add(new Field("id", hotel.getId(), Field.Store.YES, Field.Index.NO));
-        doc.add(new Field("name", hotel.getName(), Field.Store.YES, Field.Index.ANALYZED));
-        doc.add(new Field("city", hotel.getCity(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-        doc.add(new Field("description", hotel.getDescription(), Field.Store.YES, Field.Index.ANALYZED));
+        
+        doc.add(new Field("id", hotel.getId(), 
+        		Field.Store.YES, Field.Index.NO));
+        
+        doc.add(new Field("name", hotel.getName(), 
+        		Field.Store.YES, Field.Index.ANALYZED));
+        
+        doc.add(new Field("city", hotel.getCity(), 
+        		Field.Store.YES, Field.Index.NOT_ANALYZED));
+        
+        doc.add(new Field("description", hotel.getDescription(), 
+        		Field.Store.YES, Field.Index.ANALYZED));
+        
         String fullSearchableText = hotel.getName() + " " + hotel.getCity() + " " + hotel.getDescription();
-        doc.add(new Field("content", fullSearchableText, Field.Store.NO, Field.Index.ANALYZED));
+        doc.add(new Field("content", fullSearchableText, 
+        		Field.Store.NO, Field.Index.ANALYZED));
+        
         indexWriter.addDocument(doc);
     }   
     
