@@ -36,11 +36,7 @@ public class Main {
 		Indexer indexer = new Indexer(indexWriter);
 		
 		Paper[] papers = getPaper(DIR_PATH_DATA);
-		int indexCount = 0;
-		
-		indexer.index(papers);
-		
-		return indexCount;
+		return indexer.index(papers);
 	}
 
 	public static TopDocs search() {

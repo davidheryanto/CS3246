@@ -13,7 +13,8 @@ public class Indexer {
 		Indexer.indexWriter = indexWriter;
 	}
 	
-	public void index(Paper[] papers) {
+	public int index(Paper[] papers) {
+		int indexCount = 0;
 		try {
 			for (Paper paper : papers) {
 				Document document = new Document();
@@ -22,9 +23,12 @@ public class Indexer {
 				// TODO: Add the rest of fields
 				
 				indexWriter.addDocument(document);
+				indexCount++;
 			}
+			indexWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return indexCount;
 	}
 }
