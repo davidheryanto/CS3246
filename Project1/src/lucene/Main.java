@@ -74,6 +74,8 @@ public class Main {
 				// TODO: exclude the wrapper tags
 				// TODO: create proper Paper objects
 				
+				System.out.println(stringRead);
+				
 				Paper paper = new Paper(null, null, null, stringRead);
 				papers.add(paper);
 			}
