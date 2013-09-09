@@ -1,4 +1,4 @@
-rebuildIndexes asdfadfasdfdsfsdf
+rebuildIndexes asdfadfasdfdsfsdf987
 Indexing hotel: Hotel 1: Hotel Rivoli (Paris)
 Indexing hotel: Hotel 2: Hotel Notre Dame (Paris)
 Indexing hotel: Hotel 3: Hotel Trinit (Paris)
