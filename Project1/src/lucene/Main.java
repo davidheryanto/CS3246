@@ -2,6 +2,12 @@ package lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -35,7 +41,7 @@ public class Main {
 		IndexWriter indexWriter = getIndexWriter(directory, config);
 		Indexer indexer = new Indexer(indexWriter);
 		
-		Paper[] papers = getPaper(DIR_PATH_DATA);
+		Paper[] papers = getPaper(DIR_PATH_DATA, Charset.defaultCharset());
 		return indexer.index(papers);
 	}
 
@@ -54,8 +60,28 @@ public class Main {
 
 
 	// Helper class
-	public static Paper[] getPaper(String path) {
-		return null;
+	public static Paper[] getPaper(String path, Charset encoding) {
+		File folder = new File(path);
+		String[] fileNames = folder.list();
+		
+		ArrayList<Paper> papers = new ArrayList<Paper>();
+		try {
+			for (String fileName : fileNames) {
+				String filePath = path + "/" + fileName;
+				byte[] byteRead = Files.readAllBytes(Paths.get(filePath));
+				String stringRead = encoding.decode(ByteBuffer.wrap(byteRead)).toString();
+				
+				// TODO: exclude the wrapper tags
+				// TODO: create proper Paper objects
+				
+				Paper paper = new Paper(null, null, null, stringRead);
+				papers.add(paper);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return papers.toArray(new Paper[papers.size()]);
 	}
 	
 	public static Directory getDirectory(String path) {
