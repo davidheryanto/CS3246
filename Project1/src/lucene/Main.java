@@ -39,10 +39,10 @@ public class Main {
 		Analyzer analyzer = new StandardAnalyzer(VERSION);
 		IndexWriterConfig config = new IndexWriterConfig(VERSION, analyzer);
 		IndexWriter indexWriter = getIndexWriter(directory, config);
-		Indexer indexer = new Indexer(indexWriter);
+		Indexer.setIndexWriter(indexWriter);
 		
 		Paper[] papers = getPaper(DIR_PATH_DATA, Charset.defaultCharset());
-		return indexer.index(papers);
+		return Indexer.index(papers);
 	}
 
 	public static TopDocs search() {

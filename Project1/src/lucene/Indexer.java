@@ -9,11 +9,11 @@ import org.apache.lucene.index.IndexWriter;
 public class Indexer {
 	private static IndexWriter indexWriter;
 	
-	public Indexer(IndexWriter indexWriter) {
+	public static void setIndexWriter(IndexWriter indexWriter) {
 		Indexer.indexWriter = indexWriter;
 	}
 	
-	public int index(Paper[] papers) {
+	public static int index(Paper[] papers) {
 		int indexCount = 0;
 		try {
 			for (Paper paper : papers) {

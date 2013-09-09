@@ -56,8 +56,6 @@ public class HotelDatabase {
         new Hotel("38","Clarion Cloitre Saint Louis Hotel","Avignon","Elegant hotel set in a historic stone cloister, boasting rooms with majestic decorations, overlooking tree-filled garden, or the rooftops, monuments and Museum of Avignon, located close to the city center."),
         new Hotel("39","Auberge de Cassagne Hotel","Avignon","Situated on the edge of Avignon, hidden in an oasis of green gardens and refreshing fountains, the Auberge de Cassagne, of a refined architectural style, is housed in a former bastide dating from 1850."),
         new Hotel("40"," Grand Hotel","Avignon"," New hotel complex, offering comfortable, elegant and spacious suites and apartments, facing the old city ramparts, just steps away from the center of Avignon."),
-
-        
     };
     
     public static Hotel[] getHotels() {
@@ -72,4 +70,6 @@ public class HotelDatabase {
         }
         return null;
     }
+    
+   
 }

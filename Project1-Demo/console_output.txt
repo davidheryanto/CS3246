@@ -54,3 +54,4 @@ Hotel Edouard VII Paris (0.37939358)
 Hotel Bretton Paris (0.31616133)
 Hotel Tonic Paris (0.31616133)
 performSearch done
+asdfasdfasdfasdf

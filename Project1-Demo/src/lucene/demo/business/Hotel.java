@@ -30,6 +30,10 @@ public class Hotel {
         this.city = city;     
     }
     
+    public void printTabDelimitedHotel() {
+    	System.out.printf("%s\t%s\t%s\t%s%n", id, name, city, description);
+    }
+    
     /**
      * Holds value of property name.
      */

@@ -23,6 +23,8 @@ import org.apache.lucene.util.Version;
 
 
 public class Indexer {
+	private static final String PATH_INDEX = "index-directory";
+	
     /** Creates a new instance of Indexer */
     public Indexer() {
     }
@@ -39,7 +41,7 @@ public class Indexer {
                 System.exit(1);
             }
         	
-        	FSDirectory indexDir = FSDirectory.open(new File("index-directory"));
+        	FSDirectory indexDir = FSDirectory.open(new File(PATH_INDEX));
     		IndexWriterConfig indexWriterConfig = new IndexWriterConfig(
     				Version.LUCENE_36, new StandardAnalyzer(Version.LUCENE_36));
 
@@ -56,7 +58,6 @@ public class Indexer {
    }
     
     public void indexHotel(Hotel hotel) throws IOException {
-
         System.out.println("Indexing hotel: " + hotel);
         indexWriter = getIndexWriter(false);
         Document doc = new Document();
@@ -81,22 +82,33 @@ public class Indexer {
     }   
     
     public void rebuildIndexes() throws IOException {
-          //
-          // Erase existing index
-          //
-          getIndexWriter(true);
-          //
-          // Index all Accommodation entries
-          //
-          Hotel[] hotels = HotelDatabase.getHotels();
-          for(Hotel hotel : hotels) {
-              indexHotel(hotel);              
-          }
-          //
-          // Don't forget to close the index writer when done
-          //
-          closeIndexWriter();
-     }    
+    	System.out.println("deleting " + PATH_INDEX);
+    	deleteOldIndex(PATH_INDEX);
+    	getIndexWriter(true);
+    	//
+    	// Index all Accommodation entries
+    	//
+    	Hotel[] hotels = HotelDatabase.getHotels();
+    	for(Hotel hotel : hotels) {
+    		indexHotel(hotel);              
+    	}
+    	//
+    	// Don't forget to close the index writer when done
+    	//
+    	closeIndexWriter();
+    }    
+    
+    public void deleteOldIndex(String path) {
+    	File folder = new File(path);
+    	if (folder.isDirectory()) {
+    		// delete all files in index directory
+    		for (File f : folder.listFiles()) {
+    			f.delete();
+    		}
+    		// delete index directory
+    		folder.delete();
+    	}
+    }
     
   
     

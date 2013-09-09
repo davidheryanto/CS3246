@@ -13,8 +13,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
 
 public class Main {
-	private static final boolean IS_NEW_INDEX = false;
-	
 	/** Creates a new instance of Main */
 	public Main() {
 	}
@@ -32,17 +30,15 @@ public class Main {
 		}
 
 		try {
-			if (IS_NEW_INDEX) {
-				// build a Lucene index
-				System.out.println("rebuildIndexes");
-				Indexer indexer = new Indexer();
-				indexer.rebuildIndexes();
-				System.out.println("rebuildIndexes done");
-			}
+			// build a Lucene index
+			System.out.println("rebuildIndexes");
+			Indexer indexer = new Indexer();
+			indexer.rebuildIndexes();
+			System.out.println("rebuildIndexes done");
 
 			// perform search on "Dame museum"
 			// and retrieve the result
-			System.out.println("performSearch");
+			System.out.printf("------------------------%nSEARCHING...%n");
 			SearchEngine instance = new SearchEngine();
 			ScoreDoc[] hits = instance.performSearch(queryString, 10);
 
