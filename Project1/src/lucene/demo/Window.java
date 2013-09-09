@@ -35,7 +35,7 @@ package lucene.demo;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
- 
+
 public class Window extends JPanel implements ActionListener {
     protected JTextField textField;
     protected JTextArea textArea;

@@ -50,9 +50,9 @@ public class Main {
 			}
 			System.out.println("performSearch done");
 		} catch (Exception e) {
-			System.out.println("Exception caught.\n");
-			System.out.println(e.toString());
-		}
+            System.out.println("Exception caught.\n");
+            System.out.println(e.toString());
+        }
 	}
 
 }
