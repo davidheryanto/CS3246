@@ -4,13 +4,18 @@ public class Paper {
 	private String id;
 	private String title;
 	private String summary;
-	private String content;
+	private int year;
+	private String[] authors;
+	private String[] keywords;
 	
-	public Paper(String id, String title, String summary, String content) {
+	public Paper(String id, String title, String summary,
+			int year, String[] authors, String[] keywords) {
 		this.id = id;
 		this.title = title;
 		this.summary = summary;
-		this.content = content;
+		this.year = year;
+		this.authors = authors;
+		this.keywords = keywords;
 	}
 
 	public String getId() {
@@ -25,8 +30,16 @@ public class Paper {
 		return summary;
 	}
 
-	public String getContent() {
-		return content;
+	public int getYear() {
+		return year;
+	}
+
+	public String[] getAuthors() {
+		return authors;
+	}
+
+	public String[] getKeywords() {
+		return keywords;
 	}
 	
 	
