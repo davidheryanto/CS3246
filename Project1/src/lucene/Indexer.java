@@ -23,11 +23,15 @@ public class Indexer {
 				document.add(new Field("title", paper.getTitle(), Field.Store.YES, Field.Index.ANALYZED));
 				document.add(new Field("summary", paper.getSummary(), Field.Store.NO, Field.Index.ANALYZED));
 				document.add(new NumericField("year").setIntValue(paper.getYear()) );
-				for (String author : paper.getAuthors()) {
-					document.add(new Field("author", author, Field.Store.YES, Field.Index.NOT_ANALYZED));
+				if (paper.getAuthors() != null) {
+					for (String author : paper.getAuthors()) {
+						document.add(new Field("author", author, Field.Store.YES, Field.Index.NOT_ANALYZED));
+					}
 				}
-				for (String keyword : paper.getKeywords()) {
-					document.add(new Field("keyword", keyword, Field.Store.YES, Field.Index.NOT_ANALYZED));
+				if (paper.getKeywords() != null) {
+					for (String keyword : paper.getKeywords()) {
+						document.add(new Field("keyword", keyword, Field.Store.YES, Field.Index.NOT_ANALYZED));
+					}
 				}
 				indexWriter.addDocument(document);
 				indexCount++;
