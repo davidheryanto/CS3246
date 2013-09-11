@@ -98,13 +98,19 @@ public class DocumentParser {
 	}
 
 	// Assume author name format: lastName, I. J. and so on
+	// Therefore these may cause wrong parsing:
+	// 1. authors whose initials are without '.'
+	// 2. Chinese author such as Wu, Sheng-Chuan Abel
+	// 3. authors with only one word such as Langdon 
+	//    (because how to differentiate b/w author and keyword? 
+	//     We use Initial I. to differentiate but the consequence is this error)
 	private static boolean authorExists(ArrayList<String> textBlockList, File file) {
 		if (textBlockList.size() < 1) {
 			return false;
 		}
 		
 		String textBlock = textBlockList.get(0).trim();
-		if (textBlock.matches( "( ?[A-z\\s\\.]+,( ?[A-z]+\\.)+)+" ) ) {
+		if (textBlock.matches( "( ?[A-z'\\-\\s\\.]+,*( ?[A-z]+\\.)+)+" ) ) {
 			return true;
 		}
 		

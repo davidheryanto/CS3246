@@ -7,6 +7,8 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.NumericField;
 import org.apache.lucene.index.IndexWriter;
 
+// TODO: Need one more field for content (contains title, author keyword etc) OR use MultiField QueryParser
+
 public class Indexer {
 	private static IndexWriter indexWriter;
 	

@@ -22,41 +22,31 @@ public class Main {
 	private static final String DIR_PATH_INDEX = "./index";
 	
 	public static void main(String[] args) {
-		// index();
+		index();
 		
-		
-		
-		try {
-		
-		System.out.printf("------------------------%nSEARCHING...%n");
-		SearchEngine instance = new SearchEngine();
-		ScoreDoc[] hits = instance.performSearch(args[0], 10);
-
-		System.out.println("Results found: " + hits.length);
-		for (int i = 0; i < hits.length; i++) {
-			ScoreDoc hit = hits[i];
-			// Document doc = hit.doc();
-			Document doc = instance.searcher.doc(hits[i].doc); // This
-																// retrieves
-																// the
-
-			System.out.println(doc.get("title") + " " + doc.get("author")
-					+ " (" + hit.score + ")");
-
-		}
-		System.out.println("performSearch done");
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
-		
-		
-		
-		
-		
-		
+//		try {
+//		
+//		System.out.printf("------------------------%nSEARCHING...%n");
+//		SearchEngine instance = new SearchEngine();
+//		ScoreDoc[] hits = instance.performSearch(args[0], 10);
+//
+//		System.out.println("Results found: " + hits.length);
+//		for (int i = 0; i < hits.length; i++) {
+//			ScoreDoc hit = hits[i];
+//			// Document doc = hit.doc();
+//			Document doc = instance.searcher.doc(hits[i].doc); // This
+//																// retrieves
+//																// the
+//
+//			System.out.println(doc.get("title") + " " + doc.get("author")
+//					+ " (" + hit.score + ")");
+//
+//		}
+//		System.out.println("performSearch done");
+//		
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		
 		TopDocs topDocs = search();
 		print(topDocs); 
@@ -76,13 +66,13 @@ public class Main {
 		Paper[] papers = DocumentParser.parseDocument(DIR_PATH_DATA);
 		
 		// For debugging:
-		// printTabDelimited(papers); // for checking
+		 printTabDelimited(papers); // for checking
 		
 		long startTime = System.currentTimeMillis();
-		System.out.printf("Indexing documents...%n");
+		// System.out.printf("Indexing documents...%n");
 		int indexCount = Indexer.index(papers);
 		long endTime = System.currentTimeMillis();
-		System.out.printf("%d items indexed in %f ms.%n", indexCount, (double) (endTime - startTime));
+		// System.out.printf("%d items indexed in %f ms.%n", indexCount, (double) (endTime - startTime));
 	}
 
 	
