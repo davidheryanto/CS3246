@@ -22,9 +22,9 @@ public class Indexer {
 				document.add(new Field("title", paper.getTitle(), Field.Store.YES, Field.Index.ANALYZED));
 				// TODO: Add the rest of fields
 				document.add(new Field("summary", paper.getSummary(), Field.Store.NO, Field.Index.ANALYZED));
-				document.add(new Field("date", paper.getDate(), Field.Store.NO, Field.Index.NO));
-				document.add(new Field("author", paper.getAuthor(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-				document.add(new Field("keyword", paper.getKeyword(), Field.Store.NO, Field.Index.ANALYZED));
+//				document.add(new Field("date", paper.getDate(), Field.Store.NO, Field.Index.NO));
+//				document.add(new Field("author", paper.getAuthor(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+//				document.add(new Field("keyword", paper.getKeyword(), Field.Store.NO, Field.Index.ANALYZED));
 				
 				indexWriter.addDocument(document);
 				indexCount++;

@@ -8,7 +8,6 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -31,7 +30,7 @@ public class Main {
 	public static void main(String[] args) {
 		int indexCount = index();
 		TopDocs topDocs = search();
-		print(topDocs);
+		print(topDocs); 
 	}
 	
 	
@@ -41,11 +40,50 @@ public class Main {
 		IndexWriterConfig config = new IndexWriterConfig(VERSION, analyzer);
 		IndexWriter indexWriter = getIndexWriter(directory, config);
 		Indexer.setIndexWriter(indexWriter);
-		
 		Paper[] papers = getPaper(DIR_PATH_DATA, Charset.defaultCharset());
+		
+//		printTabDelimited(papers);
+		
+		
 		return Indexer.index(papers);
 	}
 
+
+	private static void printTabDelimited(Paper[] papers) {
+		for (Paper p : papers) {
+			StringBuilder sb = new StringBuilder();
+			String authors = "";
+			if (p.getAuthors() != null) {
+				for (String a : p.getAuthors()) {
+					sb.append(", " + a);
+				}
+				authors = sb.toString();
+				authors = authors.substring(authors.indexOf(",") + 2);
+			}
+			
+			sb = new StringBuilder();
+			String keywords = "";
+			if (p.getKeywords() != null) {
+				for (String k : p.getKeywords()) {
+					sb.append(", " + k);
+				}
+				keywords = sb.toString();
+				keywords = keywords.substring(keywords.indexOf(",") + 2);
+			}
+			
+			
+			
+			System.out.printf("%s\t%s\t%s\t%d\t%s\t%s%n", 
+					p.getId(),
+					p.getTitle(),
+					p.getSummary(),
+					p.getYear(),
+					authors,
+					keywords);
+		}
+	}
+
+	
 	public static TopDocs search() {
 		return null;
 	}
@@ -62,18 +100,7 @@ public class Main {
 
 		ArrayList<Paper> papers = new ArrayList<Paper>();
 		for (File file : files) {
-			Paper paper = getPaper(file);
-			
-//			System.out.println(file.getName());
-			
-
-			// TODO: exclude the wrapper tags
-
-			// TODO: create proper Paper objects
-
-
-			//				Paper paper = new Paper(null, null, null, stringRead);
-			//				papers.add(paper);
+			papers.add(getPaper(file));
 		}
 		
 		return papers.toArray(new Paper[papers.size()]);
@@ -81,12 +108,7 @@ public class Main {
 	
 	public static Paper getPaper(File file) {
 		ArrayList<String> textBlockList = getTextBlocks(file);
-		
-		
-		
 		textBlockList = clean(textBlockList);
-		
-//		for(String s : textBlockList) System.out.println(s);
 		
 		// The extraction must be done in order for proper extraction
 		// i.e. title -> summary -> year -> ...
@@ -94,10 +116,10 @@ public class Main {
 		String title =  extractTitle(textBlockList);
 		String summary = extractSummary(textBlockList);
 		int year = extractYear(textBlockList);
-		String[] authors = extractAuthors(textBlockList);
+		String[] authors = extractAuthors(textBlockList, file);
 		String[] keywords = extractKeyword(textBlockList);
 		
-		return null;
+		return new Paper(id, title, summary, year, authors, keywords);
 	}
 
 	// Remove HTML tags and blocks that are numbers only
@@ -111,6 +133,11 @@ public class Main {
 			cleanList.add(textBlock);
 		}
 		return cleanList;
+	}
+	
+	public static String getId(File file) {
+		String fileName = file.getName();
+		return fileName.substring(0, fileName.indexOf(".html"));
 	}
 
 	// Remove title field (index 0) from the list.
@@ -143,20 +170,37 @@ public class Main {
 	}
 
 
-	private static String[] extractAuthors(ArrayList<String> textBlockList) {
-		String textBlock = textBlockList.remove(0);
-		String[] authors = textBlock.split(",( .\\.)* ?");
+	private static String[] extractAuthors(ArrayList<String> textBlockList, File file) {
 		
-		return authors;
+		if (authorExists(textBlockList, file)) {
+			String textBlock = textBlockList.remove(0);
+			String[] authors = textBlock.split(",( ?[A-z]+\\.)+ ?");
+
+			return authors;
+		}
+		
+		return null;
 	}
 
+	// Assume author name format: lastName, I. J. and so on
+	public static boolean authorExists(ArrayList<String> textBlockList, File file) {
+		if (textBlockList.size() < 1) {
+			return false;
+		}
+		
+		String textBlock = textBlockList.get(0).trim();
+		if (textBlock.matches( "( ?[A-z\\s\\.]+,( ?[A-z]+\\.)+)+" ) ) {
+			return true;
+		}
+		
+		return false;
+	}
 
 	private static String[] extractKeyword(ArrayList<String> textBlockList) {
 		if (keywordExists(textBlockList)) {
 			String textBlock = textBlockList.remove(0);
 			String[] keywords = textBlock.split(", *");
 
-			for (String s : keywords) System.out.println(s);
 			return keywords;
 
 		}
@@ -178,10 +222,6 @@ public class Main {
 		return true;
 	}
 
-	public static String getId(File file) {
-		String fileName = file.getName();
-		return fileName.substring(fileName.indexOf(".html"));
-	}
 	
 	public static ArrayList<String> getTextBlocks(File file) {
 		ArrayList<String> textBlockList = new ArrayList<String>();
@@ -198,6 +238,7 @@ public class Main {
 					if (textBlock.length() > 0) {
 						textBlockList.add(textBlock);
 					}
+					
 					// reset stringBuilder
 					stringBuilder = new StringBuilder();
 					line = bufferedReader.readLine();

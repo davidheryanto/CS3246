@@ -41,6 +41,4 @@ public class Paper {
 	public String[] getKeywords() {
 		return keywords;
 	}
-	
-	
 }
