@@ -50,8 +50,8 @@ public class Main {
 																	// retrieves
 																	// the
 
-				System.out.println(doc.get("name") + " " + doc.get("city")
-						+ " (" + hit.score + ")");
+				System.out.println(doc.get("name") + " " 
+						+  doc.get("city") + "(" + hit.score + ")");
 
 			}
 			System.out.println("performSearch done");

@@ -5,9 +5,11 @@ import java.io.IOException;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -20,7 +22,41 @@ public class Main {
 	private static final String DIR_PATH_INDEX = "./index";
 	
 	public static void main(String[] args) {
-		index();
+		// index();
+		
+		
+		
+		try {
+		
+		System.out.printf("------------------------%nSEARCHING...%n");
+		SearchEngine instance = new SearchEngine();
+		ScoreDoc[] hits = instance.performSearch(args[0], 10);
+
+		System.out.println("Results found: " + hits.length);
+		for (int i = 0; i < hits.length; i++) {
+			ScoreDoc hit = hits[i];
+			// Document doc = hit.doc();
+			Document doc = instance.searcher.doc(hits[i].doc); // This
+																// retrieves
+																// the
+
+			System.out.println(doc.get("title") + " " + doc.get("author")
+					+ " (" + hit.score + ")");
+
+		}
+		System.out.println("performSearch done");
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		TopDocs topDocs = search();
 		print(topDocs); 
