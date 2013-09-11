@@ -42,12 +42,10 @@ public class Main {
 		Indexer.setIndexWriter(indexWriter);
 		Paper[] papers = getPaper(DIR_PATH_DATA, Charset.defaultCharset());
 		
-//		printTabDelimited(papers);
-		
+//		printTabDelimited(papers); // for checking
 		
 		return Indexer.index(papers);
 	}
-
 
 	private static void printTabDelimited(Paper[] papers) {
 		for (Paper p : papers) {

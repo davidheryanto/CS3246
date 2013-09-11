@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.NumericField;
 import org.apache.lucene.index.IndexWriter;
 
 public class Indexer {
@@ -20,12 +21,14 @@ public class Indexer {
 				Document document = new Document();
 				document.add(new Field("id", paper.getId(), Field.Store.YES, Field.Index.NO));
 				document.add(new Field("title", paper.getTitle(), Field.Store.YES, Field.Index.ANALYZED));
-				// TODO: Add the rest of fields
 				document.add(new Field("summary", paper.getSummary(), Field.Store.NO, Field.Index.ANALYZED));
-//				document.add(new Field("date", paper.getDate(), Field.Store.NO, Field.Index.NO));
-//				document.add(new Field("author", paper.getAuthor(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-//				document.add(new Field("keyword", paper.getKeyword(), Field.Store.NO, Field.Index.ANALYZED));
-				
+				document.add(new NumericField("year").setIntValue(paper.getYear()) );
+				for (String author : paper.getAuthors()) {
+					document.add(new Field("author", author, Field.Store.YES, Field.Index.NOT_ANALYZED));
+				}
+				for (String keyword : paper.getKeywords()) {
+					document.add(new Field("keyword", keyword, Field.Store.YES, Field.Index.NOT_ANALYZED));
+				}
 				indexWriter.addDocument(document);
 				indexCount++;
 			}
