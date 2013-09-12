@@ -1,6 +1,5 @@
 package lucene;
 
-import java.awt.geom.QuadCurve2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -22,7 +21,7 @@ import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.util.Version;
 
 public class Main {
-	private static final Version VERSION = Version.LUCENE_36;
+	public static final Version VERSION = Version.LUCENE_36;
 	private static final String DIR_PATH_DATA = "./data";
 	private static final String DIR_PATH_INDEX = "./index";
 	
@@ -51,8 +50,8 @@ public class Main {
 					ScoreDoc hit = hits[i];
 					// Document doc = hit.doc();
 					
-					Query query = new QueryParser(Version.LUCENE_CURRENT, "title",
-							new StandardAnalyzer(Version.LUCENE_CURRENT))
+					Query query = new QueryParser(VERSION, "title",
+							new StandardAnalyzer(VERSION))
 							.parse(queryString);
 					Explanation explanation = instance.searcher.explain(query, hit.doc);
 					
@@ -60,7 +59,7 @@ public class Main {
 
 					System.out.println(doc.get("id") + "|" + doc.get("title") + "|" + doc.get("author")
 							+ " (" + hit.score + ")");
-					System.out.println(explanation.toString());
+					// System.out.println(explanation.toString());
 
 				}
 				System.out.println("performSearch done");
