@@ -1,5 +1,7 @@
 package lucene;
 
+// TEMP SEARCH ENGINE
+
 import java.io.File;
 import java.io.IOException;
 

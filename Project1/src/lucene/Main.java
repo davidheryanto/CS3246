@@ -11,6 +11,9 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Explanation;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
@@ -33,12 +36,13 @@ public class Main {
 			queryString = sc.nextLine().trim();
 			
 			try {
-				System.out.printf("------------------------%nSEARCHING...%n");
-				SearchEngine instance = new SearchEngine();
-				
 				if (queryString.length() < 1) {
 					continue;
 				}
+				
+				System.out.printf("------------------------%nSEARCHING...%n");
+				SearchEngine instance = new SearchEngine();
+				
 				
 				ScoreDoc[] hits = instance.performSearch(queryString, 10);
 
@@ -46,12 +50,17 @@ public class Main {
 				for (int i = 0; i < hits.length; i++) {
 					ScoreDoc hit = hits[i];
 					// Document doc = hit.doc();
+					
+					Query query = new QueryParser(Version.LUCENE_CURRENT, "title",
+							new StandardAnalyzer(Version.LUCENE_CURRENT))
+							.parse(queryString);
+					Explanation explanation = instance.searcher.explain(query, hit.doc);
+					
 					Document doc = instance.searcher.doc(hits[i].doc); // This
-					// retrieves
-					// the
 
 					System.out.println(doc.get("id") + "|" + doc.get("title") + "|" + doc.get("author")
 							+ " (" + hit.score + ")");
+					System.out.println(explanation.toString());
 
 				}
 				System.out.println("performSearch done");
