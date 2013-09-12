@@ -8,6 +8,7 @@ import org.apache.lucene.document.NumericField;
 import org.apache.lucene.index.IndexWriter;
 
 // TODO: Need one more field for content (contains title, author keyword etc) OR use MultiField QueryParser
+// TODO: Boost certain field
 
 public class Indexer {
 	private static IndexWriter indexWriter;
@@ -27,7 +28,7 @@ public class Indexer {
 				document.add(new NumericField("year").setIntValue(paper.getYear()) );
 				if (paper.getAuthors() != null) {
 					for (String author : paper.getAuthors()) {
-						document.add(new Field("author", author, Field.Store.YES, Field.Index.NOT_ANALYZED));
+						document.add(new Field("author", author.trim(), Field.Store.YES, Field.Index.ANALYZED));
 					}
 				}
 				if (paper.getKeywords() != null) {

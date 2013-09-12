@@ -1,7 +1,9 @@
 package lucene;
 
+import java.awt.geom.QuadCurve2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -23,36 +25,52 @@ public class Main {
 	
 	public static void main(String[] args) {
 		index();
-		
-		try {
-		
-		System.out.printf("------------------------%nSEARCHING...%n");
-		SearchEngine instance = new SearchEngine();
-		ScoreDoc[] hits = instance.performSearch(args[0], 10);
 
-		System.out.println("Results found: " + hits.length);
-		for (int i = 0; i < hits.length; i++) {
-			ScoreDoc hit = hits[i];
-			// Document doc = hit.doc();
-			Document doc = instance.searcher.doc(hits[i].doc); // This
-																// retrieves
-																// the
+		Scanner sc = new Scanner(System.in);
+		String queryString = "";
+		do {
+			System.out.print("QUERY: ");
+			queryString = sc.nextLine().trim();
+			
+			try {
+				System.out.printf("------------------------%nSEARCHING...%n");
+				SearchEngine instance = new SearchEngine();
+				
+				if (queryString.length() < 1) {
+					continue;
+				}
+				
+				ScoreDoc[] hits = instance.performSearch(queryString, 10);
 
-			System.out.println(doc.get("title") + " " + doc.get("author")
-					+ " (" + hit.score + ")");
+				System.out.println("Results found: " + hits.length);
+				for (int i = 0; i < hits.length; i++) {
+					ScoreDoc hit = hits[i];
+					// Document doc = hit.doc();
+					Document doc = instance.searcher.doc(hits[i].doc); // This
+					// retrieves
+					// the
 
-		}
-		System.out.println("performSearch done");
+					System.out.println(doc.get("id") + "|" + doc.get("title") + "|" + doc.get("author")
+							+ " (" + hit.score + ")");
+
+				}
+				System.out.println("performSearch done");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			TopDocs topDocs = search();
+			print(topDocs); 
+		} while (queryString.length() > 0);
 		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
-		TopDocs topDocs = search();
-		print(topDocs); 
+		sc.close();
+		
+		
 	}
-	
-	
+
+
 	public static void index() {
 		// TODO: Check if directory exists
 		
@@ -64,10 +82,10 @@ public class Main {
 		Indexer.setIndexWriter(indexWriter);
 		// Parse HTML files
 		Paper[] papers = DocumentParser.parseDocument(DIR_PATH_DATA);
-		
-		// For debugging:
-		 printTabDelimited(papers); // for checking
-		
+
+//		For debugging:
+//		printTabDelimited(papers); // for checking
+
 		long startTime = System.currentTimeMillis();
 		System.out.printf("Indexing documents...%n");
 		int indexCount = Indexer.index(papers);
@@ -87,13 +105,20 @@ public class Main {
 
 	// Helper class
 	public static Directory getDirectory(String path) {
-		File file = new File(path);
+		File indexFolder = new File(path);
+		if (indexFolder.exists() && indexFolder.isDirectory()) {
+			for (File file : indexFolder.listFiles()) {
+				file.delete();
+			}
+		}
+		
 		Directory directory = null;
 		try {
-			directory = FSDirectory.open(file);
+			directory = FSDirectory.open(indexFolder);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		return directory;
 	}
 	

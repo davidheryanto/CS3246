@@ -9,6 +9,8 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -33,7 +35,7 @@ public class SearchEngine {
 				.parse(queryString);
 
 		long startTime = System.currentTimeMillis();
-		TopDocs topDocs = searcher.search(query, noOfTopDocs);
+		TopDocs topDocs = searcher.search(query, 10, new Sort(new SortField("id", SortField.INT)));
 		long endTime = System.currentTimeMillis();
 		
 //		System.out.println(topDocs);
