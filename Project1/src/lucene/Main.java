@@ -51,7 +51,7 @@ public class Main {
 					// Document doc = hit.doc();
 					
 					Query query = new QueryParser(VERSION, "title",
-							new StandardAnalyzer(VERSION))
+							new MyAnalyzer(VERSION))
 							.parse(queryString);
 					Explanation explanation = instance.searcher.explain(query, hit.doc);
 					
@@ -84,7 +84,7 @@ public class Main {
 		
 		// Set up
 		Directory directory = getDirectory(DIR_PATH_INDEX);
-		Analyzer analyzer = new StandardAnalyzer(VERSION);
+		Analyzer analyzer = new MyAnalyzer(VERSION);
 		IndexWriterConfig config = new IndexWriterConfig(VERSION, analyzer);
 		IndexWriter indexWriter = getIndexWriter(directory, config);
 		Indexer.setIndexWriter(indexWriter);

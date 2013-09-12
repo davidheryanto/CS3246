@@ -33,7 +33,7 @@ public class SearchEngine {
 			throws Exception {
 
 		Query query = new QueryParser(Version.LUCENE_CURRENT, "title",
-				new StandardAnalyzer(Version.LUCENE_CURRENT))
+				new MyAnalyzer(Version.LUCENE_CURRENT))
 				.parse(queryString);
 
 		long startTime = System.currentTimeMillis();
