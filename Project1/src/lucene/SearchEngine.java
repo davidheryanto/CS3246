@@ -42,6 +42,7 @@ public class SearchEngine {
 		
 //		System.out.println(topDocs);
 		ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+		System.out.printf("******************%nQuery >> %s%n******************%n", query);
 		if (VERBOSE)
 			System.out.printf("Total hits in topDocs: %d (in %f ms)%n", 
 					topDocs.totalHits, 

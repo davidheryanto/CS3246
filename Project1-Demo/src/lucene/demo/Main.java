@@ -7,6 +7,8 @@
 
 package lucene.demo;
 
+import lucene.demo.business.Hotel;
+import lucene.demo.business.HotelDatabase;
 import lucene.demo.search.*;
 
 import org.apache.lucene.document.Document;
@@ -17,10 +19,6 @@ public class Main {
 	public Main() {
 	}
 
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
 	public static void main(String[] args) {
 		String queryString = getQueryString(args);
 		if (queryString == null) {
