@@ -62,21 +62,35 @@ public class Indexer {
         indexWriter = getIndexWriter(false);
         Document doc = new Document();
         
+//        doc.add(new Field("id", hotel.getId(), 
+//        		Field.Store.YES, Field.Index.NO));
+//        
+//        doc.add(new Field("name", hotel.getName(), 
+//        		Field.Store.YES, Field.Index.ANALYZED));
+//        
+//        doc.add(new Field("city", hotel.getCity(), 
+//        		Field.Store.YES, Field.Index.NOT_ANALYZED));
+//        
+//        doc.add(new Field("description", hotel.getDescription(), 
+//        		Field.Store.YES, Field.Index.ANALYZED));
+//        
+//        String fullSearchableText = hotel.getName() + " " + hotel.getCity() + " " + hotel.getDescription();
+//        doc.add(new Field("content", fullSearchableText, 
+//        		Field.Store.NO, Field.Index.ANALYZED));
+        
         doc.add(new Field("id", hotel.getId(), 
         		Field.Store.YES, Field.Index.NO));
         
         doc.add(new Field("name", hotel.getName(), 
-        		Field.Store.YES, Field.Index.ANALYZED));
+        		Field.Store.NO, Field.Index.ANALYZED));
         
         doc.add(new Field("city", hotel.getCity(), 
         		Field.Store.YES, Field.Index.NOT_ANALYZED));
         
         doc.add(new Field("description", hotel.getDescription(), 
-        		Field.Store.YES, Field.Index.ANALYZED));
+        		Field.Store.YES, Field.Index.NO));
         
-        String fullSearchableText = hotel.getName() + " " + hotel.getCity() + " " + hotel.getDescription();
-        doc.add(new Field("content", fullSearchableText, 
-        		Field.Store.NO, Field.Index.ANALYZED));
+        
         
         indexWriter.addDocument(doc);
     }   

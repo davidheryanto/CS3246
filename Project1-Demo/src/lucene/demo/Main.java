@@ -7,6 +7,8 @@
 
 package lucene.demo;
 
+import lucene.demo.business.Hotel;
+import lucene.demo.business.HotelDatabase;
 import lucene.demo.search.*;
 
 import org.apache.lucene.document.Document;
