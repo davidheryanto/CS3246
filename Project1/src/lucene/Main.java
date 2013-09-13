@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
@@ -53,6 +52,7 @@ public class Main {
 					Query query = new QueryParser(VERSION, "title",
 							new MyAnalyzer(VERSION))
 							.parse(queryString);
+					
 					Explanation explanation = instance.searcher.explain(query, hit.doc);
 					
 					Document doc = instance.searcher.doc(hits[i].doc); // This
