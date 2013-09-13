@@ -60,7 +60,7 @@ public class Main {
 
 					System.out.println(doc.get("id") + "|" + doc.get("title") + "|" + doc.get("author")
 							+ " (" + hit.score + ")");
-					// System.out.println(explanation.toString());
+					System.out.println(explanation.toString());
 
 				}
 				System.out.println("performSearch done");
