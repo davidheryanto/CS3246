@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
@@ -50,7 +51,7 @@ public class Main {
 					// Document doc = hit.doc();
 					
 					Query query = new QueryParser(VERSION, "title",
-							new MyAnalyzer(VERSION))
+							new StandardAnalyzer(VERSION))
 							.parse(queryString);
 					
 					Explanation explanation = instance.searcher.explain(query, hit.doc);
@@ -84,7 +85,7 @@ public class Main {
 		
 		// Set up
 		Directory directory = getDirectory(DIR_PATH_INDEX);
-		Analyzer analyzer = new MyAnalyzer(VERSION);
+		Analyzer analyzer = new StandardAnalyzer(VERSION);
 		IndexWriterConfig config = new IndexWriterConfig(VERSION, analyzer);
 		IndexWriter indexWriter = getIndexWriter(directory, config);
 		Indexer.setIndexWriter(indexWriter);

@@ -33,9 +33,15 @@ public class Indexer {
 				}
 				if (paper.getKeywords() != null) {
 					for (String keyword : paper.getKeywords()) {
-						document.add(new Field("keyword", keyword, Field.Store.YES, Field.Index.NOT_ANALYZED));
+						document.add(new Field("keyword", keyword, Field.Store.YES, Field.Index.ANALYZED));
 					}
 				}
+				String fullSearchableText = paper.getTitle() + " " + paper.getSummary();
+				if (paper.getAuthors() != null)
+					fullSearchableText += " " + paper.getAuthors();
+				if (paper.getKeywords() != null)
+					fullSearchableText += " " + paper.getKeywords();
+		        document.add(new Field("content", fullSearchableText, Field.Store.NO, Field.Index.ANALYZED));
 				indexWriter.addDocument(document);
 				indexCount++;
 			}

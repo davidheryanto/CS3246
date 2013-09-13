@@ -1,7 +1,7 @@
 package lucene;
 
 // TEMP SEARCH ENGINE
-
+// TODO: Modify "title" to "content"
 import java.io.File;
 import java.io.IOException;
 
@@ -32,12 +32,12 @@ public class SearchEngine {
 	public ScoreDoc[] performSearch(String queryString, int noOfTopDocs)
 			throws Exception {
 
-		Query query = new QueryParser(Version.LUCENE_CURRENT, "title",
-				new MyAnalyzer(Version.LUCENE_CURRENT))
+		Query query = new QueryParser(Version.LUCENE_CURRENT, "content",
+				new StandardAnalyzer(Version.LUCENE_CURRENT))
 				.parse(queryString);
 
 		long startTime = System.currentTimeMillis();
-		TopDocs topDocs = searcher.search(query, 10, new Sort(new SortField("id", SortField.INT)));
+		TopDocs topDocs = searcher.search(query, 60);
 		long endTime = System.currentTimeMillis();
 		
 //		System.out.println(topDocs);
