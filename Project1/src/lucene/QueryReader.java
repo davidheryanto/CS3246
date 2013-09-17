@@ -5,8 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class QueryParser {
-	public static QueryList[] parseQuery(String path) throws IOException {
+public class QueryReader {
+	public static QueryList[] readQuery(String path) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		ArrayList<QueryList> queries = new ArrayList<QueryList>();
 		String line;
