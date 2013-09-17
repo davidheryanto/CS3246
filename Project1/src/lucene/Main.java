@@ -28,6 +28,15 @@ public class Main {
 	public static void main(String[] args) {
 		index();
 
+		Window.init();
+		
+		
+		
+		
+		
+		
+		
+		
 		Scanner sc = new Scanner(System.in);
 		String queryString = "";
 		do {
