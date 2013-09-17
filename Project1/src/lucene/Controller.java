@@ -26,11 +26,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 
-
 public class Controller implements AWTEventListener, ActionListener {
 	// Singleton pattern
 	private static final Controller instance = new Controller();
-	
 	private static DefaultListModel<String> model = new DefaultListModel<>();
 	
 	private Controller() { }
@@ -39,25 +37,11 @@ public class Controller implements AWTEventListener, ActionListener {
 		return instance;
 	}
 	
-	
-	
-	
-	
+	// The starting point for the program
 	public static void main(String[] args) {
 		Window.initialize();
 		Window.setModel(model);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public static void index() {
 		// TODO: Check if directory exists
@@ -115,13 +99,10 @@ public class Controller implements AWTEventListener, ActionListener {
 		try {
 			indexWriter = new IndexWriter(directory, config);
 		} catch (CorruptIndexException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (LockObtainFailedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -218,11 +199,7 @@ public class Controller implements AWTEventListener, ActionListener {
 
 
 		if (obj instanceof JButton) {
-			String buttonLabel = ((JButton) obj).getText();
-			switch(buttonLabel) {
-			case Window.LABEL_BUTTON_SEARCH :
-				search(Window.getQueryString());
-			}
+			
 		};
 		
 		if (obj instanceof JTextField) {
