@@ -7,7 +7,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JTextField;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -24,18 +26,50 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 
+
 public class Controller implements AWTEventListener, ActionListener {
+	// Singleton pattern
+	private static final Controller instance = new Controller();
+	
+	private static DefaultListModel<String> model = new DefaultListModel<>();
+	
+	private Controller() { }
+	
+	public static Controller getInstance() {
+		return instance;
+	}
+	
+	
+	
+	
+	
+	public static void main(String[] args) {
+		Window.initialize();
+		Window.setModel(model);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public static void index() {
 		// TODO: Check if directory exists
 
 		// Set up
-		Directory directory = getDirectory(Main.DIR_PATH_INDEX);
-		Analyzer analyzer = new StandardAnalyzer(Main.VERSION);
-		IndexWriterConfig config = new IndexWriterConfig(Main.VERSION, analyzer);
+		Directory directory = getDirectory(Constants.DIR_PATH_INDEX);
+		Analyzer analyzer = new StandardAnalyzer(Constants.VERSION);
+		IndexWriterConfig config = new IndexWriterConfig(Constants.VERSION, analyzer);
 		IndexWriter indexWriter = getIndexWriter(directory, config);
 		Indexer.setIndexWriter(indexWriter);
 		// Parse HTML files
-		Paper[] papers = DocumentParser.parseDocument(Main.DIR_PATH_DATA);
+		Paper[] papers = DocumentParser.parseDocument(Constants.DIR_PATH_DATA);
 
 		//		For debugging:
 		//		printTabDelimited(papers); // for checking
@@ -48,9 +82,7 @@ public class Controller implements AWTEventListener, ActionListener {
 	}
 
 
-	public static TopDocs search() {
-		return null;
-	}
+	
 
 	public static void print(TopDocs topDocs) {
 
@@ -130,6 +162,51 @@ public class Controller implements AWTEventListener, ActionListener {
 		}
 	}
 
+	private void search(String queryString) {
+		System.out.printf("------------------------%nSEARCHING...%n");
+		SearchEngine instance = new SearchEngine();
+
+		ScoreDoc[] hits = instance.performSearch(queryString, 10);
+
+		// remove all strings in model
+		model.clear();
+
+		System.out.println("Results found: " + hits.length);
+		for (int i = 0; i < hits.length; i++) {
+			try {
+			
+			ScoreDoc hit = hits[i];
+			// Document doc = hit.doc();
+
+			Query query = new QueryParser(Constants.VERSION, "title",
+					new StandardAnalyzer(Constants.VERSION))
+			.parse(queryString);
+
+			Explanation explanation = instance.searcher.explain(query, hit.doc);
+
+			Document doc = instance.searcher.doc(hits[i].doc); // This
+
+			String resultString = 	doc.get("id") + "|" + 
+					doc.get("title") + "|" + 
+					doc.get("author") + " (" + 
+					hit.score + ")";
+
+			model.addElement(resultString);
+
+			System.out.println(resultString);
+			System.out.println(explanation.toString());
+
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+		System.out.println("performSearch done");
+
+		System.out.printf("Search Query: %s%n", queryString);
+	}
+	
+/********************* Action and Event Listeners *************************/
+	
 	@Override
 	public void eventDispatched(AWTEvent event) {
 		System.out.printf("Event: %s%n%n", event.toString());
@@ -144,129 +221,14 @@ public class Controller implements AWTEventListener, ActionListener {
 			String buttonLabel = ((JButton) obj).getText();
 			switch(buttonLabel) {
 			case Window.LABEL_BUTTON_SEARCH :
-				String queryString = Window.getQueryString();
-
-				System.out.printf("------------------------%nSEARCHING...%n");
-				SearchEngine instance = new SearchEngine();
-
-				ScoreDoc[] hits = instance.performSearch(queryString, 10);
-
-				// remove all strings in model
-				Main.model.clear();
-
-				System.out.println("Results found: " + hits.length);
-				for (int i = 0; i < hits.length; i++) {
-					try {
-					
-					ScoreDoc hit = hits[i];
-					// Document doc = hit.doc();
-
-					Query query = new QueryParser(Main.VERSION, "title",
-							new StandardAnalyzer(Main.VERSION))
-					.parse(queryString);
-
-					Explanation explanation = instance.searcher.explain(query, hit.doc);
-
-					Document doc = instance.searcher.doc(hits[i].doc); // This
-
-					String resultString = 	doc.get("id") + "|" + 
-							doc.get("title") + "|" + 
-							doc.get("author") + " (" + 
-							hit.score + ")";
-
-					Main.model.addElement(resultString);
-
-					System.out.println(resultString);
-					System.out.println(explanation.toString());
-
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-				System.out.println("performSearch done");
-
-
-
-				TopDocs topDocs = search();
-				print(topDocs); 
-
-
-				SearchEngine instance1 = new SearchEngine();
-				ScoreDoc[] hits1 = instance1.performSearch(queryString, 10);
-
-
-
-
-				System.out.printf("Search Query: %s%n", queryString);
+				search(Window.getQueryString());
 			}
 		};
+		
+		if (obj instanceof JTextField) {
+			search(Window.getQueryString());
+		}
 	}
 
-
-
-
-	//		btnNewButton.addActionListener(new ActionListener() {
-	//			public void actionPerformed(ActionEvent arg0) {
-	//				
-	//				
-	//				
-	//
-	//				String queryString = textField.getText().trim();
-	//				System.out.printf("------------------------%nSEARCHING...%n");
-	//				SearchEngine instance = new SearchEngine();
-	//
-	//
-	//				ScoreDoc[] hits = instance.performSearch(queryString, 10);
-	//
-	//				// remove all strings in model
-	//				model.clear();
-	//
-	//				System.out.println("Results found: " + hits.length);
-	//				for (int i = 0; i < hits.length; i++) {
-	//					ScoreDoc hit = hits[i];
-	//					// Document doc = hit.doc();
-	//
-	//					Query query = new QueryParser(VERSION, "title",
-	//							new StandardAnalyzer(VERSION))
-	//					.parse(queryString);
-	//
-	//					Explanation explanation = instance.searcher.explain(query, hit.doc);
-	//
-	//					Document doc = instance.searcher.doc(hits[i].doc); // This
-	//
-	//					String resultString = 	doc.get("id") + "|" + 
-	//							doc.get("title") + "|" + 
-	//							doc.get("author") + " (" + 
-	//							hit.score + ")";
-	//
-	//					model.addElement(resultString);
-	//
-	//					System.out.println(resultString);
-	//					System.out.println(explanation.toString());
-	//
-	//				}
-	//				System.out.println("performSearch done");
-	//
-	//
-	//
-	//				TopDocs topDocs = search();
-	//				print(topDocs); 
-	//
-	//
-	//
-	//
-	//
-	//				String queryString = textField.getText().trim();
-	//
-	//				SearchEngine instance = new SearchEngine();
-	//				ScoreDoc[] hits = instance.performSearch(queryString, 10);
-	//
-	//
-	//
-	//
-	//				System.out.printf("Search Query: %s%n", queryString);
-	//			}
-	//		});
-
-
+	
 }
