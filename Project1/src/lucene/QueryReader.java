@@ -10,7 +10,7 @@ public class QueryReader {
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		ArrayList<QueryList> queries = new ArrayList<QueryList>();
 		String line;
-		int qNum = 0;
+		String qNum = null;
 		String query = null;
 		while((line = br.readLine()) != null) {
 			if( line.isEmpty() )
@@ -32,10 +32,10 @@ public class QueryReader {
 		return queries.toArray(new QueryList[queries.size()]);
 	}
 	
-	private static int getQNum(String line) {
-		int qNum = 0;
+	private static String getQNum(String line) {
+		String qNum;
 		line = line.replaceAll("</?DOCNO>", "");
-		qNum = Integer.parseInt(line.trim().substring(1));
+		qNum = line.trim();
 		return qNum;
 	}
 

@@ -1,15 +1,15 @@
 package lucene;
 
 public class QueryList {
-	private int qNum;
+	private String qNum;
 	private String query;
 	
-	public QueryList(int qNum, String query) {
+	public QueryList(String qNum, String query) {
 		this.qNum = qNum;
 		this.query = query;
 	}
 	
-	public int getQNum() {
+	public String getQNum() {
 		return qNum;
 	}
 	
