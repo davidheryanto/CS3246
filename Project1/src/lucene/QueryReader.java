@@ -7,11 +7,14 @@ import java.util.ArrayList;
 
 public class QueryReader {
 	public static QueryList[] readQuery(String path) throws IOException {
+		
 		BufferedReader br = new BufferedReader(new FileReader(path));
+		
 		ArrayList<QueryList> queries = new ArrayList<QueryList>();
 		String line;
 		String qNum = null;
 		String query = null;
+		
 		while((line = br.readLine()) != null) {
 			if( line.isEmpty() )
 				continue;
