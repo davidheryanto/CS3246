@@ -8,8 +8,11 @@ public class Constants {
 	public static final String DIR_PATH_INDEX = "./index";
 	public static final String DIR_PATH_QUERY = "CS3246Project1_query.txt";
 	
-	
+	public static final String LABEL_FRAME = "Lucene Search Engine";
+	public static final String LABEL_TEXTFIELD = "Type Query";
 	public static final String LABEL_BUTTON_SEARCH = "Search";
 	public static final String LABEL_BUTTON_SEARCH_REFINE = "Refine Query";
+	public static final String LABEL_BUTTON_QUERY_IMPORT = "Import Query";
+	public static final String LABEL_BUTTON_QUERY_EXPORT = "Export Query";
 	
 }

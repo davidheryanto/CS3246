@@ -29,6 +29,7 @@ import org.apache.lucene.store.LockObtainFailedException;
 public class Controller implements AWTEventListener, ActionListener {
 	// Singleton pattern
 	private static final Controller instance = new Controller();
+	
 	private static DefaultListModel<String> model = new DefaultListModel<>();
 	
 	private Controller() { }
@@ -39,8 +40,7 @@ public class Controller implements AWTEventListener, ActionListener {
 	
 	// The starting point for the program
 	public static void main(String[] args) {
-		Window.initialize();
-		Window.setModel(model);
+		Window.initialize(model);
 	}
 	
 	public static void index() {
