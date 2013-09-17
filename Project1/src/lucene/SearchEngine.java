@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -23,21 +25,46 @@ public class SearchEngine {
 
 	/** Creates a new instance of SearchEngine */
 
-	public SearchEngine() throws IOException {
-		FSDirectory indexDir = FSDirectory.open(new File("index"));
-		searcher = new IndexSearcher(indexDir);
+	public SearchEngine()  {
+		FSDirectory indexDir = null;
+		try {
+			indexDir = FSDirectory.open(new File("index"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			searcher = new IndexSearcher(indexDir);
+		} catch (CorruptIndexException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
-	public ScoreDoc[] performSearch(String queryString, int noOfTopDocs)
-			throws Exception {
+	public ScoreDoc[] performSearch(String queryString, int noOfTopDocs) {
 
-		Query query = new QueryParser(Version.LUCENE_CURRENT, "content",
-				new StandardAnalyzer(Version.LUCENE_CURRENT))
-				.parse(queryString);
+		Query query = null;
+		try {
+			query = new QueryParser(Version.LUCENE_CURRENT, "content",
+					new StandardAnalyzer(Version.LUCENE_CURRENT))
+					.parse(queryString);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		long startTime = System.currentTimeMillis();
-		TopDocs topDocs = searcher.search(query, 60);
+		TopDocs topDocs = null;
+		try {
+			topDocs = searcher.search(query, 60);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		long endTime = System.currentTimeMillis();
 		
 //		System.out.println(topDocs);
@@ -48,7 +75,15 @@ public class SearchEngine {
 					topDocs.totalHits, 
 					(double) (endTime - startTime));
 		for (int i = 0; i < scoreDocs.length; i++) {
-			Document doc = searcher.doc(scoreDocs[i].doc); // This retrieves the
+			try {
+				Document doc = searcher.doc(scoreDocs[i].doc);
+			} catch (CorruptIndexException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} // This retrieves the
 		}
 
 		return scoreDocs;
