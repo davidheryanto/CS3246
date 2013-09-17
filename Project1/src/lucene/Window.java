@@ -27,7 +27,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
 
 public class Window {
-	// Singleton pattern
 	private static final Window instance = new Window();
 	
 	private static JFrame frame;
@@ -42,6 +41,7 @@ public class Window {
 	private static JComboBox<String> similarityComboBox;
 	private static JComboBox<String> searchTypeComboBox;
 
+	// Singleton pattern
 	private Window() { }
 
 	public static Window getInstance() {
@@ -59,50 +59,6 @@ public class Window {
 		initFilePanel();
 		
 		frame.setVisible(true);
-	}
-
-	private static void initScrollPane(ListModel<String> model) {
-		list = new JList<String>(model);
-		scrollPane = new JScrollPane(list);
-		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
-	}
-
-	private static void initFilePanel() {
-		JPanel filePanel = new JPanel();
-		frame.getContentPane().add(filePanel, BorderLayout.SOUTH);
-		
-		// Add button to import file
-		GridBagLayout gbl_filePanel = new GridBagLayout();
-		gbl_filePanel.columnWidths = new int[]{250, 250, 0};
-		gbl_filePanel.rowHeights = new int[] {30};
-		gbl_filePanel.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gbl_filePanel.rowWeights = new double[]{0.0};
-		filePanel.setLayout(gbl_filePanel);
-		
-		importButton = new JButton("Import Query");
-		importButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.insets = new Insets(5, 5, 5, 5);
-		gbc_btnNewButton_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_1.gridx = 0;
-		gbc_btnNewButton_1.gridy = 0;
-		filePanel.add(importButton, gbc_btnNewButton_1);
-		
-		// Add button to export file
-		exportButton = new JButton("Export Result");
-		exportButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-		gbc_btnNewButton_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_2.insets = new Insets(5, 5, 5, 5);
-		gbc_btnNewButton_2.gridx = 1;
-		gbc_btnNewButton_2.gridy = 0;
-		filePanel.add(exportButton, gbc_btnNewButton_2);
 	}
 
 	private static void initFrame() {
@@ -129,11 +85,12 @@ public class Window {
 		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[]{0.0};
 		searchPanel.setLayout(gbl_panel);
-
+	
 		// Add input field
 		textField = new JTextField("Type query");
+		textField.addFocusListener(Controller.getInstance());
 		textField.addActionListener(Controller.getInstance());
-
+	
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(5, 5, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -175,7 +132,10 @@ public class Window {
 		similarityComboBox = new JComboBox<String>();
 		similarityComboBox.setModel(
 				new DefaultComboBoxModel<String>(
-						new String[] {"Cosine", "Jaccard", "Term Correlation"}));
+						new String[] {
+								Constants.SIMILARITY_COSINE, 
+								Constants.SIMILARITY_JACCARD, 
+								Constants.SIMILARITY_TERM_CORRELATION}));
 		GridBagConstraints gbcSimilarityComboBox = new GridBagConstraints();
 		gbcSimilarityComboBox.insets = new Insets(5, 5, 5, 5);
 		gbcSimilarityComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -187,13 +147,61 @@ public class Window {
 		searchTypeComboBox = new JComboBox<String>();
 		searchTypeComboBox.setModel(
 				new DefaultComboBoxModel<String>(
-						new String[] {"Search", "Refine Query"}));
+						new String[] {
+								Constants.SEARCH_TYPE_NORMAL, 
+								Constants.SEARCH_TYPE_REFINE}));
 		GridBagConstraints gbcSearchTypeComboBox = new GridBagConstraints();
 		gbcSearchTypeComboBox.insets = new Insets(5, 5, 5, 5);
 		gbcSearchTypeComboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbcSearchTypeComboBox.gridx = 5;
 		gbcSearchTypeComboBox.gridy = 0;
 		searchPanel.add(searchTypeComboBox, gbcSearchTypeComboBox);
+	}
+
+	private static void initScrollPane(ListModel<String> model) {
+		list = new JList<String>(model);
+		list.addKeyListener(Controller.getInstance());
+		scrollPane = new JScrollPane(list);
+		
+		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+	}
+
+	private static void initFilePanel() {
+		JPanel filePanel = new JPanel();
+		frame.getContentPane().add(filePanel, BorderLayout.SOUTH);
+		
+		// Add button to import file
+		GridBagLayout gbl_filePanel = new GridBagLayout();
+		gbl_filePanel.columnWidths = new int[]{250, 250, 0};
+		gbl_filePanel.rowHeights = new int[] {30};
+		gbl_filePanel.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_filePanel.rowWeights = new double[]{0.0};
+		filePanel.setLayout(gbl_filePanel);
+		
+		importButton = new JButton("Import Query");
+		importButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
+		gbc_btnNewButton_1.insets = new Insets(5, 5, 5, 5);
+		gbc_btnNewButton_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnNewButton_1.gridx = 0;
+		gbc_btnNewButton_1.gridy = 0;
+		filePanel.add(importButton, gbc_btnNewButton_1);
+		
+		// Add button to export file
+		exportButton = new JButton("Export Result");
+		exportButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
+		gbc_btnNewButton_2.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnNewButton_2.insets = new Insets(5, 5, 5, 5);
+		gbc_btnNewButton_2.gridx = 1;
+		gbc_btnNewButton_2.gridy = 0;
+		filePanel.add(exportButton, gbc_btnNewButton_2);
 	}
 
 	private static void setUIFont(FontUIResource font)
@@ -235,5 +243,13 @@ public class Window {
 
 	public static String getQueryString() {
 		return textField.getText().trim();
+	}
+	
+	public static String getSearchType() {
+		return searchTypeComboBox.getSelectedItem().toString();
+	}
+	
+	public static String[] getSelectedDocumentIds() {
+		return (String[]) list.getSelectedValuesList().toArray();
 	}
 }

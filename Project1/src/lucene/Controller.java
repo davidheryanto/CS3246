@@ -4,11 +4,17 @@ import java.awt.AWTEvent;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -26,23 +32,23 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 
-public class Controller implements AWTEventListener, ActionListener {
-	// Singleton pattern
+public class Controller implements 
+AWTEventListener, ActionListener, FocusListener, KeyListener {
 	private static final Controller instance = new Controller();
-	
 	private static DefaultListModel<String> model = new DefaultListModel<>();
-	
+
+	// Singleton pattern
 	private Controller() { }
-	
+
 	public static Controller getInstance() {
 		return instance;
 	}
-	
+
 	// The starting point for the program
 	public static void main(String[] args) {
 		Window.initialize(model);
 	}
-	
+
 	public static void index() {
 		// TODO: Check if directory exists
 
@@ -66,7 +72,7 @@ public class Controller implements AWTEventListener, ActionListener {
 	}
 
 
-	
+
 
 	public static void print(TopDocs topDocs) {
 
@@ -144,6 +150,15 @@ public class Controller implements AWTEventListener, ActionListener {
 	}
 
 	private void search(String queryString) {
+		String searchType = Window.getSearchType();
+		
+		switch(searchType) {
+		case Constants.SEARCH_TYPE_NORMAL:
+			
+		}
+
+
+
 		System.out.printf("------------------------%nSEARCHING...%n");
 		SearchEngine instance = new SearchEngine();
 
@@ -155,27 +170,27 @@ public class Controller implements AWTEventListener, ActionListener {
 		System.out.println("Results found: " + hits.length);
 		for (int i = 0; i < hits.length; i++) {
 			try {
-			
-			ScoreDoc hit = hits[i];
-			// Document doc = hit.doc();
 
-			Query query = new QueryParser(Constants.VERSION, "title",
-					new StandardAnalyzer(Constants.VERSION))
-			.parse(queryString);
+				ScoreDoc hit = hits[i];
+				// Document doc = hit.doc();
 
-			Explanation explanation = instance.searcher.explain(query, hit.doc);
+				Query query = new QueryParser(Constants.VERSION, "title",
+						new StandardAnalyzer(Constants.VERSION))
+				.parse(queryString);
 
-			Document doc = instance.searcher.doc(hits[i].doc); // This
+				Explanation explanation = instance.searcher.explain(query, hit.doc);
 
-			String resultString = 	doc.get("id") + "|" + 
-					doc.get("title") + "|" + 
-					doc.get("author") + " (" + 
-					hit.score + ")";
+				Document doc = instance.searcher.doc(hits[i].doc); // This
 
-			model.addElement(resultString);
+				String resultString = 	doc.get("id") + "|" + 
+						doc.get("title") + "|" + 
+						doc.get("author") + " (" + 
+						hit.score + ")";
 
-			System.out.println(resultString);
-			System.out.println(explanation.toString());
+				model.addElement(resultString);
+
+				System.out.println(resultString);
+				System.out.println(explanation.toString());
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -185,9 +200,9 @@ public class Controller implements AWTEventListener, ActionListener {
 
 		System.out.printf("Search Query: %s%n", queryString);
 	}
-	
-/********************* Action and Event Listeners *************************/
-	
+
+	/********************* Action, Focus and Event Listeners *************************/
+
 	@Override
 	public void eventDispatched(AWTEvent event) {
 		System.out.printf("Event: %s%n%n", event.toString());
@@ -197,15 +212,50 @@ public class Controller implements AWTEventListener, ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 
-
 		if (obj instanceof JButton) {
-			
+
 		};
-		
+
 		if (obj instanceof JTextField) {
 			search(Window.getQueryString());
 		}
 	}
 
-	
+	@Override
+	public void focusGained(FocusEvent e) {
+		Object obj = e.getSource();
+
+		if (obj instanceof JTextField) {
+			((JTextField) obj).selectAll();
+		}
+
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		Object obj = e.getSource();
+
+		if (e.getKeyCode() == KeyEvent.VK_ENTER && obj instanceof JList<?>) {
+			search(Window.getQueryString());
+		}
+
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+
 }

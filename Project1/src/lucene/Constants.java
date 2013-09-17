@@ -14,4 +14,13 @@ public class Constants {
 	public static final String LABEL_BUTTON_QUERY_IMPORT = "Import Query";
 	public static final String LABEL_BUTTON_QUERY_EXPORT = "Export Query";
 	
+	
+	public static final String SEARCH_TYPE_NORMAL = "Search";
+	public static final String SEARCH_TYPE_REFINE = "Refine Query";
+	
+	public static final String SIMILARITY_COSINE = "Cosine";
+	public static final String SIMILARITY_JACCARD = "Jaccard";
+	public static final String SIMILARITY_TERM_CORRELATION = "Term Correlation";
+	
+	
 }
