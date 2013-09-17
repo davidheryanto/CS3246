@@ -25,6 +25,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.JCheckBox;
 
 public class Window {
 	private static final Window instance = new Window();
@@ -40,6 +41,7 @@ public class Window {
 	private static JComboBox<String> pseudoRFComboBox;
 	private static JComboBox<String> similarityComboBox;
 	private static JComboBox<String> searchTypeComboBox;
+	private static JCheckBox reIndexCheckBox;
 
 	// Singleton pattern
 	private Window() { }
@@ -64,7 +66,7 @@ public class Window {
 	private static void initFrame() {
 		frame = new JFrame();
 		frame.setTitle("Lucene Search Engine");
-		frame.setSize(800, 500);
+		frame.setSize(1080, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// get screen properties
@@ -80,10 +82,10 @@ public class Window {
 		
 		// Setup GridBag Layout
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{127, 70, 50, 60, 100, 50, 0};
-		gbl_panel.rowHeights = new int[] {30};
-		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0};
+		gbl_panel.columnWidths = new int[]{127, 0, 70, 50, 60, 100, 50, 0};
+		gbl_panel.rowHeights = new int[] {30, 0};
+		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0};
 		searchPanel.setLayout(gbl_panel);
 	
 		// Add input field
@@ -98,13 +100,21 @@ public class Window {
 		gbc_textField.gridy = 0;
 		searchPanel.add(textField, gbc_textField);
 		
+		// Add check box for re-indexing option
+		reIndexCheckBox = new JCheckBox("Re-index");
+		GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
+		gbc_chckbxNewCheckBox.insets = new Insets(5, 5, 5, 5);
+		gbc_chckbxNewCheckBox.gridx = 1;
+		gbc_chckbxNewCheckBox.gridy = 0;
+		searchPanel.add(reIndexCheckBox, gbc_chckbxNewCheckBox);
+		
 		// Add pseudo RF options
 		JLabel pseudoRFLabel = new JLabel("Pseudo RF");
 		pseudoRFLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gbcPseudoRFLabel = new GridBagConstraints();
 		gbcPseudoRFLabel.insets = new Insets(5, 5, 5, 5);
 		gbcPseudoRFLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbcPseudoRFLabel.gridx = 1;
+		gbcPseudoRFLabel.gridx = 2;
 		gbcPseudoRFLabel.gridy = 0;
 		searchPanel.add(pseudoRFLabel, gbcPseudoRFLabel);
 		
@@ -115,7 +125,7 @@ public class Window {
 		GridBagConstraints gbcPseudoRFComboBox = new GridBagConstraints();
 		gbcPseudoRFComboBox.insets = new Insets(5, 5, 5, 5);
 		gbcPseudoRFComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbcPseudoRFComboBox.gridx = 2;
+		gbcPseudoRFComboBox.gridx = 3;
 		gbcPseudoRFComboBox.gridy = 0;
 		searchPanel.add(pseudoRFComboBox, gbcPseudoRFComboBox);
 		
@@ -125,7 +135,7 @@ public class Window {
 		GridBagConstraints gbcSimilarityLabel = new GridBagConstraints();
 		gbcSimilarityLabel.insets = new Insets(5, 5, 5, 5);
 		gbcSimilarityLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbcSimilarityLabel.gridx = 3;
+		gbcSimilarityLabel.gridx = 4;
 		gbcSimilarityLabel.gridy = 0;
 		searchPanel.add(similarityLabel, gbcSimilarityLabel);
 		
@@ -139,7 +149,7 @@ public class Window {
 		GridBagConstraints gbcSimilarityComboBox = new GridBagConstraints();
 		gbcSimilarityComboBox.insets = new Insets(5, 5, 5, 5);
 		gbcSimilarityComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbcSimilarityComboBox.gridx = 4;
+		gbcSimilarityComboBox.gridx = 5;
 		gbcSimilarityComboBox.gridy = 0;
 		searchPanel.add(similarityComboBox, gbcSimilarityComboBox);
 		
@@ -153,7 +163,7 @@ public class Window {
 		GridBagConstraints gbcSearchTypeComboBox = new GridBagConstraints();
 		gbcSearchTypeComboBox.insets = new Insets(5, 5, 5, 5);
 		gbcSearchTypeComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbcSearchTypeComboBox.gridx = 5;
+		gbcSearchTypeComboBox.gridx = 6;
 		gbcSearchTypeComboBox.gridy = 0;
 		searchPanel.add(searchTypeComboBox, gbcSearchTypeComboBox);
 	}
@@ -251,5 +261,9 @@ public class Window {
 	
 	public static String[] getSelectedDocumentIds() {
 		return (String[]) list.getSelectedValuesList().toArray();
+	}
+	
+	public static boolean isReIndexChecked() {
+		return reIndexCheckBox.isSelected();
 	}
 }

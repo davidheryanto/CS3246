@@ -32,8 +32,8 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 
-public class Controller implements 
-AWTEventListener, ActionListener, FocusListener, KeyListener {
+public class Controller implements AWTEventListener, ActionListener, FocusListener, KeyListener {
+
 	private static final Controller instance = new Controller();
 	private static DefaultListModel<String> model = new DefaultListModel<>();
 
@@ -49,72 +49,36 @@ AWTEventListener, ActionListener, FocusListener, KeyListener {
 		Window.initialize(model);
 	}
 
-	public static void index() {
-		// TODO: Check if directory exists
+	
 
-		// Set up
-		Directory directory = getDirectory(Constants.DIR_PATH_INDEX);
-		Analyzer analyzer = new StandardAnalyzer(Constants.VERSION);
-		IndexWriterConfig config = new IndexWriterConfig(Constants.VERSION, analyzer);
-		IndexWriter indexWriter = getIndexWriter(directory, config);
-		Indexer.setIndexWriter(indexWriter);
-		// Parse HTML files
-		Paper[] papers = DocumentParser.parseDocument(Constants.DIR_PATH_DATA);
+	private void search(String queryString) {
+		if (Window.isReIndexChecked()) {
+			Paper[] papers = DocumentParser.parseDocument(Constants.DIR_PATH_DATA);
+			Indexer.index(papers);
+		}
+		
+		String searchType = Window.getSearchType();
+		String[] results = null;
 
-		//		For debugging:
-		//		printTabDelimited(papers); // for checking
-
-		long startTime = System.currentTimeMillis();
-		System.out.printf("Indexing documents...%n");
-		int indexCount = Indexer.index(papers);
-		long endTime = System.currentTimeMillis();
-		System.out.printf("%d items indexed in %f ms.%n", indexCount, (double) (endTime - startTime));
-	}
-
-
-
-
-	public static void print(TopDocs topDocs) {
-
-	}
-
-
-	// Helper class
-	public static Directory getDirectory(String path) {
-		File indexFolder = new File(path);
-		if (indexFolder.exists() && indexFolder.isDirectory()) {
-			for (File file : indexFolder.listFiles()) {
-				file.delete();
-			}
+		switch(searchType) {
+		case Constants.SEARCH_TYPE_NORMAL:
+			results = Searcher.search(queryString);
+			break;
 		}
 
-		Directory directory = null;
-		try {
-			directory = FSDirectory.open(indexFolder);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return directory;
+		updateModel(model, results);
 	}
 
-	public static IndexWriter getIndexWriter(Directory directory,
-			IndexWriterConfig config) {
-		IndexWriter indexWriter = null;
-
-		try {
-			indexWriter = new IndexWriter(directory, config);
-		} catch (CorruptIndexException e) {
-			e.printStackTrace();
-		} catch (LockObtainFailedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	private void updateModel(DefaultListModel<String> model, String[] results) {
+		if (!model.isEmpty()) {
+			model.clear();
 		}
 
-		return indexWriter;
+		for (String result : results) {
+			model.addElement(result);
+		}
 	}
-
+	
 	private static void printTabDelimited(Paper[] papers) {
 		for (Paper p : papers) {
 			StringBuilder sb = new StringBuilder();
@@ -147,58 +111,6 @@ AWTEventListener, ActionListener, FocusListener, KeyListener {
 					authors,
 					keywords);
 		}
-	}
-
-	private void search(String queryString) {
-		String searchType = Window.getSearchType();
-		
-		switch(searchType) {
-		case Constants.SEARCH_TYPE_NORMAL:
-			
-		}
-
-
-
-		System.out.printf("------------------------%nSEARCHING...%n");
-		SearchEngine instance = new SearchEngine();
-
-		ScoreDoc[] hits = instance.performSearch(queryString, 10);
-
-		// remove all strings in model
-		model.clear();
-
-		System.out.println("Results found: " + hits.length);
-		for (int i = 0; i < hits.length; i++) {
-			try {
-
-				ScoreDoc hit = hits[i];
-				// Document doc = hit.doc();
-
-				Query query = new QueryParser(Constants.VERSION, "title",
-						new StandardAnalyzer(Constants.VERSION))
-				.parse(queryString);
-
-				Explanation explanation = instance.searcher.explain(query, hit.doc);
-
-				Document doc = instance.searcher.doc(hits[i].doc); // This
-
-				String resultString = 	doc.get("id") + "|" + 
-						doc.get("title") + "|" + 
-						doc.get("author") + " (" + 
-						hit.score + ")";
-
-				model.addElement(resultString);
-
-				System.out.println(resultString);
-				System.out.println(explanation.toString());
-
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-		System.out.println("performSearch done");
-
-		System.out.printf("Search Query: %s%n", queryString);
 	}
 
 	/********************* Action, Focus and Event Listeners *************************/
