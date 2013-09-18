@@ -42,26 +42,13 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 		Window.initialize(model);
 	}
 
-	
-
 	private void search(String queryString) {
 		if (Window.isReIndexChecked()) {
 			paperTable = Controller.getPaperTable();
 			Indexer.index(paperTable);
 		}
 		
-		String searchType = Window.getSearchType();
-		String[] results = null;
-
-		switch(searchType) {
-		case Constants.SEARCH_TYPE_NORMAL:
-			results = Searcher.search(queryString);
-			break;
-		case Constants.SEARCH_TYPE_REFINE:
-			String[] selectedDocumentIds = Window.getSelectedDocumentIds();
-			
-			break;
-		}
+		String[] results = Searcher.search(queryString);
 
 		updateModel(results);
 	}

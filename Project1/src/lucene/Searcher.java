@@ -26,9 +26,9 @@ public class Searcher {
 	private static IndexReader indexReader;
 	
 	// options for the searcher
-	private static String type = Constants.SEARCH_TYPE_NORMAL;
-	private static String similarity = Constants.SIMILARITY_COSINE;
-	private static int pseudoRF = 0;
+//	private static String type = Constants.SEARCH_TYPE_NORMAL;
+//	private static String similarity = Constants.SIMILARITY_COSINE;
+//	private static int pseudoRF = 0;
 
 	// Singleton pattern
 	private Searcher() { 
@@ -46,20 +46,18 @@ public class Searcher {
 		return instance;
 	}
 
-	public static void setType(String type) {
-		Searcher.type = type;
-	}
-
-	public static void setSimilarity(String similarity) {
-		Searcher.similarity = similarity;
-	}
-
-	public static void setPseudoRF(int pseudoRF) {
-		Searcher.pseudoRF = pseudoRF;
-	}
-
 	public static String[] search(String queryString) {
 		Query query = parse(queryString);
+		
+		
+		//options for search type, pseudo rf or similarity
+		if (Window.getSearchType() == Constants.SEARCH_TYPE_REFINE) {
+			query = expandQuery(query);
+			
+			// do something else?
+		}
+		
+		
 		
 		// We need to update the docNumber in paperTable
 		Hashtable<Integer, Paper> paperTable = Controller.getPaperTable();
@@ -86,7 +84,7 @@ public class Searcher {
 				
 				
 				// test term frequency
-				System.out.println(docNumber);
+//				System.out.println(docNumber);
 //				TermFreqVector[] tfvs = indexReader.getTermFreqVectors(docNumber);
 //				System.out.println(tfvs == null);
 //				for (TermFreqVector tfv : tfvs) {
@@ -105,7 +103,7 @@ public class Searcher {
 //				}
 				
 				
-				System.out.println(query.toString());
+//				System.out.println(query.toString());
 				
 				
 			}
@@ -116,15 +114,49 @@ public class Searcher {
 			System.err.println("fileNumber field in index is not a number");
 		}
 		
-		
-		
-		
-		
-		
-		
-		
         String[] results = new String[resultList.size()];
 		return resultList.toArray(results);
+	}
+
+	private static Query expandQuery(Query originalQuery) {
+		// delimiters will contain all the fields that are indexed
+		String delimiters = "title:|summary:|author:|keyword:|content:";
+		String[] originalTerms = originalQuery.toString().split(delimiters);
+
+		// get selectedDocumentFilenames
+		String[] selectedDocumentFileNames = Window.getSelectedDocumentFileNames();
+
+		// get their DocId
+		ArrayList<Integer> selectedDocNumberList = new ArrayList<Integer>();
+		Hashtable<Integer, Paper> paperTable = Controller.getPaperTable();
+		for (String fileName : selectedDocumentFileNames) {
+			
+			try {
+				int fileNumber = Integer.parseInt(fileName);
+				int docNumber = paperTable.get(fileNumber).getDocNumber();
+				selectedDocNumberList.add(docNumber);
+			} catch (NumberFormatException e) {
+				System.err.println("FileName is not a number");
+			}
+		}
+
+		// find their term freq cf with query term
+		for (Integer docNumber : selectedDocNumberList) {
+			try {
+				TermFreqVector[] tfvs = indexReader.getTermFreqVectors(docNumber);
+				
+				
+				
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+
+
+		return null;
 	}
 
 	private static Query parse(String queryString) {

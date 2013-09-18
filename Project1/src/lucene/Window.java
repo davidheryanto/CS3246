@@ -261,9 +261,9 @@ public class Window {
 		return searchTypeComboBox.getSelectedItem().toString();
 	}
 
-	public static String[] getSelectedDocumentIds() {
+	public static String[] getSelectedDocumentFileNames() {
 		List<String> selectedDocumentList = list.getSelectedValuesList();
-		List<String> selectedDOcumentIdList = new ArrayList<String>();
+		List<String> selectedDocumentFileNamesList = new ArrayList<String>();
 
 		for (int i = 0; i < selectedDocumentList.size(); i++) {
 			String line = selectedDocumentList.get(i);
@@ -271,12 +271,12 @@ public class Window {
 			int endIndex = line.indexOf(']');
 
 			if (startIndex > 0 && endIndex > 0) {
-				selectedDOcumentIdList.add(line.substring(startIndex + 1, endIndex));
+				selectedDocumentFileNamesList.add(line.substring(startIndex + 1, endIndex));
 			}
 		}
 
-		String[] selectedDocumentIds = new String[selectedDOcumentIdList.size()];
-		return selectedDOcumentIdList.toArray(selectedDocumentIds);
+		String[] selecteDocumentFileNames = new String[selectedDocumentFileNamesList.size()];
+		return selectedDocumentFileNamesList.toArray(selecteDocumentFileNames);
 	}
 
 	public static boolean isReIndexChecked() {
