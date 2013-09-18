@@ -35,6 +35,8 @@ public class QueryReader {
 			else
 				query = query + " " + line;
 		}
+		
+		br.close();
 
 		return queries.toArray(new QueryList[queries.size()]);
 	}

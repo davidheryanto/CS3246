@@ -1,14 +1,11 @@
 package lucene;
 
-import java.awt.AWTEvent;
 import java.awt.KeyEventDispatcher;
-import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -16,7 +13,6 @@ import java.util.Hashtable;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JList;
 import javax.swing.JTextField;
 
 public class Controller implements FocusListener, KeyEventDispatcher, ActionListener {
@@ -69,6 +65,7 @@ public class Controller implements FocusListener, KeyEventDispatcher, ActionList
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private static void printTabDelimited(Hashtable<Integer, Paper> paperTable) {
 		Enumeration<Integer> fileNumberEnum = paperTable.keys();
 		

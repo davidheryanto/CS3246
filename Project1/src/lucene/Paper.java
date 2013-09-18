@@ -1,6 +1,5 @@
 package lucene;
 
-import org.apache.lucene.document.Field;
 
 public class Paper {
 	private int docNumber;

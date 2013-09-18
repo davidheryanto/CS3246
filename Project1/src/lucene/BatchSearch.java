@@ -3,13 +3,6 @@ package lucene;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Explanation;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-
 public class BatchSearch {
 	public static void runBatchQuery(String filePath) throws IOException {
 		ArrayList<String[]> docID = new ArrayList<String[]>();
