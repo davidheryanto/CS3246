@@ -78,7 +78,7 @@ public class Indexer {
 							paper.getKeywordString() + " " +
 							paper.getAuthorString() + " " ;
 				
-				document.add(new Field("content", fullSearchableText, Field.Store.NO, Field.Index.ANALYZED));
+				document.add(new Field("content", fullSearchableText, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
 				indexWriter.addDocument(document);
 				indexCount++;
 			}
