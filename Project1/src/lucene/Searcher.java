@@ -72,7 +72,15 @@ public class Searcher {
 				break;
 			}
 			
+			System.out.println("Searching...");
+			long start = System.currentTimeMillis();
+			
 			TopDocs topDocs = indexSearcher.search(query, 50);
+			
+			long end = System.currentTimeMillis();
+			System.out.printf("%d results in %.3f ms%n", topDocs.totalHits, (double) (end-start) );
+			
+			
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			for (ScoreDoc scoreDoc : scoreDocs) {
 				int docNumber = scoreDoc.doc;
@@ -86,7 +94,7 @@ public class Searcher {
 				String result = 
 						String.format("<html>[%s] %s <font color=blue>%.3f</font></html>",
 								document.get("fileNumber"),
-								document.get("title"),
+								highlight(document.get("title"), query),
 								(double) scoreDoc.score);
 				resultList.add(result);
 			}
@@ -100,6 +108,39 @@ public class Searcher {
 		
         String[] results = new String[resultList.size()];
 		return resultList.toArray(results);
+	}
+
+	private static String highlight(String title, Query query) {
+		String delimiters = "title:|summary:|author:|keyword:|content:";
+		String[] queries = query.toString().split(delimiters);
+		String[] fragments = title.split(" ");
+		
+//		for (String s : fragments) {
+//			System.out.println(s);
+//		}
+//		
+//		for (String s : queries) {
+//			System.out.println(s);
+//		}
+		
+		for (int i = 0; i < fragments.length; i++) {
+			for ( int j = 0; j < queries.length; j++) {
+				if (queries[j].trim().length() < 3) {
+					continue;
+				}
+				if (fragments[i].trim().toLowerCase().indexOf( queries[j].trim().toLowerCase() ) >= 0 ) {
+					fragments[i] = "<span style='background-color: #FFFF00'>" + fragments[i] + "</span>";
+					break;
+				}
+			}
+		}
+		
+		StringBuilder sb = new StringBuilder("");
+		for (String s : fragments) {
+			sb.append(s + " ");
+		}
+		
+		return sb.toString().trim();
 	}
 
 	private static IndexSearcher getIndexSearcher() {

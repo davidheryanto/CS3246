@@ -14,9 +14,6 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-// TODO: Need one more field for content (contains title, author keyword etc) OR use MultiField QueryParser
-// TODO: Boost certain field
-
 public class Indexer {
 	private static final Indexer instance = new Indexer();
 
@@ -54,7 +51,7 @@ public class Indexer {
 				// index the fields of Paper
 				Document document = new Document();
 				document.add(new Field("fileNumber", fileNumber.toString(), Field.Store.YES, Field.Index.NO));
-				document.add(new Field("title", paper.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+				document.add(new Field("title", paper.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 				document.add(new Field("summary", paper.getSummary(), Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
 				document.add(new NumericField("year").setIntValue(paper.getYear()) );
 				if (paper.getAuthors() != null) {

@@ -44,7 +44,14 @@ public class Controller implements FocusListener, KeyEventDispatcher, ActionList
 	private void search(String queryString) {
 		if (Window.isReIndexChecked()) {
 			paperTable = Controller.getPaperTable();
-			Indexer.index(paperTable);
+			
+			System.out.println("Indexing...");
+			long start = System.currentTimeMillis();
+			
+			int docCount = Indexer.index(paperTable);
+			
+			long end = System.currentTimeMillis();
+			System.out.printf("%d documents indexed in %.3f ms%n", docCount, (double) (end-start) ) ;
 		}
 		
 		String[] results = Searcher.search(queryString);
