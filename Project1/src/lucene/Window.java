@@ -9,10 +9,13 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,19 +28,18 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.JCheckBox;
 
 public class Window {
 	private static final Window instance = new Window();
-	
+
 	private static JFrame frame;
 	private static JTextField textField;
 	private static JScrollPane scrollPane;
 	private static JList<String> list;
-	
+
 	private static JButton importButton;
 	private static JButton exportButton;
-	
+
 	private static JComboBox<String> pseudoRFComboBox;
 	private static JComboBox<String> similarityComboBox;
 	private static JComboBox<String> searchTypeComboBox;
@@ -49,7 +51,7 @@ public class Window {
 	public static Window getInstance() {
 		return instance;
 	}
-	
+
 	/**
 	 * @wbp.parser.entryPoint
 	 */
@@ -59,7 +61,7 @@ public class Window {
 		initSearchPanel();
 		initScrollPane(model);
 		initFilePanel();
-		
+
 		frame.setVisible(true);
 	}
 
@@ -68,46 +70,46 @@ public class Window {
 		frame.setTitle("Lucene Search Engine");
 		frame.setSize(1080, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		// get screen properties
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dim.getWidth() - frame.getWidth()) / 2);
-	    int y = (int) ((dim.getHeight() - frame.getHeight()) / 2);
+		int x = (int) ((dim.getWidth() - frame.getWidth()) / 2);
+		int y = (int) ((dim.getHeight() - frame.getHeight()) / 2);
 		frame.setLocation(x, y);
 	}
 
 	private static void initSearchPanel() {
 		JPanel searchPanel = new JPanel();
 		frame.getContentPane().add(searchPanel, BorderLayout.NORTH);
-		
+
 		// Setup GridBag Layout
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{127, 0, 70, 50, 60, 100, 50, 0};
-		gbl_panel.rowHeights = new int[] {30, 0};
+		gbl_panel.rowHeights = new int[] {30};
 		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0};
+		gbl_panel.rowWeights = new double[]{0.0};
 		searchPanel.setLayout(gbl_panel);
-	
+
 		// Add input field
 		textField = new JTextField("Type query");
 		textField.addFocusListener(Controller.getInstance());
 		textField.addActionListener(Controller.getInstance());
-	
+
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(5, 5, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 0;
 		gbc_textField.gridy = 0;
 		searchPanel.add(textField, gbc_textField);
-		
+
 		// Add check box for re-indexing option
-		reIndexCheckBox = new JCheckBox("Re-index");
+		reIndexCheckBox = new JCheckBox("Re-index", true);
 		GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
 		gbc_chckbxNewCheckBox.insets = new Insets(5, 5, 5, 5);
 		gbc_chckbxNewCheckBox.gridx = 1;
 		gbc_chckbxNewCheckBox.gridy = 0;
 		searchPanel.add(reIndexCheckBox, gbc_chckbxNewCheckBox);
-		
+
 		// Add pseudo RF options
 		JLabel pseudoRFLabel = new JLabel("Pseudo RF");
 		pseudoRFLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -117,7 +119,7 @@ public class Window {
 		gbcPseudoRFLabel.gridx = 2;
 		gbcPseudoRFLabel.gridy = 0;
 		searchPanel.add(pseudoRFLabel, gbcPseudoRFLabel);
-		
+
 		pseudoRFComboBox = new JComboBox<String>();
 		pseudoRFComboBox.setModel(
 				new DefaultComboBoxModel<String>(
@@ -128,7 +130,7 @@ public class Window {
 		gbcPseudoRFComboBox.gridx = 3;
 		gbcPseudoRFComboBox.gridy = 0;
 		searchPanel.add(pseudoRFComboBox, gbcPseudoRFComboBox);
-		
+
 		// Add similarity options
 		JLabel similarityLabel = new JLabel("Similarity");
 		similarityLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -138,7 +140,7 @@ public class Window {
 		gbcSimilarityLabel.gridx = 4;
 		gbcSimilarityLabel.gridy = 0;
 		searchPanel.add(similarityLabel, gbcSimilarityLabel);
-		
+
 		similarityComboBox = new JComboBox<String>();
 		similarityComboBox.setModel(
 				new DefaultComboBoxModel<String>(
@@ -152,7 +154,7 @@ public class Window {
 		gbcSimilarityComboBox.gridx = 5;
 		gbcSimilarityComboBox.gridy = 0;
 		searchPanel.add(similarityComboBox, gbcSimilarityComboBox);
-		
+
 		// Add options for search type
 		searchTypeComboBox = new JComboBox<String>();
 		searchTypeComboBox.setModel(
@@ -172,14 +174,14 @@ public class Window {
 		list = new JList<String>(model);
 		list.addKeyListener(Controller.getInstance());
 		scrollPane = new JScrollPane(list);
-		
+
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 	}
 
 	private static void initFilePanel() {
 		JPanel filePanel = new JPanel();
 		frame.getContentPane().add(filePanel, BorderLayout.SOUTH);
-		
+
 		// Add button to import file
 		GridBagLayout gbl_filePanel = new GridBagLayout();
 		gbl_filePanel.columnWidths = new int[]{250, 250, 0};
@@ -187,7 +189,7 @@ public class Window {
 		gbl_filePanel.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
 		gbl_filePanel.rowWeights = new double[]{0.0};
 		filePanel.setLayout(gbl_filePanel);
-		
+
 		importButton = new JButton("Import Query");
 		importButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -199,7 +201,7 @@ public class Window {
 		gbc_btnNewButton_1.gridx = 0;
 		gbc_btnNewButton_1.gridy = 0;
 		filePanel.add(importButton, gbc_btnNewButton_1);
-		
+
 		// Add button to export file
 		exportButton = new JButton("Export Result");
 		exportButton.addActionListener(new ActionListener() {
@@ -216,19 +218,19 @@ public class Window {
 
 	private static void setUIFont(FontUIResource font)
 	{
-	    Enumeration<Object> keys = UIManager.getDefaults().keys();
-	    while (keys.hasMoreElements())
-	    {
-	        Object key = keys.nextElement();
-	        Object value = UIManager.get(key);
-	        if (value instanceof javax.swing.plaf.FontUIResource)
-	        {
-	            UIManager.put(key, font);
-	        }
-	    }
+		Enumeration<Object> keys = UIManager.getDefaults().keys();
+		while (keys.hasMoreElements())
+		{
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if (value instanceof javax.swing.plaf.FontUIResource)
+			{
+				UIManager.put(key, font);
+			}
+		}
 	}
-	
-	
+
+
 	public static void setUI() {
 		try {
 			// Set System L&F
@@ -247,23 +249,41 @@ public class Window {
 		catch (IllegalAccessException e) {
 			// handle exception
 		}
-		
+
 		setUIFont(new FontUIResource("Segoe UI",Font.PLAIN,16));
 	}
 
 	public static String getQueryString() {
 		return textField.getText().trim();
 	}
-	
+
 	public static String getSearchType() {
 		return searchTypeComboBox.getSelectedItem().toString();
 	}
-	
-	public static String[] getSelectedDocumentIds() {
-		return (String[]) list.getSelectedValuesList().toArray();
+
+	public static String[] getSelectedDocumentFileNames() {
+		List<String> selectedDocumentList = list.getSelectedValuesList();
+		List<String> selectedDocumentFileNamesList = new ArrayList<String>();
+
+		for (int i = 0; i < selectedDocumentList.size(); i++) {
+			String line = selectedDocumentList.get(i);
+			int startIndex = line.indexOf('[');
+			int endIndex = line.indexOf(']');
+
+			if (startIndex > 0 && endIndex > 0) {
+				selectedDocumentFileNamesList.add(line.substring(startIndex + 1, endIndex));
+			}
+		}
+
+		String[] selecteDocumentFileNames = new String[selectedDocumentFileNamesList.size()];
+		return selectedDocumentFileNamesList.toArray(selecteDocumentFileNames);
 	}
-	
+
 	public static boolean isReIndexChecked() {
 		return reIndexCheckBox.isSelected();
+	}
+	
+	public static void uncheckReIndex() {
+		reIndexCheckBox.setSelected(false);
 	}
 }
