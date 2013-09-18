@@ -1,6 +1,7 @@
 package lucene;
 
 import java.awt.AWTEvent;
+import java.awt.KeyEventDispatcher;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
-public class Controller implements AWTEventListener, ActionListener, FocusListener, KeyListener {
+public class Controller implements FocusListener, KeyEventDispatcher {
 
 	private static final Controller instance = new Controller();
 	private static Hashtable<Integer, Paper> paperTable;
@@ -108,62 +109,28 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 
 	/********************* Action, Focus and Event Listeners *************************/
 
-	@Override
-	public void eventDispatched(AWTEvent event) {
-		System.out.printf("Event: %s%n%n", event.toString());
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object obj = e.getSource();
-
-		if (obj instanceof JButton) {
-
-		};
-
-		if (obj instanceof JTextField) {
-			search(Window.getQueryString());
-			
-			Window.uncheckReIndex();
-		}
-	}
 
 	@Override
 	public void focusGained(FocusEvent e) {
 		Object obj = e.getSource();
-
 		if (obj instanceof JTextField) {
 			((JTextField) obj).selectAll();
 		}
-
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		Object obj = e.getSource();
-
-		if (e.getKeyCode() == KeyEvent.VK_ENTER && obj instanceof JList<?>) {
+	public boolean dispatchKeyEvent(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			search(Window.getQueryString());
-			
 			Window.uncheckReIndex();
+			return true;
 		}
-
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 

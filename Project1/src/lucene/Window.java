@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,8 +62,14 @@ public class Window {
 		initSearchPanel();
 		initScrollPane(model);
 		initFilePanel();
-
+		initKeys();
+		
 		frame.setVisible(true);
+	}
+
+	private static void initKeys() {
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+		  .addKeyEventDispatcher(Controller.getInstance() );
 	}
 
 	private static void initFrame() {
@@ -93,7 +100,6 @@ public class Window {
 		// Add input field
 		textField = new JTextField("Type query");
 		textField.addFocusListener(Controller.getInstance());
-		textField.addActionListener(Controller.getInstance());
 
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(5, 5, 5, 5);
@@ -172,7 +178,6 @@ public class Window {
 
 	private static void initScrollPane(ListModel<String> model) {
 		list = new JList<String>(model);
-		list.addKeyListener(Controller.getInstance());
 		scrollPane = new JScrollPane(list);
 
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -289,5 +294,9 @@ public class Window {
 	
 	public static void uncheckReIndex() {
 		reIndexCheckBox.setSelected(false);
+	}
+	
+	public static void setTextField(String queryString) {
+		textField.setText(queryString);
 	}
 }

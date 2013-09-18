@@ -20,7 +20,6 @@ import org.apache.lucene.store.FSDirectory;
 
 public class Indexer {
 	private static final Indexer instance = new Indexer();
-	private static IndexWriter indexWriter;
 
 	// Singleton pattern
 	private Indexer() { }
@@ -29,24 +28,21 @@ public class Indexer {
 		return instance;
 	}
 	
-	private static void setDefaultIndexWriter() {
-		Directory directory = getDirectory(Constants.DIR_PATH_INDEX);
+	private static IndexWriter getDefaultIndexWriter() {
+		Directory dir = getDirectory(Constants.DIR_PATH_INDEX);
 		IndexWriterConfig config = new IndexWriterConfig(
 				Constants.VERSION, new StandardAnalyzer(Constants.VERSION));
 		try {
-			indexWriter = new IndexWriter(directory, config);
+			return new IndexWriter(dir, config);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void setIndexWriter(IndexWriter indexWriter) {
-		Indexer.indexWriter = indexWriter;
+		return null;
 	}
 
 	public static int index(Hashtable<Integer, Paper> paperTable) {
 		// Ensure that directory is writable
-		setDefaultIndexWriter();
+		IndexWriter indexWriter = getDefaultIndexWriter();
 		
 		int indexCount = 0;
 		try {
@@ -84,15 +80,11 @@ public class Indexer {
 			}
 			
 			indexWriter.close();
+			indexWriter = null;
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			
-		} catch (AlreadyClosedException e) {
-			setDefaultIndexWriter();
-			index(paperTable);
 		}
-		
 		
 		return indexCount;
 	}
