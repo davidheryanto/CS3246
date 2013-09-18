@@ -1,6 +1,7 @@
 package lucene;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -29,6 +30,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.JProgressBar;
 
 public class Window {
 	private static final Window instance = new Window();
@@ -39,7 +41,6 @@ public class Window {
 	private static JList<String> list;
 
 	private static JButton importButton;
-	private static JButton exportButton;
 	private static JComboBox<String> similarityComboBox;
 	private static JComboBox<String> searchTypeComboBox;
 	private static JCheckBox reIndexCheckBox;
@@ -91,9 +92,9 @@ public class Window {
 		// Setup GridBag Layout
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{127, 0, 70, 60, 100, 50, 0};
-		gbl_panel.rowHeights = new int[] {30, 0};
+		gbl_panel.rowHeights = new int[] {30};
 		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0};
+		gbl_panel.rowWeights = new double[]{0.0};
 		searchPanel.setLayout(gbl_panel);
 
 		// Add input field
@@ -175,36 +176,20 @@ public class Window {
 
 		// Add button to import file
 		GridBagLayout gbl_filePanel = new GridBagLayout();
-		gbl_filePanel.columnWidths = new int[]{250, 250, 0};
+		gbl_filePanel.columnWidths = new int[]{250, 0};
 		gbl_filePanel.rowHeights = new int[] {30};
-		gbl_filePanel.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_filePanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_filePanel.rowWeights = new double[]{0.0};
 		filePanel.setLayout(gbl_filePanel);
 
 		importButton = new JButton("Import Query");
-		importButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		importButton.addActionListener(Controller.getInstance() );
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(5, 5, 5, 5);
 		gbc_btnNewButton_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnNewButton_1.gridx = 0;
 		gbc_btnNewButton_1.gridy = 0;
 		filePanel.add(importButton, gbc_btnNewButton_1);
-
-		// Add button to export file
-		exportButton = new JButton("Export Result");
-		exportButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-		gbc_btnNewButton_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_2.insets = new Insets(5, 5, 5, 5);
-		gbc_btnNewButton_2.gridx = 1;
-		gbc_btnNewButton_2.gridy = 0;
-		filePanel.add(exportButton, gbc_btnNewButton_2);
 	}
 
 	private static void setUIFont(FontUIResource font)
@@ -293,5 +278,9 @@ public class Window {
 	public static void selectList(int[] indices) {
 		list.clearSelection();
 		list.setSelectedIndices(indices);
+	}
+	
+	public static Component getFrame() {
+		return frame;
 	}
 }

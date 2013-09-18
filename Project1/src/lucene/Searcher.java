@@ -72,7 +72,6 @@ public class Searcher {
 				break;
 			}
 			
-			
 			TopDocs topDocs = indexSearcher.search(query, 50);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			for (ScoreDoc scoreDoc : scoreDocs) {

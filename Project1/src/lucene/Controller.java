@@ -14,10 +14,11 @@ import java.util.Hashtable;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
-public class Controller implements FocusListener, KeyEventDispatcher {
+public class Controller implements FocusListener, KeyEventDispatcher, ActionListener {
 
 	private static final Controller instance = new Controller();
 	private static Hashtable<Integer, Paper> paperTable;
@@ -51,7 +52,7 @@ public class Controller implements FocusListener, KeyEventDispatcher {
 		
 		String[] results = Searcher.search(queryString);
 
-		updateModel(results);
+		// updateModel(results);
 	}
 
 	private void updateModel(String[] results) {
@@ -135,6 +136,20 @@ public class Controller implements FocusListener, KeyEventDispatcher {
 		
 		
 		return false;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj instanceof JButton) {
+			JFileChooser fc = new JFileChooser(System.getProperty("user.home") + "/Desktop");
+			int returnVal = fc.showOpenDialog( Window.getFrame() );
+		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+		       System.out.println("You chose to open this file: " +
+		            fc.getSelectedFile().getAbsolutePath());
+		    }
+		}
+		
 	}
 
 
