@@ -7,18 +7,22 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class DocumentParser {
-	public static Paper[] parseDocument(String path) {
+	// return a Hashtable array mapping of paper fileNumber -> paper object
+	public static Hashtable<Integer, Paper> parseDocument(String path) {
 		File folder = new File(path);
 		File[] files = folder.listFiles();
 
-		ArrayList<Paper> papers = new ArrayList<Paper>();
+		Hashtable<Integer, Paper> paperTable = new Hashtable<Integer, Paper>();
 		for (File file : files) {
-			papers.add(getPaper(file));
+			int fileNumber = getFileNumber(file);
+			Paper paper = getPaper(file);
+			paperTable.put(fileNumber, paper);
 		}
 		
-		return papers.toArray(new Paper[papers.size()]);
+		return paperTable;
 	}
 	
 	private static Paper getPaper(File file) {
@@ -27,14 +31,13 @@ public class DocumentParser {
 		
 		// The extraction must be done in order for proper extraction
 		// i.e. title -> summary -> year -> ...
-		String id = getId(file);
 		String title =  extractTitle(textBlockList);
 		String summary = extractSummary(textBlockList);
 		int year = extractYear(textBlockList);
 		String[] authors = extractAuthors(textBlockList, file);
 		String[] keywords = extractKeyword(textBlockList);
 		
-		return new Paper(id, title, summary, year, authors, keywords);
+		return new Paper(title, summary, year, authors, keywords);
 	}
 
 	// Remove HTML tags and blocks that are numbers only
@@ -50,9 +53,16 @@ public class DocumentParser {
 		return cleanList;
 	}
 	
-	private static String getId(File file) {
+	private static int getFileNumber(File file) {
 		String fileName = file.getName();
-		return fileName.substring(0, fileName.indexOf(".html"));
+		String fileNumberString = fileName.substring(0, fileName.indexOf(".html"));
+		Integer fileNumber = null;
+		try {
+			fileNumber = Integer.parseInt(fileNumberString);
+		} catch (NumberFormatException e) {
+			System.err.println("Parsing error: Data filename is not a number");
+		}
+		return fileNumber;
 	}
 
 	// Remove title field (index 0) from the list.

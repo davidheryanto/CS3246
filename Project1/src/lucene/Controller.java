@@ -8,33 +8,18 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Explanation;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.LockObtainFailedException;
 
 public class Controller implements AWTEventListener, ActionListener, FocusListener, KeyListener {
 
 	private static final Controller instance = new Controller();
+	private static Hashtable<Integer, Paper> paperTable;
 	private static DefaultListModel<String> model = new DefaultListModel<>();
 
 	// Singleton pattern
@@ -43,7 +28,15 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 	public static Controller getInstance() {
 		return instance;
 	}
-
+	
+	public static Hashtable<Integer, Paper> getPaperTable() {
+		if (paperTable == null) {
+			paperTable = DocumentParser.parseDocument(Constants.DIR_PATH_DATA);
+		}
+		
+		return paperTable;
+	}
+	
 	// The starting point for the program
 	public static void main(String[] args) {
 		Window.initialize(model);
@@ -53,8 +46,8 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 
 	private void search(String queryString) {
 		if (Window.isReIndexChecked()) {
-			Paper[] papers = DocumentParser.parseDocument(Constants.DIR_PATH_DATA);
-			Indexer.index(papers);
+			paperTable = Controller.getPaperTable();
+			Indexer.index(paperTable);
 		}
 		
 		String searchType = Window.getSearchType();
@@ -64,53 +57,66 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 		case Constants.SEARCH_TYPE_NORMAL:
 			results = Searcher.search(queryString);
 			break;
+		case Constants.SEARCH_TYPE_REFINE:
+			String[] selectedDocumentIds = Window.getSelectedDocumentIds();
+			
+			break;
 		}
 
-		updateModel(model, results);
+		updateModel(results);
 	}
 
-	private void updateModel(DefaultListModel<String> model, String[] results) {
+	private void updateModel(String[] results) {
 		if (!model.isEmpty()) {
 			model.clear();
 		}
 
+		if (results == null) {
+			return;
+		}
+		
 		for (String result : results) {
 			model.addElement(result);
 		}
 	}
 	
-	private static void printTabDelimited(Paper[] papers) {
-		for (Paper p : papers) {
+	private static void printTabDelimited(Hashtable<Integer, Paper> paperTable) {
+		Enumeration<Integer> fileNumberEnum = paperTable.keys();
+		
+		while( fileNumberEnum.hasMoreElements() ) {
+			Integer fileNumber = fileNumberEnum.nextElement();
+			Paper paper = paperTable.get(fileNumber);
+			
 			StringBuilder sb = new StringBuilder();
 			String authors = "";
-			if (p.getAuthors() != null) {
-				for (String a : p.getAuthors()) {
+			
+			if (paper.getAuthors() != null) {
+				for (String a : paper.getAuthors()) {
 					sb.append(", " + a);
 				}
 				authors = sb.toString();
 				authors = authors.substring(authors.indexOf(",") + 2);
 			}
-
+			
 			sb = new StringBuilder();
 			String keywords = "";
-			if (p.getKeywords() != null) {
-				for (String k : p.getKeywords()) {
+			if (paper.getKeywords() != null) {
+				for (String k : paper.getKeywords()) {
 					sb.append(", " + k);
 				}
 				keywords = sb.toString();
 				keywords = keywords.substring(keywords.indexOf(",") + 2);
 			}
-
-
-
+			
 			System.out.printf("%s\t%s\t%s\t%d\t%s\t%s%n", 
-					p.getId(),
-					p.getTitle(),
-					p.getSummary(),
-					p.getYear(),
+					fileNumber.toString(),
+					paper.getTitle(),
+					paper.getSummary(),
+					paper.getYear(),
 					authors,
 					keywords);
 		}
+		
 	}
 
 	/********************* Action, Focus and Event Listeners *************************/
@@ -130,6 +136,8 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 
 		if (obj instanceof JTextField) {
 			search(Window.getQueryString());
+			
+			Window.uncheckReIndex();
 		}
 	}
 
@@ -159,6 +167,8 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 
 		if (e.getKeyCode() == KeyEvent.VK_ENTER && obj instanceof JList<?>) {
 			search(Window.getQueryString());
+			
+			Window.uncheckReIndex();
 		}
 
 	}
