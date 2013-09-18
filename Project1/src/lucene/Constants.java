@@ -6,6 +6,8 @@ public class Constants {
 	public static final Version VERSION = Version.LUCENE_36;
 	public static final String DIR_PATH_DATA = "./data";
 	public static final String DIR_PATH_INDEX = "./index";
+	public static final String FILENAME_QUERY = "CS3246Project1_query.txt";
+	public static final String FILENAME_RESULTS = "SearchResults.txt";
 	
 	public static final String LABEL_FRAME = "Lucene Search Engine";
 	public static final String LABEL_TEXTFIELD = "Type Query";
