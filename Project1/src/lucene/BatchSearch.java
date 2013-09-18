@@ -17,41 +17,10 @@ public class BatchSearch {
 		QueryList[] queries = QueryReader.readQuery(Constants.FILENAME_QUERY);
 		
 		for(QueryList list : queries ) {
-			docID.add(Searcher.search(list.getQuery())); //Use Searcher.search(QueryString)
+			docID.add(Searcher.search(list.getQuery()));
 		}
 		
 		ResultWriter.writeResults(queries, docID);
 	}
-	
-/*	private String[] search(String queryString) {
-		
-
-		String[] hits = Searcher.search(queryString);
-		
-		String[] resultString = new String[hits.length];
-
-		for (int i = 0; i < hits.length; i++) {
-			try {
-			
-			ScoreDoc hit = hits[i];
-			// Document doc = hit.doc();
-
-			Query query = new QueryParser(Constants.VERSION, "title",
-					new StandardAnalyzer(Constants.VERSION))
-			.parse(queryString);
-
-			Explanation explanation = instance.searcher.explain(query, hit.doc);
-
-			Document doc = instance.searcher.doc(hits[i].doc); // This
-
-			resultString[i] = doc.get("id");
-
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-		return resultString;
-	}
-*/
 	
 }
