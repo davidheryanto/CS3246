@@ -9,6 +9,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -139,14 +140,18 @@ public class Controller implements FocusListener, KeyEventDispatcher, ActionList
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object obj = e.getSource();
+	public void actionPerformed(ActionEvent event) {
+		Object obj = event.getSource();
 		if (obj instanceof JButton) {
 			JFileChooser fc = new JFileChooser(System.getProperty("user.home") + "/Desktop");
 			int returnVal = fc.showOpenDialog( Window.getFrame() );
 		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-		       System.out.println("You chose to open this file: " +
-		            fc.getSelectedFile().getAbsolutePath());
+		    	try {
+		    	String inputPath = fc.getSelectedFile().getAbsolutePath();
+		    	BatchSearch.runBatchQuery(inputPath);
+		    	} catch (IOException ex) {
+		    		ex.printStackTrace();
+		    	}
 		    }
 		}
 		

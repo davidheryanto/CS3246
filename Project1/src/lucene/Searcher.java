@@ -39,7 +39,7 @@ public class Searcher {
 	public static Searcher getInstance() {
 		return instance;
 	}
-
+	
 	public static String[] search(String queryString) {
 		IndexSearcher indexSearcher = getIndexSearcher();
 		Query query = parse(queryString);

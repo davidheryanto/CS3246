@@ -2,6 +2,7 @@ package lucene;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.QueryParser;
@@ -10,48 +11,39 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 
 public class BatchSearch {
-	public void runBatchQuery() throws IOException {
-		
+	public static void runBatchQuery(String filePath) throws IOException {
 		ArrayList<String[]> docID = new ArrayList<String[]>();
 		
-		QueryList[] queries = QueryReader.readQuery(Constants.FILENAME_QUERY);
-		
+		QueryList[] queries = QueryReader.readQuery(filePath);
 		for(QueryList list : queries ) {
-			docID.add(Searcher.search(list.getQuery())); //Use Searcher.search(QueryString)
+			String[] results = Searcher.search(list.getQuery()); //Use Searcher.search(QueryString)
+			docID.add( getIDs(results) );
 		}
 		
-		ResultWriter.writeResults(queries, docID);
-	}
-	
-/*	private String[] search(String queryString) {
-		
-
-		String[] hits = Searcher.search(queryString);
-		
-		String[] resultString = new String[hits.length];
-
-		for (int i = 0; i < hits.length; i++) {
-			try {
-			
-			ScoreDoc hit = hits[i];
-			// Document doc = hit.doc();
-
-			Query query = new QueryParser(Constants.VERSION, "title",
-					new StandardAnalyzer(Constants.VERSION))
-			.parse(queryString);
-
-			Explanation explanation = instance.searcher.explain(query, hit.doc);
-
-			Document doc = instance.searcher.doc(hits[i].doc); // This
-
-			resultString[i] = doc.get("id");
-
-			} catch (Exception e1) {
-				e1.printStackTrace();
+		int qNo = 0;
+		for (String[] sArr : docID) {
+			qNo++;
+			for (String s : sArr) {
+				System.out.println(qNo + "\t" + s);
 			}
 		}
-		return resultString;
+		
+		//ResultWriter.writeResults(queries, docID);
 	}
-*/
-	
+
+	// Get the document filename from the formatted lines in the list
+	private static String[] getIDs(String[] results) {
+		String[] docIDs = new String[results.length];
+		
+		for (int i = 0; i < results.length; i++) {
+			String s = results[i];
+			int startIdx = s.indexOf('[') + 1;
+			int endIdx = s.indexOf(']');
+			String docID = s.substring(startIdx, endIdx);
+			
+			docIDs[i] = docID;
+		}
+		
+		return docIDs;
+	}
 }
