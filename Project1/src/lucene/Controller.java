@@ -1,6 +1,7 @@
 package lucene;
 
 import java.awt.AWTEvent;
+import java.awt.KeyEventDispatcher;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,10 +14,11 @@ import java.util.Hashtable;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
-public class Controller implements AWTEventListener, ActionListener, FocusListener, KeyListener {
+public class Controller implements FocusListener, KeyEventDispatcher, ActionListener {
 
 	private static final Controller instance = new Controller();
 	private static Hashtable<Integer, Paper> paperTable;
@@ -50,7 +52,7 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 		
 		String[] results = Searcher.search(queryString);
 
-		updateModel(results);
+		// updateModel(results);
 	}
 
 	private void updateModel(String[] results) {
@@ -108,62 +110,46 @@ public class Controller implements AWTEventListener, ActionListener, FocusListen
 
 	/********************* Action, Focus and Event Listeners *************************/
 
-	@Override
-	public void eventDispatched(AWTEvent event) {
-		System.out.printf("Event: %s%n%n", event.toString());
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object obj = e.getSource();
-
-		if (obj instanceof JButton) {
-
-		};
-
-		if (obj instanceof JTextField) {
-			search(Window.getQueryString());
-			
-			Window.uncheckReIndex();
-		}
-	}
 
 	@Override
 	public void focusGained(FocusEvent e) {
 		Object obj = e.getSource();
-
 		if (obj instanceof JTextField) {
 			((JTextField) obj).selectAll();
 		}
-
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		Object obj = e.getSource();
-
-		if (e.getKeyCode() == KeyEvent.VK_ENTER && obj instanceof JList<?>) {
-			search(Window.getQueryString());
-			
-			Window.uncheckReIndex();
+	public boolean dispatchKeyEvent(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			if (e.getID() == KeyEvent.KEY_RELEASED) {
+				search(Window.getQueryString());
+				Window.uncheckReIndex();
+				return true;
+			}
 		}
-
+		
+		
+		return false;
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj instanceof JButton) {
+			JFileChooser fc = new JFileChooser(System.getProperty("user.home") + "/Desktop");
+			int returnVal = fc.showOpenDialog( Window.getFrame() );
+		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+		       System.out.println("You chose to open this file: " +
+		            fc.getSelectedFile().getAbsolutePath());
+		    }
+		}
+		
 	}
 
 
