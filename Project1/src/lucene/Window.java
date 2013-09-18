@@ -260,6 +260,10 @@ public class Window {
 	public static String getSearchType() {
 		return searchTypeComboBox.getSelectedItem().toString();
 	}
+	
+	public static String getSimilarity() {
+		return similarityComboBox.getSelectedItem().toString();
+	}
 
 	public static String[] getSelectedDocumentFileNames() {
 		List<String> selectedDocumentList = list.getSelectedValuesList();

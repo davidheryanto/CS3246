@@ -24,5 +24,4 @@ public class Constants {
 	public static final String SIMILARITY_JACCARD = "Jaccard";
 	public static final String SIMILARITY_TERM_CORRELATION = "Term Correlation";
 	
-	
 }
