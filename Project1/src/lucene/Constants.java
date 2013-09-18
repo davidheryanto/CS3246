@@ -24,6 +24,11 @@ public class Constants {
 	public static final String SIMILARITY_JACCARD = "Jaccard";
 	public static final String SIMILARITY_TERM_CORRELATION = "Term Correlation";
 	
-	public static final int QUERY_EXPANSION_N_TERMS = 10;
+	public static final int QUERY_EXPANSION_N_TERMS = 5;
+	
+	public static final float BOOST_TITLE = 1.5F;
+	public static final float BOOST_SUMMARY = 0.8F;
+	public static final float BOOST_KEYWORD = 1.2F;
+	public static final float BOOST_AUTHOR = 2.0F;
 	
 }

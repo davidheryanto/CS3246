@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.TermFreqVector;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.DefaultSimilarity;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -112,7 +111,7 @@ public class Searcher {
 
 	private static String highlight(String title, Query query) {
 		String delimiters = "title:|summary:|author:|keyword:|content:";
-		String[] queries = query.toString().split(delimiters);
+		String[] queries = query.toString().replaceAll("[()]", "").split(delimiters);
 		String[] fragments = title.split(" ");
 		
 //		for (String s : fragments) {
@@ -158,17 +157,18 @@ public class Searcher {
 	private static Query expandQuery(Query originalQuery) {
 		// delimiters will contain all the fields that are indexed
 		String delimiters = "title:|summary:|author:|keyword:|content:";
-		String[] originalTerms = originalQuery.toString().split(delimiters);
+		
+		String[] originalTerms = originalQuery.toString().replaceAll("[()]", "").split(delimiters);
 		ArrayList<String> originalList = getList(originalTerms);
-
-		// get selectedDocumentFilenames
-		String[] selectedDocumentFileNames = Window.getSelectedDocumentFileNames();
-
-		// get their DocId
-		ArrayList<Integer> selectedDocNumberList = new ArrayList<Integer>();
+		
+		// paperTable contains a mapping from fileName to paper so we can get its DocNumber
+		// with DocNumber we can get termFreqVector from indexReader
 		Hashtable<Integer, Paper> paperTable = Controller.getPaperTable();
+		
+		String[] selectedDocumentFileNames = Window.getSelectedDocumentFileNames();
+		ArrayList<Integer> selectedDocNumberList = new ArrayList<Integer>();
+		
 		for (String fileName : selectedDocumentFileNames) {
-			
 			try {
 				int fileNumber = Integer.parseInt(fileName);
 				int docNumber = paperTable.get(fileNumber).getDocNumber();
@@ -248,7 +248,10 @@ public class Searcher {
 	private static ArrayList<String> getList(String[] terms) {
 		ArrayList<String> list = new ArrayList<String>();
 		for (String s : terms) {
-			list.add(s.trim());
+			s = s.toLowerCase().trim();
+			if ( ! list.contains(s) ) {
+				list.add(s);
+			}
 		}
 		
 		return list;
@@ -266,11 +269,11 @@ public class Searcher {
 	}
 
 	private static Query parse(String queryString) {
-		QueryParser queryParser = new QueryParser(
+		MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
 				Constants.VERSION,
-				"content",
-				new StandardAnalyzer(Constants.VERSION));
-
+                new String[] {"title", "summary", "keyword", "author"},
+                new MyAnalyzer(Constants.VERSION));
+		
 		Query query = null;
 		try {
 			query = queryParser.parse(queryString);
