@@ -18,13 +18,17 @@ public class QueryReader {
 		while((line = br.readLine()) != null) {
 			if( line.isEmpty() )
 				continue;
+			if( line.equals("<DOC>"))
+				continue;
 			if(line.equals("</DOC>")) {
 				queries.add(new QueryList(qNum,query));
 				continue;
 			}
-			if(line.substring(0, 6).equals("<DOCNO>")) {
-				qNum = getQNum(line);
-				continue;
+			if(line.length() > 7) {
+				if(line.substring(0, 7).equals("<DOCNO>")) {
+					qNum = getQNum(line);
+					continue;
+				}
 			}
 			if(query == null)
 				query = line;
