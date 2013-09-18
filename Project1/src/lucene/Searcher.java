@@ -50,6 +50,12 @@ public class Searcher {
 			query = expandQuery(query);
 		}
 		
+		if (Window.isPseudoChecked()) {
+			// Select top 5 results
+			Window.selectList(new int[]{0, 1, 2, 3, 4});
+			query = expandQuery(query);
+		}
+		
 		// We need to update the docNumber in paperTable
 		Hashtable<Integer, Paper> paperTable = Controller.getPaperTable();
 		ArrayList<String> resultList = new ArrayList<String>();
@@ -117,6 +123,11 @@ public class Searcher {
 
 		// get selectedDocumentFilenames
 		String[] selectedDocumentFileNames = Window.getSelectedDocumentFileNames();
+		
+		System.out.println("******************");
+		for (String s : selectedDocumentFileNames) {
+			System.out.println(s);
+		}
 
 		// get their DocId
 		ArrayList<Integer> selectedDocNumberList = new ArrayList<Integer>();
@@ -196,7 +207,7 @@ public class Searcher {
 		for (String s : list) {
 			sb.append(s + " ");
 		}
-		return sb.toString();
+		return sb.toString().trim();
 	}
 
 	private static ArrayList<String> getList(String[] terms) {

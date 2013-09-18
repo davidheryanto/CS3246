@@ -126,10 +126,14 @@ public class Controller implements FocusListener, KeyEventDispatcher {
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			search(Window.getQueryString());
-			Window.uncheckReIndex();
-			return true;
+			if (e.getID() == KeyEvent.KEY_RELEASED) {
+				search(Window.getQueryString());
+				Window.uncheckReIndex();
+				return true;
+			}
 		}
+		
+		
 		return false;
 	}
 

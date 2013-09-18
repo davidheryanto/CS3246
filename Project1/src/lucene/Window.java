@@ -40,11 +40,10 @@ public class Window {
 
 	private static JButton importButton;
 	private static JButton exportButton;
-
-	private static JComboBox<String> pseudoRFComboBox;
 	private static JComboBox<String> similarityComboBox;
 	private static JComboBox<String> searchTypeComboBox;
 	private static JCheckBox reIndexCheckBox;
+	private static JCheckBox pseudoCheckBox;
 
 	// Singleton pattern
 	private Window() { }
@@ -91,10 +90,10 @@ public class Window {
 
 		// Setup GridBag Layout
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{127, 0, 70, 50, 60, 100, 50, 0};
-		gbl_panel.rowHeights = new int[] {30};
-		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0};
+		gbl_panel.columnWidths = new int[]{127, 0, 70, 60, 100, 50, 0};
+		gbl_panel.rowHeights = new int[] {30, 0};
+		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0};
 		searchPanel.setLayout(gbl_panel);
 
 		// Add input field
@@ -110,32 +109,19 @@ public class Window {
 
 		// Add check box for re-indexing option
 		reIndexCheckBox = new JCheckBox("Re-index", true);
-		GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
-		gbc_chckbxNewCheckBox.insets = new Insets(5, 5, 5, 5);
-		gbc_chckbxNewCheckBox.gridx = 1;
-		gbc_chckbxNewCheckBox.gridy = 0;
-		searchPanel.add(reIndexCheckBox, gbc_chckbxNewCheckBox);
-
-		// Add pseudo RF options
-		JLabel pseudoRFLabel = new JLabel("Pseudo RF");
-		pseudoRFLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		GridBagConstraints gbcPseudoRFLabel = new GridBagConstraints();
-		gbcPseudoRFLabel.insets = new Insets(5, 5, 5, 5);
-		gbcPseudoRFLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbcPseudoRFLabel.gridx = 2;
-		gbcPseudoRFLabel.gridy = 0;
-		searchPanel.add(pseudoRFLabel, gbcPseudoRFLabel);
-
-		pseudoRFComboBox = new JComboBox<String>();
-		pseudoRFComboBox.setModel(
-				new DefaultComboBoxModel<String>(
-						new String[] {"0", "1", "2", "3", "4", "5"}));
-		GridBagConstraints gbcPseudoRFComboBox = new GridBagConstraints();
-		gbcPseudoRFComboBox.insets = new Insets(5, 5, 5, 5);
-		gbcPseudoRFComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbcPseudoRFComboBox.gridx = 3;
-		gbcPseudoRFComboBox.gridy = 0;
-		searchPanel.add(pseudoRFComboBox, gbcPseudoRFComboBox);
+		GridBagConstraints gbc_reindex = new GridBagConstraints();
+		gbc_reindex.insets = new Insets(5, 5, 5, 5);
+		gbc_reindex.gridx = 1;
+		gbc_reindex.gridy = 0;
+		searchPanel.add(reIndexCheckBox, gbc_reindex);
+		
+		// Add check box for Pseudo RF
+		pseudoCheckBox = new JCheckBox("Pseudo RF");
+		GridBagConstraints gbc_pseudo = new GridBagConstraints();
+		gbc_pseudo.insets = new Insets(5, 5, 5, 5);
+		gbc_pseudo.gridx = 2;
+		gbc_pseudo.gridy = 0;
+		searchPanel.add(pseudoCheckBox, gbc_pseudo);
 
 		// Add similarity options
 		JLabel similarityLabel = new JLabel("Similarity");
@@ -143,7 +129,7 @@ public class Window {
 		GridBagConstraints gbcSimilarityLabel = new GridBagConstraints();
 		gbcSimilarityLabel.insets = new Insets(5, 5, 5, 5);
 		gbcSimilarityLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbcSimilarityLabel.gridx = 4;
+		gbcSimilarityLabel.gridx = 3;
 		gbcSimilarityLabel.gridy = 0;
 		searchPanel.add(similarityLabel, gbcSimilarityLabel);
 
@@ -157,7 +143,7 @@ public class Window {
 		GridBagConstraints gbcSimilarityComboBox = new GridBagConstraints();
 		gbcSimilarityComboBox.insets = new Insets(5, 5, 5, 5);
 		gbcSimilarityComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbcSimilarityComboBox.gridx = 5;
+		gbcSimilarityComboBox.gridx = 4;
 		gbcSimilarityComboBox.gridy = 0;
 		searchPanel.add(similarityComboBox, gbcSimilarityComboBox);
 
@@ -169,9 +155,9 @@ public class Window {
 								Constants.SEARCH_TYPE_NORMAL, 
 								Constants.SEARCH_TYPE_REFINE}));
 		GridBagConstraints gbcSearchTypeComboBox = new GridBagConstraints();
-		gbcSearchTypeComboBox.insets = new Insets(5, 5, 5, 5);
+		gbcSearchTypeComboBox.insets = new Insets(5, 5, 5, 0);
 		gbcSearchTypeComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbcSearchTypeComboBox.gridx = 6;
+		gbcSearchTypeComboBox.gridx = 5;
 		gbcSearchTypeComboBox.gridy = 0;
 		searchPanel.add(searchTypeComboBox, gbcSearchTypeComboBox);
 	}
@@ -269,7 +255,7 @@ public class Window {
 	public static String getSimilarity() {
 		return similarityComboBox.getSelectedItem().toString();
 	}
-
+	
 	public static String[] getSelectedDocumentFileNames() {
 		List<String> selectedDocumentList = list.getSelectedValuesList();
 		List<String> selectedDocumentFileNamesList = new ArrayList<String>();
@@ -288,6 +274,10 @@ public class Window {
 		return selectedDocumentFileNamesList.toArray(selecteDocumentFileNames);
 	}
 
+	public static boolean isPseudoChecked() {
+		return pseudoCheckBox.isSelected();
+	}
+
 	public static boolean isReIndexChecked() {
 		return reIndexCheckBox.isSelected();
 	}
@@ -298,5 +288,10 @@ public class Window {
 	
 	public static void setTextField(String queryString) {
 		textField.setText(queryString);
+	}
+	
+	public static void selectList(int[] indices) {
+		list.clearSelection();
+		list.setSelectedIndices(indices);
 	}
 }
