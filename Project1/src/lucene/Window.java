@@ -9,13 +9,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -30,7 +29,6 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.JProgressBar;
 
 public class Window {
 	private static final Window instance = new Window();
@@ -74,6 +72,7 @@ public class Window {
 
 	private static void initFrame() {
 		frame = new JFrame();
+		frame.setIconImage(new ImageIcon("lucene.png").getImage());
 		frame.setTitle("Lucene Search Engine");
 		frame.setSize(1080, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -52,8 +52,7 @@ public class Controller implements FocusListener, KeyEventDispatcher, ActionList
 		}
 		
 		String[] results = Searcher.search(queryString);
-
-		// updateModel(results);
+		updateModel(results);
 	}
 
 	private void updateModel(String[] results) {
@@ -134,7 +133,6 @@ public class Controller implements FocusListener, KeyEventDispatcher, ActionList
 				return true;
 			}
 		}
-		
 		
 		return false;
 	}

@@ -122,11 +122,6 @@ public class Searcher {
 
 		// get selectedDocumentFilenames
 		String[] selectedDocumentFileNames = Window.getSelectedDocumentFileNames();
-		
-		System.out.println("******************");
-		for (String s : selectedDocumentFileNames) {
-			System.out.println(s);
-		}
 
 		// get their DocId
 		ArrayList<Integer> selectedDocNumberList = new ArrayList<Integer>();
