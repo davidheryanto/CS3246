@@ -17,16 +17,16 @@ public class BatchSearch {
 		QueryList[] queries = QueryReader.readQuery(Constants.FILENAME_QUERY);
 		
 		for(QueryList list : queries ) {
-			docID.add(search(list.getQuery()));
+			docID.add(Searcher.search(list.getQuery())); //Use Searcher.search(QueryString)
 		}
 		
 		ResultWriter.writeResults(queries, docID);
 	}
 	
-	private String[] search(String queryString) {
-		SearchEngine instance = new SearchEngine();
+/*	private String[] search(String queryString) {
+		
 
-		ScoreDoc[] hits = instance.performSearch(queryString, 10);
+		String[] hits = Searcher.search(queryString);
 		
 		String[] resultString = new String[hits.length];
 
@@ -52,6 +52,6 @@ public class BatchSearch {
 		}
 		return resultString;
 	}
-
+*/
 	
 }
