@@ -15,7 +15,7 @@ public class ResultWriter {
 		for(int i = 0; i < docID.size(); i++) {
 			id = docID.get(i);
 			for(int j=0; j < id.length; j++) {
-				writer.println(queries[i].getQNum() + " " + id[0]);
+				writer.println(queries[i].getQNum() + " " + id[j]);
 			}
 		}
 		

@@ -16,6 +16,7 @@ public class BatchSearch {
 		
 		QueryList[] queries = QueryReader.readQuery(filePath);
 		for(QueryList list : queries ) {
+<<<<<<< HEAD
 			String[] results = Searcher.search(list.getQuery()); //Use Searcher.search(QueryString)
 			docID.add( getIDs(results) );
 		}
@@ -26,24 +27,32 @@ public class BatchSearch {
 			for (String s : sArr) {
 				System.out.println(qNo + "\t" + s);
 			}
-	}
-	
+		}
+		
 		//ResultWriter.writeResults(queries, docID);
 	}
-		
+
 	// Get the document filename from the formatted lines in the list
 	private static String[] getIDs(String[] results) {
 		String[] docIDs = new String[results.length];
-
+		
 		for (int i = 0; i < results.length; i++) {
 			String s = results[i];
 			int startIdx = s.indexOf('[') + 1;
 			int endIdx = s.indexOf(']');
 			String docID = s.substring(startIdx, endIdx);
-		
+			
 			docIDs[i] = docID;
 		}
-
+		
 		return docIDs;
+	}
+=======
+			docID.add(Searcher.search(list.getQuery()));
 		}
+		
+		ResultWriter.writeResults(queries, docID);
+	}
+	
+>>>>>>> 5c93e64ffb50f542a676ca04ea482dbb133d983b
 }
