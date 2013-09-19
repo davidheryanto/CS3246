@@ -10,7 +10,7 @@ public class BatchSearch {
 
 		QueryList[] queries = QueryReader.readQuery(inputPath);
 		for(QueryList list : queries ) {
-			String[] results = Searcher.search(list.getQuery()); //Use Searcher.search(QueryString)
+			String[] results = Searcher.search(list.getQuery());
 			docID.add( getIDs(results) );
 		}
 
