@@ -8,6 +8,7 @@ import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.StopAnalyzer;
 import org.apache.lucene.analysis.StopFilter;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.en.EnglishMinimalStemFilter;
 //import org.apache.lucene.analysis.en.EnglishMinimalStemFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
@@ -26,7 +27,7 @@ public class MyAnalyzer extends Analyzer {
         ts = new StopFilter(version, ts, StopAnalyzer.ENGLISH_STOP_WORDS_SET);
         ts = new LowerCaseFilter(version, ts);
         ts = new StandardFilter(version, ts);
-        ts = new PorterStemFilter(ts);
+        ts = new EnglishMinimalStemFilter(ts);
         
         return ts;
 	}
