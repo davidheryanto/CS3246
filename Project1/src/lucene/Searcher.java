@@ -9,8 +9,8 @@ import java.util.Hashtable;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.TermFreqVector;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.DefaultSimilarity;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -92,6 +92,7 @@ public class Searcher {
 								document.get("fileNumber"),
 								highlight(document.get("title"), query),
 								(double) scoreDoc.score);
+				
 				resultList.add(result);
 			}
 			indexSearcher.close();
@@ -266,10 +267,14 @@ public class Searcher {
 	}
 
 	private static Query parse(String queryString) {
-		MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
-				Constants.VERSION,
-                new String[] {"title", "summary", "keyword", "author"},
-                new MyAnalyzer(Constants.VERSION));
+//		MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
+//				Constants.VERSION,
+//                new String[] {"title", "summary", "keyword", "author", "content"},
+//                new MyAnalyzer(Constants.VERSION));
+		QueryParser queryParser = new QueryParser(
+				Constants.VERSION, 
+				"content", 
+				new MyAnalyzer(Constants.VERSION) );
 		
 		Query query = null;
 		try {
