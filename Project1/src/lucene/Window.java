@@ -137,6 +137,7 @@ public class Window {
 		similarityComboBox.setModel(
 				new DefaultComboBoxModel<String>(
 						new String[] {
+								Constants.SIMILARITY_DEFAULT,
 								Constants.SIMILARITY_COSINE, 
 								Constants.SIMILARITY_JACCARD, 
 								Constants.SIMILARITY_TERM_CORRELATION}));

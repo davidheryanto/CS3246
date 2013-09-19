@@ -24,13 +24,6 @@ import org.apache.lucene.store.FSDirectory;
 
 public class Searcher {
 	private static final Searcher instance = new Searcher();
-//	private static IndexSearcher indexSearcher;
-//	private static IndexReader indexReader;
-	
-	// options for the searcher
-//	private static String type = Constants.SEARCH_TYPE_NORMAL;
-//	private static String similarity = Constants.SIMILARITY_COSINE;
-//	private static int pseudoRF = 0;
 
 	// Singleton pattern
 	private Searcher() { }
@@ -61,8 +54,11 @@ public class Searcher {
 		
 		try {
 			switch( Window.getSimilarity() ) {
-			case Constants.SIMILARITY_COSINE :
+			case Constants.SIMILARITY_DEFAULT :
 				indexSearcher.setSimilarity(new DefaultSimilarity());
+				break;
+			case Constants.SIMILARITY_COSINE :
+				indexSearcher.setSimilarity(new CosineSimilarity());
 				break;
 			case Constants.SIMILARITY_TERM_CORRELATION :
 				indexSearcher.setSimilarity(new CoSimilarity());
