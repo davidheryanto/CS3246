@@ -269,7 +269,7 @@ public class Searcher {
 	private static Query parse(String queryString) {
 		MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
 				Constants.VERSION,
-                new String[] {"title", "summary", "keyword", "author", "content"},
+                new String[] {"title", "summary", "keyword", "author"},
                 new MyAnalyzer(Constants.VERSION));
 		
 //		QueryParser queryParser = new QueryParser(
