@@ -166,7 +166,6 @@ public class Searcher {
 
 		ArrayList<TermFreq> tfList = new ArrayList<TermFreq>();
 		
-		// find their term freq cf with query term
 		for (Integer docNumber : selectedDocNumberList) {
 			try {
 				IndexReader indexReader = getIndexReader();
@@ -181,10 +180,16 @@ public class Searcher {
 					// for every term we add its freq it to tfList
 					for (int i = 0; i < terms.length; i++) {
 						String term = terms[i].trim();
+						
+						// ignore short terms with character length less than 3
+						if (term.length() < 3) {
+							continue;
+						}
+						
 						int freq = tfv.getTermFrequencies()[i];
 						TermFreq tf = new TermFreq(term, freq);
 						
-						// check if tf exist in the list
+						// Is tf already in the list?
 						int index = tfList.indexOf(tf);
 						if (index > 0) {
 							tfList.get(index).addFreq(freq);
