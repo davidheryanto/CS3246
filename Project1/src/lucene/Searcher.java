@@ -68,6 +68,7 @@ public class Searcher {
 				indexSearcher.setSimilarity(new CoSimilarity());
 				break;
 			case Constants.SIMILARITY_JACCARD :
+				indexSearcher.setSimilarity(new JacSimilarity());
 				break;
 			}
 			
