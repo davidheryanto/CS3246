@@ -139,18 +139,6 @@ public class Searcher {
 		return sb.toString().trim();
 	}
 
-	private static IndexSearcher getIndexSearcher() {
-		try {
-			Directory dir = FSDirectory.open(new File(Constants.DIR_PATH_INDEX) );
-			SearcherManager mgr = new SearcherManager(dir, new SearcherFactory());
-			return mgr.acquire();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-
 	private static Query expandQuery(Query originalQuery) {
 		// delimiters will contain all the fields that are indexed
 		String delimiters = "title:|summary:|author:|keyword:|content:";
@@ -252,6 +240,18 @@ public class Searcher {
 		}
 		
 		return list;
+	}
+
+	private static IndexSearcher getIndexSearcher() {
+		try {
+			Directory dir = FSDirectory.open(new File(Constants.DIR_PATH_INDEX) );
+			SearcherManager mgr = new SearcherManager(dir, new SearcherFactory());
+			return mgr.acquire();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	private static IndexReader getIndexReader() {

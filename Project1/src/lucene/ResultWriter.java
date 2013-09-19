@@ -21,6 +21,5 @@ public class ResultWriter {
 			writer.println("**************");
 		}
 		writer.close();
-		
 	}
 }
