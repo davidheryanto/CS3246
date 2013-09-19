@@ -66,7 +66,7 @@ public class Indexer {
 				
 				if (paper.getAuthors() != null) {
 					for ( String author : paper.getAuthors() ) {
-						Field authorField = new Field("author", author.trim(), Field.Store.YES, Field.Index.NOT_ANALYZED , Field.TermVector.YES);
+						Field authorField = new Field("author", author.trim(), Field.Store.YES, Field.Index.ANALYZED , Field.TermVector.YES);
 						authorField.setBoost(Constants.BOOST_AUTHOR);
 						document.add(authorField);
 					}

@@ -271,6 +271,7 @@ public class Searcher {
 //				Constants.VERSION,
 //                new String[] {"title", "summary", "keyword", "author", "content"},
 //                new MyAnalyzer(Constants.VERSION));
+		
 		QueryParser queryParser = new QueryParser(
 				Constants.VERSION, 
 				"content", 
