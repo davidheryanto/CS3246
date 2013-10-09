@@ -1,40 +1,39 @@
 package imagesimilarity;
 
-import imagesearch.ImageSearchQbe;
+// Don't know why is this import here?
+// import imagesearch.ImageSearchQbe;
 
-import java.applet.Applet;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.naming.InitialContext;
-import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.FlowLayout;
+import java.awt.Color;
+import javax.swing.border.LineBorder;
 
 public class ColorHist extends JFrame {
 
 	private JButton imageField1; // button to select the image 1 
 	private JButton imageField2; // button to select the image 2
+	
+	private MainPanel dropArea1;
+	private MainPanel dropArea2;
+	
 	
 	private JLabel imageLabel1;
 	private JLabel imageLabel2;
@@ -76,6 +75,9 @@ public class ColorHist extends JFrame {
 		imagePanel = new JPanel();
 
 		hist1 = new Histogram();
+		FlowLayout flowLayout = (FlowLayout) hist1.getLayout();
+		flowLayout.setVgap(0);
+		flowLayout.setHgap(0);
 		hist2 = new Histogram();
 		contentPane = (JPanel)this.getContentPane();
 		
@@ -117,13 +119,38 @@ public class ColorHist extends JFrame {
 		setVisible(true);
 		repaint();
 */		
+		try {
+			UIManager.setLookAndFeel(
+			        UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e2) {
+			e2.printStackTrace();
+		} catch (InstantiationException e2) {
+			e2.printStackTrace();
+		} catch (IllegalAccessException e2) {
+			e2.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e2) {
+			e2.printStackTrace();
+		}
 		
 		GridLayout gridLayout = new GridLayout();  // grid layout 1 * 2
 		gridLayout.setColumns(2); 
 		gridLayout.setRows(4); 
 		contentPane.setLayout(gridLayout);
-		contentPane.add(imageField1);
-		contentPane.add(imageField2);
+		
+//		contentPane.add(imageField1);
+//		contentPane.add(imageField2);
+		
+		dropArea1 = new MainPanel(hist1);
+		dropArea1.setBorder(new LineBorder(Color.GRAY, 1));
+		dropArea1.setBackground(Color.BLACK);
+		
+		dropArea2 = new MainPanel(hist2);
+		dropArea2.setBorder(new LineBorder(Color.GRAY, 1));
+		dropArea2.setBackground(Color.BLACK);
+		
+		contentPane.add(dropArea1);
+		contentPane.add(dropArea2);
+		
 		contentPane.add(imageLabel1);
 		contentPane.add(imageLabel2);
 		contentPane.add(hist1);
@@ -133,59 +160,6 @@ public class ColorHist extends JFrame {
 		contentPane.setVisible(true);
 		setVisible(true);
 		repaint();
-		
-		imageField1.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Please select a sample image");
-				String path = "";
-				int returnVal =  fileChooser.showOpenDialog(ColorHist.this);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					imagePath1 = fileChooser.getSelectedFile().getAbsolutePath();
-					img1 = null;
-					try {
-						img1 = ImageIO.read(new File(imagePath1));
-						buffered1 = ImageIO.read(new File(imagePath1));
-						hist1.load(imagePath1); // paint histogram
-						hist1.repaint();
-						img1 = img1.getScaledInstance(width, -1, img1.SCALE_DEFAULT);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					imageLabel1.setIcon(new ImageIcon(img1));
-				}
-			}
-		});
-	
-		imageField2.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Please select a sample image");
-				String path = "";
-				int returnVal =  fileChooser.showOpenDialog(ColorHist.this);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					imagePath2 = fileChooser.getSelectedFile().getAbsolutePath();
-					img2 = null;
-					try {
-						img2 = ImageIO.read(new File(imagePath2));
-						buffered2 = ImageIO.read(new File(imagePath2));
-						hist2.load(imagePath2);
-						hist2.repaint();
-						img2 = img2.getScaledInstance(width, -1, img2.SCALE_DEFAULT);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					imageLabel2.setIcon(new ImageIcon(img2));
-					
-				}
-			}
-		});
 		
 		computeSimilarityButton.addActionListener(new ActionListener() {
 			/*
@@ -205,8 +179,8 @@ public class ColorHist extends JFrame {
 	
 	public double computeSimilarity() {
 		
-		double[] hist1 = getHist(buffered1);
-		double[] hist2 = getHist(buffered2);
+		double[] hist1 = getHist(dropArea1.getBufImg());
+		double[] hist2 = getHist(dropArea2.getBufImg());
 		
 		double distance = calculateDistance(hist1, hist2);
 		return 1-distance;
