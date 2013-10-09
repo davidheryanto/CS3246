@@ -161,13 +161,13 @@ public class ColorHist extends JFrame {
 		setVisible(true);
 		repaint();
 		
+		
 		computeSimilarityButton.addActionListener(new ActionListener() {
 			/*
 			 * replace and write your own code here
 			 */
 			
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				double sim = computeSimilarity();
 				distLabel.setText("Similarity is " + Double.toString(sim));
 			}
@@ -177,6 +177,7 @@ public class ColorHist extends JFrame {
 		
 	}
 	
+	// TODO: Modify Similarity
 	public double computeSimilarity() {
 		
 		double[] hist1 = getHist(dropArea1.getBufImg());
