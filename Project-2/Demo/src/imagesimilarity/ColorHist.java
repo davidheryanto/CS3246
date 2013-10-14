@@ -3,6 +3,8 @@ package imagesimilarity;
 // Don't know why is this import here?
 // import imagesearch.ImageSearchQbe;
 
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -10,30 +12,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import java.awt.FlowLayout;
-import java.awt.Color;
 import javax.swing.border.LineBorder;
 
 public class ColorHist extends JFrame {
 
-	private JButton imageField1; // button to select the image 1 
-	private JButton imageField2; // button to select the image 2
-	
 	private MainPanel dropArea1;
 	private MainPanel dropArea2;
-	
 	
 	private JLabel imageLabel1;
 	private JLabel imageLabel2;
@@ -61,9 +52,6 @@ public class ColorHist extends JFrame {
 	
 	public ColorHist() {
 		basePath = "E:\\workspace\\ImageSearchFramework\\"; // change it when necessary
-		
-		imageField1 = new JButton("Choose image 1");
-		imageField2 = new JButton("Choose image 2");
 		
 		imageLabel1 = new JLabel();
 		imageLabel2 = new JLabel();
@@ -136,9 +124,6 @@ public class ColorHist extends JFrame {
 		gridLayout.setColumns(2); 
 		gridLayout.setRows(4); 
 		contentPane.setLayout(gridLayout);
-		
-//		contentPane.add(imageField1);
-//		contentPane.add(imageField2);
 		
 		dropArea1 = new MainPanel(hist1);
 		dropArea1.setBorder(new LineBorder(Color.GRAY, 1));
