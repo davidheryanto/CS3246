@@ -53,26 +53,20 @@ public class MainPanel extends JPanel {
     		
     		histogram.load(imagePath1); // paint histogram
 			histogram.repaint();
+			
+			// TODO update this
+			// test sobel filter
+			// img = SobelFilter.apply(imgBuf);
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
     	
-    	if (img != null) {
-    		repaint();
-    	}
-    	
-        for (File file : files) {
-            try {
-                img = ImageIO.read(file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         if (img != null) {
             repaint();
         }
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.BLUE);

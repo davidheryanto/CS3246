@@ -1,5 +1,6 @@
 package imagesimilarity;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -27,50 +28,80 @@ public class SobelFilter {
 	}
 	
 	// Execute Sobel filter on the image passed in as parameter.
-	// The original is preserved as the filter is applied to its clone.
+	// The original image is preserved
 	public static BufferedImage apply(BufferedImage image) {
-		int width = image.getWidth();
-		int height = image.getHeight();
-		int imageType = image.getType();
-		BufferedImage result = new BufferedImage(width, height, imageType); 
 		
-		// Copy image to result, prevent overwriting the original image.
-		clone(image, result);
-		result = apply(filterX, result);
-		result = apply(filterX, result);
+		BufferedImage resultX = apply(filterX, image);
+		BufferedImage resultY = apply(filterY, image);
+		BufferedImage result = add(resultX, resultY);
 		
-		
-		
-		
-		
-		return null;
-	}
-	
-	private static void clone(BufferedImage orig, BufferedImage clone) {
-		Graphics g = clone.createGraphics();
-		g.drawImage(orig, 	// source image
-					0,		// x-coord to start drawing
-					0,		// y-coord to start drawing
-					null);  // object to be notified of progress
-		g.dispose();
+		return result;
 	}
 	
 	private static BufferedImage apply(int[][] filter, BufferedImage image) {
-		for (int i = 0; i < image.getWidth(); i++) {
-			for (int j = 0; j < image.getHeight(); j++) {
-				// For each pixel in the image, we apply the filter
-				for (int ii = 0; ii < filter.length; ii++) {
-					for (int jj = 0; jj < filter[0].length; jj++) {
-						int sum = 0;
+		int width = image.getWidth();
+		int height = image.getHeight();
+		int imageType = image.getType();
+
+		BufferedImage result = new BufferedImage(width, height, imageType);
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				int red = 0;
+				int green = 0;
+				int blue = 0;
+
+				// For each pixel in the image, we apply the filter.
+				for (int ii = i - 1, fi = 0; ii < i + 2 ; ii++, fi++) {
+					for (int jj = j - 1, fj = 0; jj < j + 2; jj++, fj++) {
+						// Check if index is out of bounds.
+						if (!(ii >= 0 && ii < width 
+						   && jj >= 0 && jj < height)) {
+							continue;
+						}
+						Color c = new Color(image.getRGB(ii, jj));
+
+						int t = c.getGreen();
+						int tt = filter[fi][fj];
 						
+						red += c.getRed() * filter[fi][fj]; 
+						green += c.getGreen() * filter[fi][fj];
+						blue += c.getBlue() * filter[fi][fj];
 					}
 				}
+				
+				// normalize the rgb value so it cannot exceed 255 and must be positive
+				red = red > 0 ? red / 4 : 0;
+				green = green > 0 ? green / 4 : 0;
+				blue = blue > 0 ? blue / 4 : 0;
+
+				// Replace the pixel rgb value with the new one
+				
+				result.setRGB(i, j, new Color(red, green, blue).getRGB());
 			}
 		}
-		
-		
-		
-		return null;
+
+		return result;
 	}
-	
+
+	public static BufferedImage add(BufferedImage img1, BufferedImage img2) {
+		int width = img1.getWidth();
+		int height = img1.getHeight();
+		int imgType = img1.getType();
+		
+		BufferedImage result = new BufferedImage(width, height, imgType);
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				Color c1 = new Color(img1.getRGB(i, j));
+				Color c2 = new Color(img2.getRGB(i, j));
+				
+				int red = (c1.getRed() + c2.getRed()) / 2;
+				int green = (c1.getGreen() + c2.getGreen()) / 2;
+				int blue = (c1.getBlue() + c2.getBlue()) / 2;
+				
+				result.setRGB(i, j, new Color(red, green, blue).getRGB());
+			}
+		}
+		return result;
+	}
 }
