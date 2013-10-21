@@ -66,6 +66,8 @@ public class MainPanel extends JPanel {
 			filter.setFilter(FilterBlur.getFilter());
 			img = filter.apply(imgBuf, FilterBlur.getNormalizeFactor());
 			
+			img = ImageHelper.quantizeColor(imgBuf, 12);
+			
 			
     	} catch (Exception e) {
     		e.printStackTrace();
