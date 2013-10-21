@@ -66,7 +66,16 @@ public class MainPanel extends JPanel {
 			filter.setFilter(FilterBlur.getFilter());
 			img = filter.apply(imgBuf, FilterBlur.getNormalizeFactor());
 			
-			img = ImageHelper.quantizeColor(imgBuf, 12);
+			// Test Quantization
+			// -------------------------------
+			// reduce no of colors intensity level from 256 -> quantizationLevel
+			int quantizationLevel = 12;	
+			img = ImageHelper.quantizeColor(imgBuf, quantizationLevel);
+			
+			// For debugging
+			// Print image pixel value into console
+			ImageHelper.print((BufferedImage) img);
+			
 			
 			
     	} catch (Exception e) {

@@ -62,4 +62,28 @@ public class ImageHelper {
 		
 		return result;
 	}
+	
+	// print pixel value of the images into console
+	public static void print(BufferedImage img) {
+		int width = img.getWidth();
+		int height = img.getHeight();
+		
+		int colCount = 10;
+		int rowCount = 10;
+		
+		int incrementX = width / colCount;
+		int incrementY = height / rowCount;
+		
+		for (int i = 0; i < width; i += incrementX) {
+			for (int j = 0; j < height; j += incrementY) {
+				Color c = new Color(img.getRGB(i, j));
+				int red = c.getRed();
+				int green = c.getGreen();
+				int blue = c.getBlue();
+
+				System.out.printf("(%d, %d, %d)\t", red, green, blue);
+			}
+			System.out.println();
+		}
+	}
 }
