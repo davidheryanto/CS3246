@@ -59,11 +59,10 @@ public class SobelFilter {
 						   && jj >= 0 && jj < height)) {
 							continue;
 						}
+						// Get color of the pixel of source image
 						Color c = new Color(image.getRGB(ii, jj));
 
-						int t = c.getGreen();
-						int tt = filter[fi][fj];
-						
+						// Apply the filter to all 3 colors
 						red += c.getRed() * filter[fi][fj]; 
 						green += c.getGreen() * filter[fi][fj];
 						blue += c.getBlue() * filter[fi][fj];
@@ -76,7 +75,6 @@ public class SobelFilter {
 				blue = blue > 0 ? blue / 4 : 0;
 
 				// Replace the pixel rgb value with the new one
-				
 				result.setRGB(i, j, new Color(red, green, blue).getRGB());
 			}
 		}
@@ -84,6 +82,7 @@ public class SobelFilter {
 		return result;
 	}
 
+	// Return the average of adding two color values at each pixel of the two images
 	public static BufferedImage add(BufferedImage img1, BufferedImage img2) {
 		int width = img1.getWidth();
 		int height = img1.getHeight();

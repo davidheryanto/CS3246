@@ -21,7 +21,7 @@ public class ColorCoherence {
 		//TODO: compute connected components
 		//TODO: compute coherent color histogram
 		
-		return CCV;
+		return null;
 	}
 	
 	
