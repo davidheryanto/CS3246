@@ -29,20 +29,6 @@ public class MainPanel extends JPanel {
     void addFiles(File[] files) {
     	String imagePath1 = files[0].getAbsolutePath();
     	
-    	
-//		Image img1 = null;
-//		try {
-//			img1 = ImageIO.read(new File(imagePath1));
-//			buffered1 = ImageIO.read(new File(imagePath1));
-//			hist1.load(imagePath1); // paint histogram
-//			hist1.repaint();
-//			img1 = img1.getScaledInstance(width, -1, img1.SCALE_DEFAULT);
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		imageLabel1.setIcon(new ImageIcon(img1));
-    	
     	try {
     		img = ImageIO.read(files[0]);
     		imgBuf = ImageIO.read(files[0]);
@@ -55,8 +41,32 @@ public class MainPanel extends JPanel {
 			histogram.repaint();
 			
 			// TODO update this
-			// test sobel filter
+			// Test Sobel Filter
+			// -----------------------
 			// img = SobelFilter.apply(imgBuf);
+			BufferedImage temp1;
+			BufferedImage temp2;
+			
+			Filter filter = new Filter();
+			
+			// Find horizontal edges
+			filter.setFilter(FilterSobel.getFilterX());
+			temp1 = filter.apply(imgBuf, FilterSobel.getNormalizeFactor());
+			
+			// Find vertical edges
+			filter.setFilter(FilterSobel.getFilterY());
+			temp2 = filter.apply(imgBuf, FilterSobel.getNormalizeFactor());
+			
+			// Compute the average of the 2 images
+			img = ImageHelper.add(temp1, temp2);
+			
+			// Test Blurring
+			// -------------------------------
+			FilterBlur.setRadius(7);
+			filter.setFilter(FilterBlur.getFilter());
+			img = filter.apply(imgBuf, FilterBlur.getNormalizeFactor());
+			
+			
     	} catch (Exception e) {
     		e.printStackTrace();
     	}

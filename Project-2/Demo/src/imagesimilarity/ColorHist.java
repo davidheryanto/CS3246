@@ -76,37 +76,6 @@ public class ColorHist extends JFrame {
 	}
 	
 	public void init() {
-		
-/*		imagePanel.setLayout(new GridLayout(3,2));
-		
-		imagePanel.add(imageField1);
-		imagePanel.add(imageLabel1);
-		
-		//imagePanel.add(hist1);
-		imagePanel.add(imageField2);
-		imagePanel.add(imageLabel2);
-		//imagePanel.add(hist2);
-
-		imagePanel.add(computeSimilarityButton);
-		imagePanel.add(distLabel);
-		
-		imagePanel.setVisible(true);
-		hist1.setVisible(true);
-		hist2.setVisible(true);
-		
-		
-		GridLayout gridLayout = new GridLayout();  // grid layout 1 * 2
-		gridLayout.setColumns(1); 
-		gridLayout.setRows(3); 
-		contentPane.setLayout(gridLayout); 
-		
-		contentPane.add(imagePanel);
-		contentPane.add(hist1);
-		contentPane.add(hist2);
-		contentPane.setVisible(true);
-		setVisible(true);
-		repaint();
-*/		
 		try {
 			UIManager.setLookAndFeel(
 			        UIManager.getSystemLookAndFeelClassName());
@@ -148,9 +117,7 @@ public class ColorHist extends JFrame {
 		
 		
 		computeSimilarityButton.addActionListener(new ActionListener() {
-			/*
-			 * replace and write your own code here
-			 */
+			// Replace with own code
 			
 			public void actionPerformed(ActionEvent e) {
 				double sim = computeSimilarity();
