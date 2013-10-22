@@ -5,23 +5,32 @@ import java.awt.image.BufferedImage;
 
 // Filter applies given filter to an image
 public class Filter {
-	private int[][] filter;
-	private int defaultNormalizeFactor = 9;
-	
-	public Filter() {
-	
-	}
+	// Singleton pattern
+	// -----------------
+	private static final Filter instance = new Filter();
 
+	private Filter() { }
+
+	public static Filter getInstance() {
+		return instance;
+	}
+	// End Singleton
+	// -------------
+	
+	
+	private static int[][] filter;
+	private static int normalizeFactor = 9; // Default
+	
 	// Set the filter to the given filter
-	public void setFilter(int[][] filter) {
-		this.filter = filter;
+	public static void setFilter(int[][] filter) {
+		Filter.filter = filter;
 	}
 	
-	public BufferedImage apply(BufferedImage img) {
-		return apply(img, defaultNormalizeFactor);
+	public static void setNormalizeFactor(int factor) {
+		Filter.normalizeFactor = factor;
 	}
 	
-	public BufferedImage apply(BufferedImage img, int normalizeFactor) {
+	public static BufferedImage apply(BufferedImage img) {
 		int width = img.getWidth();
 		int height = img.getHeight();
 		int imgType = img.getType();

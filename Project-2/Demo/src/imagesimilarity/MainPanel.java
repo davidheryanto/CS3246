@@ -47,8 +47,6 @@ public class MainPanel extends JPanel {
 			BufferedImage temp1;
 			BufferedImage temp2;
 			
-			Filter filter = new Filter();
-			
 			// Find horizontal edges
 //			filter.setFilter(FilterSobel.getFilterX());
 //			temp1 = filter.apply(imgBuf, FilterSobel.getNormalizeFactor());
@@ -79,8 +77,9 @@ public class MainPanel extends JPanel {
 			// Test CCV
 			// --------------------------------
 			int threshold = 4;
-			ColorCoherence ccv = new ColorCoherence(quantizationLevel, threshold);
-			ccv.extract((BufferedImage) img);
+			ColorCoherence.setQuantizationLevel(quantizationLevel);
+			ColorCoherence.setThreshold(threshold);
+			ColorCoherence.extract((BufferedImage) img);
 			
     	} catch (Exception e) {
     		e.printStackTrace();

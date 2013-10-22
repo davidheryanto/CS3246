@@ -5,7 +5,7 @@ public class FilterBlur {
 	
 	private static int normalizeFactor;
 	private static int[][] filter;
-	private static int radius = 3;
+	private static int radius = 5;
 
 	public static int[][] getFilter() {
 		// Set filter with dimension radius x radius, all filled with 1
