@@ -23,6 +23,11 @@ import javax.swing.border.LineBorder;
 
 public class ColorHist extends JFrame {
 
+	public static void main(String[] args) {
+		ColorHist example = new ColorHist();
+	}
+
+
 	private MainPanel dropArea1;
 	private MainPanel dropArea2;
 	
@@ -200,9 +205,4 @@ public class ColorHist extends JFrame {
         double dist = Math.sqrt( 1 - Sum / Math.sqrt(h1*h2));
         return dist;
     }
-	
-    
-	public static void main(String[] args) {
-		ColorHist example = new ColorHist();
-	}
 }

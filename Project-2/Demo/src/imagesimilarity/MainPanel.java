@@ -50,33 +50,37 @@ public class MainPanel extends JPanel {
 			Filter filter = new Filter();
 			
 			// Find horizontal edges
-			filter.setFilter(FilterSobel.getFilterX());
-			temp1 = filter.apply(imgBuf, FilterSobel.getNormalizeFactor());
-			
-			// Find vertical edges
-			filter.setFilter(FilterSobel.getFilterY());
-			temp2 = filter.apply(imgBuf, FilterSobel.getNormalizeFactor());
-			
-			// Compute the average of the 2 images
-			img = ImageHelper.add(temp1, temp2);
-			
-			// Test Blurring
-			// -------------------------------
-			FilterBlur.setRadius(7);
-			filter.setFilter(FilterBlur.getFilter());
-			img = filter.apply(imgBuf, FilterBlur.getNormalizeFactor());
-			
-			// Test Quantization
-			// -------------------------------
-			// reduce no of colors intensity level from 256 -> quantizationLevel
+//			filter.setFilter(FilterSobel.getFilterX());
+//			temp1 = filter.apply(imgBuf, FilterSobel.getNormalizeFactor());
+//			
+//			// Find vertical edges
+//			filter.setFilter(FilterSobel.getFilterY());
+//			temp2 = filter.apply(imgBuf, FilterSobel.getNormalizeFactor());
+//			
+//			// Compute the average of the 2 images
+//			img = ImageHelper.add(temp1, temp2);
+//			
+//			// Test Blurring
+//			// -------------------------------
+//			FilterBlur.setRadius(7);
+//			filter.setFilter(FilterBlur.getFilter());
+//			img = filter.apply(imgBuf, FilterBlur.getNormalizeFactor());
+//			
+//			// Test Quantization
+//			// -------------------------------
+//			// reduce no of colors intensity level from 256 -> quantizationLevel
 			int quantizationLevel = 12;	
-			img = ImageHelper.quantizeColor(imgBuf, quantizationLevel);
+//			img = ImageHelper.quantizeColor(imgBuf, quantizationLevel);
 			
 			// For debugging
 			// Print image pixel value into console
-			ImageHelper.print((BufferedImage) img);
+			// ImageHelper.print((BufferedImage) img);
 			
-			
+			// Test CCV
+			// --------------------------------
+			int threshold = 4;
+			ColorCoherence ccv = new ColorCoherence(quantizationLevel, threshold);
+			ccv.extract((BufferedImage) img);
 			
     	} catch (Exception e) {
     		e.printStackTrace();
