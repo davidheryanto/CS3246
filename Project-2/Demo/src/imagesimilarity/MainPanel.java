@@ -50,7 +50,7 @@ public class MainPanel extends JPanel {
 			BufferedImage temp2;
 			
 
-			Filter filter = new Filter();
+			// Filter filter = new Filter();
 			//Indexer.index((BufferedImage) img, 00, "index.txt");
 
 			// Find horizontal edges
@@ -82,23 +82,28 @@ public class MainPanel extends JPanel {
 			
 			// Test CCV
 			// --------------------------------
+			// Resize before running CCV;
+			
+			img = ImageHelper.resize((BufferedImage) img, 100);
+			
 			int threshold = 5;
 			ColorCoherence.setQuantizationLevel(quantizationLevel);
 			ColorCoherence.setThreshold(threshold);
 			ColorCoherence.extract((BufferedImage) img);
 			Result[] results = ColorCoherence.getResults();
-//			print(results[0].coherent);
-//			print(results[0].incoherent);
-//			
-//			System.out.println();
-//			
-//			print(results[1].coherent);
-//			print(results[1].incoherent);
-//			
-//			System.out.println();
-//			
-//			print(results[2].coherent);
-//			print(results[2].incoherent);
+			
+			print(results[0].coherent);
+			print(results[0].incoherent);
+			
+			System.out.println();
+			
+			print(results[1].coherent);
+			print(results[1].incoherent);
+			
+			System.out.println();
+			
+			print(results[2].coherent);
+			print(results[2].incoherent);
 			
 			
     	} catch (Exception e) {
@@ -110,12 +115,12 @@ public class MainPanel extends JPanel {
         }
     }
     
-//    private void print(int[] A) {
-//		for (int i = 0; i < A.length; i++) {
-//			System.out.print(A[i] + "\t");
-//		}
-//		System.out.println();
-//	}
+    private void print(int[] A) {
+    	for (int i = 0; i < A.length; i++) {
+    		System.out.print(A[i] + "\t");
+    	}
+    	System.out.println();
+    }
 
     @Override
     public void paintComponent(Graphics g) {

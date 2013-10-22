@@ -1,6 +1,8 @@
 package imagesimilarity;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 // Class containing helper methods to modify image pixels
@@ -85,5 +87,20 @@ public class ImageHelper {
 			}
 			System.out.println();
 		}
+	}
+	
+	// Resize image proportionally to max width px
+	public static BufferedImage resize(BufferedImage img, int targetWidth) {
+		int width = img.getWidth();
+		int height = img.getHeight();
+		double ratio = (double) targetWidth / width;
+		int targetHeight = (int) (ratio * height);
+		
+		BufferedImage result = new BufferedImage(targetWidth, targetHeight, img.getType());
+		Graphics g = result.createGraphics();
+		g.drawImage(img, 0, 0, targetWidth, targetHeight, null);
+		g.dispose();
+
+		return result;
 	}
 }
