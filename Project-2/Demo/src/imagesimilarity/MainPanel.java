@@ -48,7 +48,7 @@ public class MainPanel extends JPanel {
 			BufferedImage temp2;
 			
 			Filter filter = new Filter();
-			
+			Indexer.index((BufferedImage) img, 00, "index.txt");
 			// Find horizontal edges
 //			filter.setFilter(FilterSobel.getFilterX());
 //			temp1 = filter.apply(imgBuf, FilterSobel.getNormalizeFactor());

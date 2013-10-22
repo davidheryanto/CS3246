@@ -5,14 +5,6 @@ import java.awt.image.Raster;
 
 public class ColorSimilarity {
 	
-	private static final ColorSimilarity instance = new ColorSimilarity();
-	
-	private ColorSimilarity() {};
-	
-	public static ColorSimilarity getInstance() {
-		return instance;
-	}
-	
 	public static double[][] computeColorSimilarity(BufferedImage image) {
 		int width = image.getWidth();
 		int height = image.getHeight();
