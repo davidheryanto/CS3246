@@ -166,7 +166,7 @@ public class ColorHist extends JFrame {
         		int cbbin = cb / step;
         		int crbin = cr / step;
 
-                bins[ ybin*dim*dim+cbbin*dim+crbin*dim ] ++;
+                bins[ ybin*dim*dim + cbbin*dim + crbin*dim ] ++;
 
             }
         }

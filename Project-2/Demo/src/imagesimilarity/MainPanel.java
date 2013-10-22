@@ -1,5 +1,7 @@
 package imagesimilarity;
 
+import imagesimilarity.ColorCoherence.Result;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -67,7 +69,7 @@ public class MainPanel extends JPanel {
 //			// Test Quantization
 //			// -------------------------------
 //			// reduce no of colors intensity level from 256 -> quantizationLevel
-			int quantizationLevel = 12;	
+			int quantizationLevel = 16;	
 //			img = ImageHelper.quantizeColor(imgBuf, quantizationLevel);
 			
 			// For debugging
@@ -76,10 +78,24 @@ public class MainPanel extends JPanel {
 			
 			// Test CCV
 			// --------------------------------
-			int threshold = 4;
+			int threshold = 5;
 			ColorCoherence.setQuantizationLevel(quantizationLevel);
 			ColorCoherence.setThreshold(threshold);
 			ColorCoherence.extract((BufferedImage) img);
+			Result[] results = ColorCoherence.getResults();
+//			print(results[0].coherent);
+//			print(results[0].incoherent);
+//			
+//			System.out.println();
+//			
+//			print(results[1].coherent);
+//			print(results[1].incoherent);
+//			
+//			System.out.println();
+//			
+//			print(results[2].coherent);
+//			print(results[2].incoherent);
+			
 			
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -89,6 +105,13 @@ public class MainPanel extends JPanel {
             repaint();
         }
     }
+    
+//    private void print(int[] A) {
+//		for (int i = 0; i < A.length; i++) {
+//			System.out.print(A[i] + "\t");
+//		}
+//		System.out.println();
+//	}
 
     @Override
     public void paintComponent(Graphics g) {
