@@ -32,8 +32,6 @@ public class ColorCoherence {
 		ColorCoherence.threshold = threshold;
 	}
 
-	// TODO do blurring, quantization beforehand
-
 	//	private int[] color;
 	//	private int[] coherent;
 	//	private int[] incoherent;
@@ -237,7 +235,6 @@ public class ColorCoherence {
 			}
 		}
 	}
-
 
 	public static int[] getCCV(BufferedImage image) {
 

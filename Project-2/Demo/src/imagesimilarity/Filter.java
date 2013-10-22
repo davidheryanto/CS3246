@@ -3,7 +3,13 @@ package imagesimilarity;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
+// 
 // Filter applies given filter to an image
+// Usage:
+// Filter.setFilter(...)
+// Filter.setNormalizeFactor(...)
+// Filter.apply(BufferedImage ...); returns the filtered image
+// 
 public class Filter {
 	// Singleton pattern
 	// -----------------
