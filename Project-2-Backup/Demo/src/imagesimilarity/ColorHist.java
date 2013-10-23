@@ -99,11 +99,11 @@ public class ColorHist extends JFrame {
 		gridLayout.setRows(4); 
 		contentPane.setLayout(gridLayout);
 		
-		dropArea1 = new ImagePanel();
+		dropArea1 = new ImagePanel(hist1);
 		dropArea1.setBorder(new LineBorder(Color.GRAY, 1));
 		dropArea1.setBackground(Color.BLACK);
 		
-		dropArea2 = new ImagePanel();
+		dropArea2 = new ImagePanel(hist2);
 		dropArea2.setBorder(new LineBorder(Color.GRAY, 1));
 		dropArea2.setBackground(Color.BLACK);
 		
@@ -137,12 +137,11 @@ public class ColorHist extends JFrame {
 	// TODO: Modify Similarity
 	public double computeSimilarity() {
 		
-//		double[] hist1 = getHist(dropArea1.getBufImg());
-//		double[] hist2 = getHist(dropArea2.getBufImg());
+		double[] hist1 = getHist(dropArea1.getBufImg());
+		double[] hist2 = getHist(dropArea2.getBufImg());
 		
-//		double distance = calculateDistance(hist1, hist2);
-//		return 1-distance;
-		return 0;
+		double distance = calculateDistance(hist1, hist2);
+		return 1-distance;
 	}
 	
 	public double[] getHist(BufferedImage image) {

@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
-@SuppressWarnings("serial")
 public class ImageTransferHandler extends TransferHandler {
     private static final DataFlavor FILE_FLAVOR = DataFlavor.javaFileListFlavor;
 
@@ -29,8 +28,7 @@ public class ImageTransferHandler extends TransferHandler {
         if (canImport(c, t.getTransferDataFlavors())) {
             if (transferFlavor(t.getTransferDataFlavors(), FILE_FLAVOR)) {
                 try {
-                    @SuppressWarnings("unchecked")
-					List<File> fileList = (List<File>) t.getTransferData(FILE_FLAVOR);
+                    List<File> fileList = (List<File>) t.getTransferData(FILE_FLAVOR);
                     if (fileList != null && fileList.toArray() instanceof File[]) {
                         File[] files = (File[]) fileList.toArray();
                         mainPanel.addFiles(files);
