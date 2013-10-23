@@ -49,7 +49,7 @@ public class ImagePanel extends JPanel {
 
 	private void drawImage(Graphics2D g2, int width, int height) {
 		if (image != null) {
-			g2.drawImage(image, 280, 0, width, height, null);
+			g2.drawImage(image, 150, 0, width, height, null);
 		} else {
 			g2.drawRect(10, 10, width - 20, height - 20);
 		}

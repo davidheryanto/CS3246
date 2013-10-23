@@ -7,15 +7,18 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.LineBorder;
-import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import java.awt.SystemColor;
 
 public class Main {
 
@@ -50,7 +53,7 @@ public class Main {
 	private void initialize() {
 		setSystemLookAndFeel();
 		frame = new JFrame();
-		frame.setBounds(200, 200, 700, 400);
+		frame.setBounds(200, 200, 500, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel imagePanel = new JPanel();
@@ -70,9 +73,23 @@ public class Main {
 		imagePanel.add(lblNewLabel, BorderLayout.NORTH);
 		lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-		JScrollPane scrollPane = new JScrollPane();
+		// Search results
+		// ---------------------------------
+		DefaultListModel<String> model = new DefaultListModel<>();
+		model.addElement("0.jpg");
+		model.addElement("16.jpg");
+		model.addElement("20.jpg");
+		
+		JList<String> imageList = new JList<>(model);
+		imageList.setBackground(SystemColor.control);
+		imageList.setCellRenderer(new IconListRenderer());
+		imageList.setBorder(new EmptyBorder(0, 150, 0, 0));
+		
+		JScrollPane scrollPane = new JScrollPane(imageList);
 		scrollPane.setBorder(null);
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		// End search results
+		// ---------------------------------
 
 		JPanel optionPanel = new JPanel();
 		frame.getContentPane().add(optionPanel, BorderLayout.SOUTH);
