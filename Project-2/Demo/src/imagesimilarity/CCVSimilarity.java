@@ -12,7 +12,7 @@ public class CCVSimilarity {
 		
 		double score = 0;
 		double scoreCoherent = 0;
-		double scoreInCoherent = 0;
+		double scoreIncoherent = 0;
 		
 		// For all colors red, green, blue
 		// Assume results1 and results2 have same dimensions
@@ -39,13 +39,11 @@ public class CCVSimilarity {
 				double diff = Math.abs(incoherent1 - incoherent2);
 				double max = Math.max(incoherent1, incoherent2);
 				
-				scoreCoherent += incoherent1 * (1 - (diff / max));
+				scoreIncoherent += incoherent1 * (1 - (diff / max));
 			}
 		}
 		
-		score = WEIGHT_COHERENT * scoreCoherent + WEIGHT_INCOHERENT * scoreInCoherent;
+		score = WEIGHT_COHERENT * scoreCoherent + WEIGHT_INCOHERENT * scoreIncoherent;
 		return score;
 	}
-	
-	
 }
