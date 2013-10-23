@@ -6,6 +6,11 @@ public class ProcessedImage {
 	private String filePath;
 	private Result[] CCV;
 	private int[][] edgeHist;
+	private int[][] colorHist;
+	
+	public ProcessedImage() {
+		
+	}
 	
 	public String getFilePath() {
 		return filePath;
@@ -26,11 +31,18 @@ public class ProcessedImage {
 	public int[][] getEdgeHist() {
 		return edgeHist;
 	}
+	
 	public void setEdgeHist(int[][] hist) {
 		edgeHist = hist;
 	}
 
+	public int[][] getColorHist() {
+		return colorHist;
+	}
 	
+	public void setColorHist(int[][] hist) {
+		colorHist = hist;
+	}
 	// add other data eg histogram etc
 
 }
