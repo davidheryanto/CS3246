@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.SystemColor;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
@@ -18,9 +19,8 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
-import java.awt.SystemColor;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class Main {
 
@@ -50,6 +50,51 @@ public class Main {
 		initialize();
 		searcher = new Searcher();
 		
+		// 		--------------------Test-------------------------
+		//		try {
+		//			ColorCoherence.setQuantizationLevel(64);
+		//			ColorCoherence.setThreshold(32); // assume image is 100x100
+		//			
+		//			ProcessedImage p1 = new ProcessedImage();
+		//			BufferedImage img = ImageIO.read(new File("18.jpg"));
+		//			img = ImageHelper.resize(img, 100);
+		//			ColorCoherence.extract(img);
+		//			Result[] results = ColorCoherence.getResults();
+		//			p1.setCCV(results);
+		//			
+		//			ProcessedImage p2 = new ProcessedImage();
+		//			img = ImageIO.read(new File("19.jpg"));
+		//			img = ImageHelper.resize(img, 100);
+		//			ColorCoherence.extract(img);
+		//			results = ColorCoherence.getResults();
+		//			p2.setCCV(results);
+		//			
+		//			ProcessedImage p3 = new ProcessedImage();
+		//			img = ImageIO.read(new File("17.jpg"));
+		//			img = ImageHelper.resize(img, 100);
+		//			ColorCoherence.extract(img);
+		//			results = ColorCoherence.getResults();
+		//			p3.setCCV(results);
+		//			
+		//			ProcessedImage p4 = new ProcessedImage();
+		//			img = ImageIO.read(new File("t3.jpg"));
+		//			img = ImageHelper.resize(img, 100);
+		//			ColorCoherence.extract(img);
+		//			results = ColorCoherence.getResults();
+		//			p4.setCCV(results);
+		//			
+		//			
+		//			double score_1_2 = CCVSimilarity.getScore(p1, p2);
+		//			double score_1_3 = CCVSimilarity.getScore(p1, p3);
+		//			double score_1_4 = CCVSimilarity.getScore(p1, p4);
+		//			
+		//			System.out.printf("%.3f\t%.3f\t%.3f%n", 
+		//					score_1_2, score_1_3, score_1_4);
+		//			
+		//			
+		//		} catch (IOException e) {
+		//			e.printStackTrace();
+		//		}
 	}
 
 	/**
@@ -58,7 +103,7 @@ public class Main {
 	private void initialize() {
 		setSystemLookAndFeel();
 		frame = new JFrame();
-		frame.setBounds(200, 200, 500, 700);
+		frame.setBounds(500, 50, 500, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel imagePanel = new JPanel();
@@ -101,6 +146,7 @@ public class Main {
 		optionPanel.setLayout(new GridLayout(1, 0, 0, 0));
 
 		final JCheckBox chckbxNormalHistogram = new JCheckBox("Normal Histogram");
+		chckbxNormalHistogram.setSelected(true);
 		chckbxNormalHistogram.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				searcher.setCheckedNormalHistogram(chckbxNormalHistogram.isSelected());
