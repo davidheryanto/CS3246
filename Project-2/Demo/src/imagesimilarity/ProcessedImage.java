@@ -22,4 +22,5 @@ public class ProcessedImage {
 		CCV = cCV;
 	}
 	
+	// add other data eg histogram etc
 }
