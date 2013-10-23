@@ -1,5 +1,7 @@
 package imagesimilarity;
 
+import imagesimilarity.ColorCoherence.Result;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -70,13 +72,13 @@ public class Indexer {
 		}
 	}
 	
-	public static void indexCCV(int[][] coherent, int[][] incoherent, int size1, int size2, int fileNum, String outputFile) {
+	public static void indexCCV(Result[] CCVarray, int fileNum, String outputFile) {
 		
 		try {
 			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true)));
 			writer.println(fileNum);	//print image number
 			
-			for(int i = 0; i < NUMBER_OF_COLOURS; i++)
+			for(int i = 0; i < CCVarray.length; i++)
 			{
 				/*if(i==0)
 					writer.print("RED ");
@@ -84,15 +86,15 @@ public class Indexer {
 					writer.print("GREEN ");
 				if(i==2)
 					writer.print("BLUE ");*/
-				for(int j = 0; j < size1; j++)
+				for(int j = 0; j < CCVarray[i].coherent.length; j++)
 				{
-					writer.print(coherent[i][j]);
+					writer.print(CCVarray[i].coherent[j]);
 					writer.print(" ");
 				}
 				writer.println();
-				for(int j = 0; j < size2; j++)
+				for(int j = 0; j < CCVarray[i].incoherent.length; j++)
 				{
-					writer.print(incoherent[i][j]);
+					writer.print(CCVarray[i].incoherent[j]);
 					writer.print(" ");
 				}
 				writer.println();
