@@ -7,7 +7,7 @@ public class Searcher {
 	
 
 	private static final String EdgeIndex = "EdgeIndex.txt";
-	private boolean isCheckedNormalHistogram;
+	private boolean isCheckedNormalHistogram = true; // default;
 	private boolean isCheckedCCV;
 	private boolean isCheckedEdge;
 	

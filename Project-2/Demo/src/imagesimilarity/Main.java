@@ -56,52 +56,51 @@ public class Main {
 		initialize();
 		searcher = new Searcher();
 		
-		try {
-			ColorCoherence.setQuantizationLevel(64);
-			ColorCoherence.setThreshold(32); // assume image is 100x100
-			
-			ProcessedImage p1 = new ProcessedImage();
-			BufferedImage img = ImageIO.read(new File("18.jpg"));
-			img = ImageHelper.resize(img, 100);
-			ColorCoherence.extract(img);
-			Result[] results = ColorCoherence.getResults();
-			p1.setCCV(results);
-			
-			ProcessedImage p2 = new ProcessedImage();
-			img = ImageIO.read(new File("19.jpg"));
-			img = ImageHelper.resize(img, 100);
-			ColorCoherence.extract(img);
-			results = ColorCoherence.getResults();
-			p2.setCCV(results);
-			
-			ProcessedImage p3 = new ProcessedImage();
-			img = ImageIO.read(new File("17.jpg"));
-			img = ImageHelper.resize(img, 100);
-			ColorCoherence.extract(img);
-			results = ColorCoherence.getResults();
-			p3.setCCV(results);
-			
-			ProcessedImage p4 = new ProcessedImage();
-			img = ImageIO.read(new File("t3.jpg"));
-			img = ImageHelper.resize(img, 100);
-			ColorCoherence.extract(img);
-			results = ColorCoherence.getResults();
-			p4.setCCV(results);
-			
-			
-			double score_1_2 = CCVSimilarity.getScore(p1, p2);
-			double score_1_3 = CCVSimilarity.getScore(p1, p3);
-			double score_1_4 = CCVSimilarity.getScore(p1, p4);
-			
-			System.out.printf("%.3f\t%.3f\t%.3f%n", 
-					score_1_2, score_1_3, score_1_4);
-			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
+		// 		--------------------Test-------------------------
+		//		try {
+		//			ColorCoherence.setQuantizationLevel(64);
+		//			ColorCoherence.setThreshold(32); // assume image is 100x100
+		//			
+		//			ProcessedImage p1 = new ProcessedImage();
+		//			BufferedImage img = ImageIO.read(new File("18.jpg"));
+		//			img = ImageHelper.resize(img, 100);
+		//			ColorCoherence.extract(img);
+		//			Result[] results = ColorCoherence.getResults();
+		//			p1.setCCV(results);
+		//			
+		//			ProcessedImage p2 = new ProcessedImage();
+		//			img = ImageIO.read(new File("19.jpg"));
+		//			img = ImageHelper.resize(img, 100);
+		//			ColorCoherence.extract(img);
+		//			results = ColorCoherence.getResults();
+		//			p2.setCCV(results);
+		//			
+		//			ProcessedImage p3 = new ProcessedImage();
+		//			img = ImageIO.read(new File("17.jpg"));
+		//			img = ImageHelper.resize(img, 100);
+		//			ColorCoherence.extract(img);
+		//			results = ColorCoherence.getResults();
+		//			p3.setCCV(results);
+		//			
+		//			ProcessedImage p4 = new ProcessedImage();
+		//			img = ImageIO.read(new File("t3.jpg"));
+		//			img = ImageHelper.resize(img, 100);
+		//			ColorCoherence.extract(img);
+		//			results = ColorCoherence.getResults();
+		//			p4.setCCV(results);
+		//			
+		//			
+		//			double score_1_2 = CCVSimilarity.getScore(p1, p2);
+		//			double score_1_3 = CCVSimilarity.getScore(p1, p3);
+		//			double score_1_4 = CCVSimilarity.getScore(p1, p4);
+		//			
+		//			System.out.printf("%.3f\t%.3f\t%.3f%n", 
+		//					score_1_2, score_1_3, score_1_4);
+		//			
+		//			
+		//		} catch (IOException e) {
+		//			e.printStackTrace();
+		//		}
 	}
 
 	/**
