@@ -86,18 +86,19 @@ public class Indexer {
 					writer.print("GREEN ");
 				if(i==2)
 					writer.print("BLUE ");*/
+				writer.println(CCVarray[i].coherent.length);
 				for(int j = 0; j < CCVarray[i].coherent.length; j++)
 				{
 					writer.print(CCVarray[i].coherent[j]);
 					writer.print(" ");
 				}
 				writer.println();
+				writer.println(CCVarray[i].incoherent.length);
 				for(int j = 0; j < CCVarray[i].incoherent.length; j++)
 				{
 					writer.print(CCVarray[i].incoherent[j]);
 					writer.print(" ");
 				}
-				writer.println();
 				writer.println();
 			}
 			
@@ -135,12 +136,57 @@ public class Indexer {
 		return hist;
 	}
 	
+	public static Result[] readIndexCCV(String fileNum, String filename) throws IOException {
+		String[] coherent = new String[3];
+		String[] coherentSize = new String[3];
+		String[] incoherent = new String[3];
+		String[] incoherentSize = new String[3];
+		Result[] results = new Result[3];
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filename));
+			while(br.readLine()!=fileNum);
+			for(int i = 0; i < 3; i++)
+			{
+				coherentSize[i] = br.readLine();
+				coherent[i] = br.readLine();
+				incoherentSize[i] = br.readLine();
+				incoherent[i] = br.readLine();
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < 3; i++)
+		{
+			results[i].coherent = scan(coherent[i], coherentSize[i]);
+			results[i].incoherent = scan(incoherent[i], incoherentSize[i]);
+		}
+		
+		return results;
+	}
+	
 	private static int[] scan(String line) {
 		int[] array = new int[SIZE];
 		
 		Scanner sc = new Scanner(line);
 		for(int i = 0; i < SIZE; i++)
 			array[i] = sc.nextInt();
+		sc.close();
+		
+		return array;
+	}
+	
+	private static int[] scan(String line, String size) {
+		int size1 = Integer.parseInt(size);
+		int[] array = new int[size1];
+		
+		Scanner sc = new Scanner(line);
+		for(int i = 0; i < size1; i++)
+			array[i] = sc.nextInt();
+		sc.close();
 		
 		return array;
 	}

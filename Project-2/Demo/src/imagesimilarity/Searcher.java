@@ -1,5 +1,7 @@
 package imagesimilarity;
 
+import imagesimilarity.ColorCoherence.Result;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
@@ -8,6 +10,7 @@ public class Searcher {
 	
 	private static final String EdgeIndex = "EdgeIndex.txt"; //temp
 	private static final String NormalIndex = "Index.txt"; //temp
+	private static final String CCVIndex = "CCVIndex.txt"; //temp
 	private boolean isCheckedNormalHistogram = true; // default;
 	private boolean isCheckedCCV;
 	private boolean isCheckedEdge;
@@ -54,7 +57,8 @@ public class Searcher {
 			}
 			if(isCheckedCCV & !isCheckedEdge)
 			{
-				
+				Result[] results = Indexer.readIndexCCV(Integer.toString(i), CCVIndex);
+				img2.setCCV(results);
 				scores[i] = CCVSimilarity.getScore(img1, img2);
 			}
 			if(!isCheckedCCV & isCheckedEdge)
