@@ -17,7 +17,7 @@ public class Indexer {
 	private static int GREEN = 1;
 	private static int BLUE = 2;
 	
-	public static void index(BufferedImage image, int fileNum, String outputName) {
+	public static void index(BufferedImage image, int fileNum, String outputFile) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		int[][] hist = new int[NUMBER_OF_COLOURS][SIZE];
@@ -38,7 +38,7 @@ public class Indexer {
 			}
 		
 		try {
-			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(outputName,true)));
+			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true)));
 			writer.println(fileNum);	//print image number
 			
 			for(int i = 0; i < NUMBER_OF_COLOURS; i++)
@@ -64,7 +64,44 @@ public class Indexer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static void indexCCV(int[][] coherent, int[][] incoherent, int size1, int size2, int fileNum, String outputFile) {
 		
+		try {
+			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true)));
+			writer.println(fileNum);	//print image number
+			
+			for(int i = 0; i < NUMBER_OF_COLOURS; i++)
+			{
+				if(i==0)
+					writer.print("RED ");
+				if(i==1)
+					writer.print("GREEN ");
+				if(i==2)
+					writer.print("BLUE ");
+				for(int j = 0; j < size1; j++)
+				{
+					writer.print(coherent[i][j]);
+					writer.print(" ");
+				}
+				writer.println();
+				for(int j = 0; j < size2; j++)
+				{
+					writer.print(incoherent[i][j]);
+					writer.print(" ");
+				}
+				writer.println();
+				writer.println();
+			}
+			
+			writer.println("****************");
+			writer.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }
