@@ -89,7 +89,7 @@ public class ImageHelper {
 		}
 	}
 	
-	// Resize image proportionally to max width px
+	// Resize image proportionally to targetWidth px
 	public static BufferedImage resize(BufferedImage img, int targetWidth) {
 		int width = img.getWidth();
 		int height = img.getHeight();
