@@ -8,6 +8,76 @@ import java.awt.image.BufferedImage;
 // Class containing helper methods to modify image pixels
 public class ImageHelper {
 	
+	// Resize image proportionally to targetWidth px
+	public static BufferedImage resize(BufferedImage img, int targetWidth) {
+		int width = img.getWidth();
+		int height = img.getHeight();
+		double ratio = (double) targetWidth / width;
+		int targetHeight = (int) (ratio * height);
+		
+		BufferedImage result = new BufferedImage(targetWidth, targetHeight, img.getType());
+		Graphics g = result.createGraphics();
+		g.drawImage(img, 0, 0, targetWidth, targetHeight, null);
+		g.dispose();
+	
+		return result;
+	}
+	
+	// Get the gradient direction (after applying sobel filter)
+	// imgH and imgV refers to image after applying horizontal edge and vertical edge filter resp.
+	public static BufferedImage getGradient(BufferedImage imgH, BufferedImage imgV) {
+		int width = imgH.getWidth();
+		int height = imgH.getHeight();
+		int imgType = imgH.getType();
+		BufferedImage result = new BufferedImage(width, height, imgType);
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				Color cH = new Color(imgH.getRGB(i, j));
+				Color cV = new Color(imgV.getRGB(i, j));
+
+				double red = Math.toDegrees(Math.atan2(-cV.getRed(), cH.getRed()));
+				double green = Math.toDegrees(Math.atan2(cV.getGreen(), cH.getGreen()));
+				double blue = Math.toDegrees(Math.atan2(cV.getBlue(), cH.getBlue()));
+				
+//				System.out.printf("(%.1f, %.1f, %.1f\t", red, green, blue);
+				
+				
+				int redDir = convertToDir(red);
+				int greenDir = convertToDir(green);
+				int blueDir = convertToDir(blue);
+				
+				result.setRGB(i, j, new Color(redDir, greenDir, blueDir).getRGB());
+			}
+		}
+		return result;
+	}
+	
+	// Conver angle to 8 distinct directions eg east, northeast, north, etc...
+	private static int convertToDir(double angle) {
+		if (angle < 0) {
+			angle += 360;
+		}
+		
+		if (angle >= 337.5 || angle < 22.5) {
+			return 0;
+		} else if (angle < 67.5) {
+			return 1;
+		} else if (angle < 112.5) {
+			return 2;
+		} else if (angle < 157.5) {
+			return 3;
+		} else if (angle < 202.5) {
+			return 4;
+		} else if (angle < 247.5) {
+			return 5;
+		} else if (angle < 292.5) {
+			return 6;
+		} else {
+			return 7;
+		}
+	}
+
 	// Get the average of the two images
 	public static BufferedImage add(BufferedImage img1, BufferedImage img2) {
 		int width = img1.getWidth();
@@ -65,6 +135,8 @@ public class ImageHelper {
 		return result;
 	}
 	
+	
+	
 	// print pixel value of the images into console
 	public static void print(BufferedImage img) {
 		int width = img.getWidth();
@@ -87,20 +159,5 @@ public class ImageHelper {
 			}
 			System.out.println();
 		}
-	}
-	
-	// Resize image proportionally to targetWidth px
-	public static BufferedImage resize(BufferedImage img, int targetWidth) {
-		int width = img.getWidth();
-		int height = img.getHeight();
-		double ratio = (double) targetWidth / width;
-		int targetHeight = (int) (ratio * height);
-		
-		BufferedImage result = new BufferedImage(targetWidth, targetHeight, img.getType());
-		Graphics g = result.createGraphics();
-		g.drawImage(img, 0, 0, targetWidth, targetHeight, null);
-		g.dispose();
-
-		return result;
 	}
 }

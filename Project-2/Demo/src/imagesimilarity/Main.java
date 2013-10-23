@@ -7,7 +7,11 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.SystemColor;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -25,7 +29,12 @@ import javax.swing.event.ChangeListener;
 public class Main {
 
 	private JFrame frame;
+	private DefaultListModel<String> model;
 	private Searcher searcher;
+	
+	public DefaultListModel<String> getModel() {
+		return this.model;
+	}
 
 	/**
 	 * Launch the application.
@@ -49,6 +58,19 @@ public class Main {
 	public Main() {
 		initialize();
 		searcher = new Searcher();
+		
+		try {
+			BufferedImage img = ImageIO.read(new File("t3.jpg"));
+			BufferedImage result = FilterSobel.apply(img);
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		
 		
 		// 		--------------------Test-------------------------
 		//		try {
@@ -125,7 +147,7 @@ public class Main {
 
 		// Search results
 		// ---------------------------------
-		DefaultListModel<String> model = new DefaultListModel<>();
+		model = new DefaultListModel<>();
 		model.addElement("0.jpg");
 		model.addElement("16.jpg");
 		model.addElement("20.jpg");

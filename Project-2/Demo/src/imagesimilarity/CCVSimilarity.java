@@ -2,6 +2,8 @@ package imagesimilarity;
 
 import imagesimilarity.ColorCoherence.Result;
 
+// TODO (David) normalize the score
+
 public class CCVSimilarity {
 	private static double WEIGHT_COHERENT = 0.7;
 	private static double WEIGHT_INCOHERENT = 0.3;

@@ -5,8 +5,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: set threshold as a % of image size
-
 // Class to compute the color coherence vector of an image
 // Usage:
 // ColorCoherence.setQuantizationLevel(...);
