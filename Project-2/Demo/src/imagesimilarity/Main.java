@@ -59,18 +59,20 @@ public class Main {
 		initialize();
 		searcher = new Searcher();
 		
-		try {
-			BufferedImage img = ImageIO.read(new File("t3.jpg"));
-			BufferedImage result = FilterSobel.apply(img);
-			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		//    -------------------Test Sobel Filter-------------
+		//		try {
+		//			BufferedImage img = ImageIO.read(new File("18.jpg"));
+		//			BufferedImage result = FilterSobel.apply(img);
+		//			ImageHelper.print(result);
+		//			
+		//		} catch (IOException e) {
+		//			e.printStackTrace();
+		//		}
 		
 		
 		
-		
+//		
 		
 		// 		--------------------Test-------------------------
 		//		try {
