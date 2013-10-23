@@ -81,6 +81,17 @@ public class ColorCoherence {
 		// Set the rgb values of the images on the 3 arrays above
 		setMatrix(img, Red, Green, Blue);
 
+		// Clear Lists
+		redList.clear();
+		redSizeList.clear();
+
+		greenList.clear();
+		greenSizeList.clear();
+
+		blueList.clear();
+		blueSizeList.clear();
+		
+		
 		// Create and label different regions for all three channels
 		// Label shows which pixel has been visited
 		int[][] Label = new int[Red.length][Red[0].length];
@@ -154,8 +165,10 @@ public class ColorCoherence {
 
 	private static void setResultsForColor(
 			Result result, List<Integer> levelList, List<Integer> levelSizeList) {
+		
 		result.coherent = new int[quantizationLevel];
 		result.incoherent = new int[quantizationLevel];
+		
 		for (int i = 0; i < levelList.size(); i++) {
 			if (levelSizeList.get(i) >= threshold) {
 				result.coherent[levelList.get(i)] += levelSizeList.get(i);

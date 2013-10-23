@@ -25,6 +25,11 @@ public class CCVSimilarity {
 				double diff = Math.abs(coherent1 - coherent2);
 				double max = Math.max(coherent1, coherent2);
 				
+				if (max <= 0) {
+					// both the sizes are 0, ignore this
+					continue; 
+				}
+				
 				scoreCoherent += coherent1 * (1 - (diff / max));
 			}
 		}
@@ -38,6 +43,10 @@ public class CCVSimilarity {
 				
 				double diff = Math.abs(incoherent1 - incoherent2);
 				double max = Math.max(incoherent1, incoherent2);
+				
+				if (max <= 0) {
+					continue; 
+				}
 				
 				scoreIncoherent += incoherent1 * (1 - (diff / max));
 			}

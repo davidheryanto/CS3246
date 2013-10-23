@@ -2,7 +2,7 @@ package imagesimilarity;
 
 public class Searcher {
 	
-	private boolean isCheckedNormalHistogram;
+	private boolean isCheckedNormalHistogram = true; // default
 	private boolean isCheckedCCV;
 	private boolean isCheckedEdge;
 	
