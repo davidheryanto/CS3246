@@ -68,7 +68,7 @@ public class Searcher {
 				img2.setEdgeHist(hist);
 				scores[i] = EdgeSimilarity.getScore(img1, img2);
 			}
-	}
+		}
 	
 		return scores;
 	}
