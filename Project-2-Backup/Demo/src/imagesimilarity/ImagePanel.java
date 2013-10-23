@@ -12,14 +12,14 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-public class MainPanel extends JPanel {
+public class ImagePanel extends JPanel {
 	private static final long serialVersionUID = -7633345270628142437L;
 	private Image img;
 	private BufferedImage imgBuf;
 	private int width, height;
     private Histogram histogram;
 
-    MainPanel(Histogram hist) {
+    ImagePanel(Histogram hist) {
         setTransferHandler(new ImageTransferHandler(this));
         this.histogram = hist;
     }
