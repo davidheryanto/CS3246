@@ -74,7 +74,7 @@ public class Main {
 		lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
 		// Search results
-		// --------------
+		// ---------------------------------
 		DefaultListModel<String> model = new DefaultListModel<>();
 		model.addElement("0.jpg");
 		model.addElement("16.jpg");
@@ -88,7 +88,8 @@ public class Main {
 		JScrollPane scrollPane = new JScrollPane(imageList);
 		scrollPane.setBorder(null);
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
-		// ---------------
+		// End search results
+		// ---------------------------------
 
 		JPanel optionPanel = new JPanel();
 		frame.getContentPane().add(optionPanel, BorderLayout.SOUTH);
