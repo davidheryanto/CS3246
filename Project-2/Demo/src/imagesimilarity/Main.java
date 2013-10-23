@@ -1,7 +1,5 @@
 package imagesimilarity;
 
-import imagesimilarity.ColorCoherence.Result;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,11 +7,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.SystemColor;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
