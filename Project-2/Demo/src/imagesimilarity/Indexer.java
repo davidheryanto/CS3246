@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -47,9 +46,11 @@ public class Indexer {
 				continue;
 			}
 			BufferedImage img = ImageIO.read(file);
+			img = ImageHelper.resize(img, 200);
 			
 			indexCCV(img, file.getAbsolutePath());
 			indexColor(img, file.getAbsolutePath());
+			indexEdge(img, file.getAbsolutePath());
 			
 			
 			System.out.println(file.getName() + " indexed");
@@ -61,26 +62,72 @@ public class Indexer {
 		read();
 	}
 	
-	public static boolean isImage(File file) {
-		String fileName = file.getName();
-		int index = fileName.indexOf(".");
-		String extension = fileName.substring(index + 1);
+	public static void indexEdge(BufferedImage image, String filePath) {
+		BufferedImage filteredImage = FilterSobel.apply(image);
 		
-		return extension.equals("jpg") || extension.equals("jpeg");
+		int width = filteredImage.getWidth();
+		int height = filteredImage.getHeight();
+		
+		int[][] hist = new int[NUMBER_OF_COLOURS][8]; // 8 directions
+		
+		for (int i = 0; i < NUMBER_OF_COLOURS; i++) {
+			for (int j = 0; j < 8; j++) {
+				hist[i][j] = 0;
+			}
+		}
+
+		for(int i = 0; i < width; i++) {
+			for(int j = 0; j < height; j++) 
+			{
+				Color c = new Color(filteredImage.getRGB(i, j));
+				hist[RED][c.getRed()]++;
+				hist[GREEN][c.getGreen()]++;
+				hist[BLUE][c.getBlue()]++;
+			}
+		}
+		
+
+		try {
+			boolean fileExists = new File(INDEX_EDGE_PATH).exists();
+			FileWriter fw = fileExists 
+					? new FileWriter(INDEX_EDGE_PATH, true)
+					: new FileWriter(INDEX_EDGE_PATH, false);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter writer = new PrintWriter(bw);
+			
+			writer.println(filePath);	//print image number
+			
+			for(int i = 0; i < NUMBER_OF_COLOURS; i++)
+			{
+				for(int j = 0; j < 8; j++)
+				{
+					writer.print(hist[i][j]);
+					writer.print(" ");
+				}
+				writer.println();
+			}
+			
+			writer.println("****************");
+			writer.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void indexColor(BufferedImage image, String filePath) {
 		int width = image.getWidth();
 		int height = image.getHeight();
-		int[][] hist = new int[NUMBER_OF_COLOURS][SIZE];
+		
+		int [][] hist = new int[NUMBER_OF_COLOURS][SIZE];
 				
 		for (int i = 0; i < NUMBER_OF_COLOURS; i++) {
 			for (int j = 0; j < SIZE; j++) {
 				hist[i][j] = 0;
 			}
 		}
-		
-		for(int i = 0; i < width; i++)
+
+		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) 
 			{
 				Color c = new Color(image.getRGB(i, j));
@@ -88,6 +135,8 @@ public class Indexer {
 				hist[GREEN][c.getGreen()]++;
 				hist[BLUE][c.getBlue()]++;
 			}
+		}
+		
 		
 		try {
 			boolean fileExists = new File(INDEX_COLOR_PATH).exists();
@@ -118,7 +167,6 @@ public class Indexer {
 	}
 	
 	public static void indexCCV(BufferedImage img, String filePath) {
-		img = ImageHelper.resize(img, 100);
 		ColorCoherence.extract(img);
 		Result[] CCVarray = ColorCoherence.getResults();
 		
@@ -159,10 +207,23 @@ public class Indexer {
 	}
 	
 	
+	public static boolean isImage(File file) {
+		String fileName = file.getName();
+		int index = fileName.indexOf(".");
+		String extension = fileName.substring(index + 1);
+		
+		return extension.equals("jpg") || extension.equals("jpeg");
+	}
+
 	public static ArrayList<ProcessedImage> read() throws IOException {
 		ArrayList<ProcessedImage> processedImages =  new ArrayList<ProcessedImage>();
 		readIndexCCV(processedImages);
 		readIndexColor(processedImages);
+		readIndexEdge(processedImages);
+		
+		System.out.println("-----------------------");
+		System.out.println("Finish reading index");
+		
 		
 		return processedImages;
 	}
@@ -240,6 +301,46 @@ public class Indexer {
 			hist[2] = scan(blueLine);
 			
 			pi.setColorHist(hist);
+			
+			br.readLine();
+			filePath = br.readLine();
+			index++;
+		}
+		br.close();
+	}
+	
+	public static void readIndexEdge(
+			ArrayList<ProcessedImage> imgList) throws IOException {
+		if (!new File(INDEX_EDGE_PATH).exists()) {
+			return; 
+		}
+		
+		
+		String redLine = null;
+		String greenLine = null;
+		String blueLine = null;
+
+		BufferedReader br = new BufferedReader(
+				new FileReader(INDEX_EDGE_PATH));
+		
+		String filePath = br.readLine();
+		int index = 0;
+		while (filePath != null) {
+			ProcessedImage pi = imgList.get(index);
+			
+			redLine = br.readLine();
+			greenLine = br.readLine();
+			blueLine = br.readLine();
+			
+			int[][] hist = new int[NUMBER_OF_COLOURS][8];
+			
+			
+			
+			hist[0] = scan(redLine, "8");
+			hist[1] = scan(greenLine, "8");
+			hist[2] = scan(blueLine, "8");
+			
+			pi.setEdgeHist(hist);
 			
 			br.readLine();
 			filePath = br.readLine();

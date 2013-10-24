@@ -65,6 +65,7 @@ public class ColorCoherence {
 	public static void extract(BufferedImage img) {
 		int width = img.getWidth();
 		int height = img.getHeight();
+		int area = width * height;
 
 		int[][] Red = new int[width][height];
 		int[][] Green = new int[width][height];
@@ -113,7 +114,7 @@ public class ColorCoherence {
 			size = label(Blue, Label, blueList, blueSizeList);
 		}
 		
-		setResults();
+		setResults(area);
 		
 		
 		// Test
@@ -137,15 +138,15 @@ public class ColorCoherence {
 		// ----------------
 	}
 	
-	private static void setResults() {
+	private static void setResults(int normFactor) {
 		// result 1, 2, 3 -> r, g, b 
 		results = new Result[3];
 		for (int i = 0; i < results.length; i++) {
 			results[i] = new Result();
 		}
-		setResultsForColor(results[0], redList, redSizeList);
-		setResultsForColor(results[1], greenList, greenSizeList);
-		setResultsForColor(results[2], blueList, blueSizeList);
+		setResultsForColor(results[0], redList, redSizeList, normFactor);
+		setResultsForColor(results[1], greenList, greenSizeList, normFactor);
+		setResultsForColor(results[2], blueList, blueSizeList, normFactor);
 		
 //		print(results[0].coherent);
 //		print(results[0].incoherent);
@@ -162,7 +163,8 @@ public class ColorCoherence {
 	}
 
 	private static void setResultsForColor(
-			Result result, List<Integer> levelList, List<Integer> levelSizeList) {
+			Result result, List<Integer> levelList, 
+			List<Integer> levelSizeList, int normFactor) {
 		
 		result.coherent = new int[quantizationLevel];
 		result.incoherent = new int[quantizationLevel];
@@ -174,6 +176,15 @@ public class ColorCoherence {
 				result.incoherent[levelList.get(i)] += levelSizeList.get(i);
 			}
 		}
+		
+		// Normalize
+//		for (int i = 0; i < result.coherent.length; i++) {
+//			result.coherent[i] /= normFactor;
+//		}
+//		
+//		for (int i = 0; i < result.incoherent.length; i++) {
+//			result.incoherent[i] /= normFactor;
+//		}
 	}
 
 	// Call the recusive function

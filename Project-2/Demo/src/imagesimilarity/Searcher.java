@@ -39,7 +39,7 @@ public class Searcher {
 	}
 	
 	public String[] search(BufferedImage inputImage) throws IOException {
-		int resultCount = 20;
+		int resultCount = 21;
 		String[] rankedResults = new String[resultCount];
 		
 		ProcessedImage input = processImage(inputImage);
@@ -72,11 +72,14 @@ public class Searcher {
 		Collections.sort(scoreImages);
 		int count = 0;
 		for (ScoreImage si : scoreImages) {
-			// limit top 30
 			if (count >= resultCount) {
 				break;
 			}
 			rankedResults[count] = si.getFilePath();
+			
+			// PRINT RESULT
+			System.out.println(Indexer.getFileName(si.getFilePath()) + "\t" + si.getScore());
+			
 			count += 1;
 		}
 		
@@ -85,6 +88,9 @@ public class Searcher {
 	
 	private ProcessedImage processImage(BufferedImage image) {
 		ProcessedImage img = new ProcessedImage();
+		
+		// TODO check if resizing ok
+		image = ImageHelper.resize(image, 200);
 
 		int[][] hist1 = getHistogram(image);
 		img.setColorHist(hist1);
@@ -93,7 +99,6 @@ public class Searcher {
 		int[][] hist2 = getHistogram(result);
 		img.setEdgeHist(hist2);
 
-		image = ImageHelper.resize(image, 100);
 		ColorCoherence.extract(image);
 		Result[] results = ColorCoherence.getResults();
 		img.setCCV(results);

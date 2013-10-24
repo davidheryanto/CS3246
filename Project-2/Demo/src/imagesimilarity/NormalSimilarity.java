@@ -3,7 +3,7 @@ package imagesimilarity;
 public class NormalSimilarity {
 	
 	public static double getScore(ProcessedImage img1, ProcessedImage img2) {
-		double score = 0;
+		int score = 0;
 		int[][] hist1 = img1.getColorHist();
 		int[][] hist2 = img2.getColorHist();
 		

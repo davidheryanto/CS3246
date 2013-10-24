@@ -35,6 +35,7 @@ public class ImagePanel extends JPanel {
 				image = ImageIO.read(file);
 				width = ((BufferedImage) image).getWidth();
 				height = ((BufferedImage) image).getHeight();
+				
 				// Scale down height to 100
 				scale = 100.0 / height;
 				Image input = ImageIO.read(new File(file.getAbsolutePath()));
@@ -44,6 +45,7 @@ public class ImagePanel extends JPanel {
 				
 				model.clear();
 				modelString.clear();
+				
 				for (String resultPath : results) {
 					Image img = ImageIO.read(new File(resultPath));
 					img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);

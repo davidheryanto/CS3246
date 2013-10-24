@@ -11,9 +11,16 @@ public class ColorSimilarity {
 			for(int j = 0; j < 256; j++) {
 				double diff = Math.abs(hist1[i][j] - hist2[i][j]);
 				double max = Math.max(hist1[i][j], hist2[i][j]);
+				
+				if (max <= 0) {
+					// both the sizes are 0, ignore this
+					continue; 
+				}
+				
 				score += hist1[i][j] * (1 - (diff / max));
 			}
 		}
+
 		return score;
 	}
 
