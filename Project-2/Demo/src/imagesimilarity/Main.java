@@ -106,17 +106,17 @@ public class Main {
 		// Search results
 		// ---------------------------------
 		// Test manual input
-		Image img = ImageIO.read(new File("0.jpg"));
-		img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
-		model.addElement(img);
+		//Image img = ImageIO.read(new File("0.jpg"));
+		//img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
+		//model.addElement(img);
 		
-		img = ImageIO.read(new File("16.jpg"));
-		img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
-		model.addElement(img);
+		//img = ImageIO.read(new File("16.jpg"));
+		//img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
+		//model.addElement(img);
 		
-		img = ImageIO.read(new File("18.jpg"));
-		img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
-		model.addElement(img);
+		//img = ImageIO.read(new File("18.jpg"));
+		//img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
+		//model.addElement(img);
 		
 		JList<Image> imageList = new JList<>(model);
 		imageList.setBackground(SystemColor.control);
