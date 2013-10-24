@@ -10,21 +10,17 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Searcher {
-	
-	private static final String EdgeIndex = "EdgeIndex.txt"; //temp
-	private static final String NormalIndex = "Index.txt"; //temp
-	private static final String CCVIndex = "CCVIndex.txt"; //temp
 	private static boolean isCheckedNormalHistogram = true; // default;
-	private static boolean isCheckedCCV;
-	private static boolean isCheckedEdge;
+	private static boolean isCheckedCCV = false;
+	private static boolean isCheckedEdge = false;
 	
 	private static ArrayList<ProcessedImage> processedImages;
 	
 	public Searcher() {
 		try {
 			processedImages = Indexer.read();
+			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -43,19 +39,34 @@ public class Searcher {
 	}
 	
 	public String[] search(BufferedImage inputImage) throws IOException {
-		int resultCount = 30;
-		
+		int resultCount = 20;
 		String[] rankedResults = new String[resultCount];
-		double[] scores;
-		
-		ArrayList<ScoreImage> scoreImages = new ArrayList<ScoreImage>();
 		
 		ProcessedImage input = processImage(inputImage);
+		ArrayList<ScoreImage> scoreImages = new ArrayList<ScoreImage>();
 		
-		for (ProcessedImage index : processedImages) {
-			double score = CCVSimilarity.getScore(input, index);
-			String filePath = index.getFilePath();
-			scoreImages.add(new ScoreImage(score, filePath));
+		if (isCheckedCCV) {
+			for (ProcessedImage index : processedImages) {
+				double score = CCVSimilarity.getScore(input, index);
+				String filePath = index.getFilePath();
+				scoreImages.add(new ScoreImage(score, filePath));
+			}
+		}
+		
+		if (isCheckedNormalHistogram) {
+			for (ProcessedImage index : processedImages) {
+				double score = ColorSimilarity.getScore(input, index);
+				String filePath = index.getFilePath();
+				scoreImages.add(new ScoreImage(score, filePath));
+			}
+		}
+		
+		if (isCheckedEdge) {
+			for (ProcessedImage index : processedImages) {
+				double score = EdgeSimilarity.getScore(input, index);
+				String filePath = index.getFilePath();
+				scoreImages.add(new ScoreImage(score, filePath));
+			}
 		}
 		
 		Collections.sort(scoreImages);
@@ -74,29 +85,19 @@ public class Searcher {
 	
 	private ProcessedImage processImage(BufferedImage image) {
 		ProcessedImage img = new ProcessedImage();
-		
-		if(isCheckedNormalHistogram)
-		{
-			int[][] hist = getHistogram(image);
-			img.setColorHist(hist);
-		}
-		
-		if(isCheckedEdge)
-		{
-			BufferedImage result = FilterSobel.apply(image);
-			int[][] hist = getHistogram(result);
-			img.setEdgeHist(hist);
-		}
-		
-		if(isCheckedCCV)
-		{
-			// Will this destroy the current image??
-			image = ImageHelper.resize(image, 100);
-			ColorCoherence.extract(image);
-			Result[] results = ColorCoherence.getResults();
-			img.setCCV(results);
-		}
-		
+
+		int[][] hist1 = getHistogram(image);
+		img.setColorHist(hist1);
+
+		BufferedImage result = FilterSobel.apply(image);
+		int[][] hist2 = getHistogram(result);
+		img.setEdgeHist(hist2);
+
+		image = ImageHelper.resize(image, 100);
+		ColorCoherence.extract(image);
+		Result[] results = ColorCoherence.getResults();
+		img.setCCV(results);
+
 		return img;
 	}
 	
@@ -132,10 +133,10 @@ public class Searcher {
 		{
 			if(isCheckedNormalHistogram & !isCheckedCCV & !isCheckedEdge)
 			{
-				int[][] hist;
-				hist = Indexer.readIndex(Integer.toString(i+1), NormalIndex);
-				img2.setColorHist(hist);
-				scores[i] = NormalSimilarity.getScore(img1, img2);
+//				int[][] hist;
+//				hist = Indexer.readIndex(Integer.toString(i+1), NormalIndex);
+//				img2.setColorHist(hist);
+//				scores[i] = NormalSimilarity.getScore(img1, img2);
 			}
 			if(isCheckedCCV & !isCheckedEdge)
 			{
@@ -145,10 +146,10 @@ public class Searcher {
 			}
 			if(!isCheckedCCV & isCheckedEdge)
 			{
-				int[][] hist;
-				hist = Indexer.readIndex(Integer.toString(i+1),EdgeIndex);
-				img2.setEdgeHist(hist);
-				scores[i] = EdgeSimilarity.getScore(img1, img2);
+//				int[][] hist;
+//				hist = Indexer.readIndex(Integer.toString(i+1),EdgeIndex);
+//				img2.setEdgeHist(hist);
+//				scores[i] = EdgeSimilarity.getScore(img1, img2);
 			}
 		}
 	

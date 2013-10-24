@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 public class Indexer {
 	// Images to be indexed is located in Project-2/Demo/data/dataset"
 	private static String DATA_PATH = "data/dataset";
+	private static String INDEX_PATH = "index";
 	private static String INDEX_COLOR_PATH = "index/color.txt";
 	private static String INDEX_EDGE_PATH = "index/edge.txt";
 	private static String INDEX_CCV_PATH = "index/ccv.txt";
@@ -33,17 +34,31 @@ public class Indexer {
 	private static int BLUE = 2;
 	
 	public static void index() throws IOException {
+		// clear index folder
+		File indexFolder = new File(INDEX_PATH);
+		for (File f : indexFolder.listFiles()) {
+			f.delete();
+		}
+		
 		// Create index for color histogram
 		File folder = new File(DATA_PATH);
 		for (File file : folder.listFiles()) {
 			if (!isImage(file)) {
 				continue;
 			}
-			
 			BufferedImage img = ImageIO.read(file);
+			
 			indexCCV(img, file.getAbsolutePath());
+			indexColor(img, file.getAbsolutePath());
+			
+			
 			System.out.println(file.getName() + " indexed");
 		}
+		
+		System.out.println("-------------------------------");
+		System.out.println("Finish indexing");
+		
+		read();
 	}
 	
 	public static boolean isImage(File file) {
@@ -54,7 +69,7 @@ public class Indexer {
 		return extension.equals("jpg") || extension.equals("jpeg");
 	}
 	
-	public static void index(BufferedImage image, String fileName) {
+	public static void indexColor(BufferedImage image, String filePath) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		int[][] hist = new int[NUMBER_OF_COLOURS][SIZE];
@@ -75,17 +90,17 @@ public class Indexer {
 			}
 		
 		try {
-			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(INDEX_COLOR_PATH,true)));
-			writer.println(fileName);	//print image number
+			boolean fileExists = new File(INDEX_COLOR_PATH).exists();
+			FileWriter fw = fileExists 
+					? new FileWriter(INDEX_COLOR_PATH, true)
+					: new FileWriter(INDEX_COLOR_PATH, false);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter writer = new PrintWriter(bw);
+			
+			writer.println(filePath);	//print image number
 			
 			for(int i = 0; i < NUMBER_OF_COLOURS; i++)
 			{
-				/*if(i==0)
-					writer.print("RED ");
-				if(i==1)
-					writer.print("GREEN ");
-				if(i==2)
-					writer.print("BLUE ");*/
 				for(int j = 0; j < SIZE; j++)
 				{
 					writer.print(hist[i][j]);
@@ -98,7 +113,6 @@ public class Indexer {
 			writer.close();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -109,17 +123,17 @@ public class Indexer {
 		Result[] CCVarray = ColorCoherence.getResults();
 		
 		try {
-			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(INDEX_CCV_PATH,true)));
+			boolean fileExists = new File(INDEX_CCV_PATH).exists();
+			FileWriter fw = fileExists 
+					? new FileWriter(INDEX_CCV_PATH, true)
+					: new FileWriter(INDEX_CCV_PATH, false);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter writer = new PrintWriter(bw);
+			
 			writer.println(filePath);	//print image number
 			
 			for(int i = 0; i < CCVarray.length; i++)
 			{
-				/*if(i==0)
-					writer.print("RED ");
-				if(i==1)
-					writer.print("GREEN ");
-				if(i==2)
-					writer.print("BLUE ");*/
 				writer.println(CCVarray[i].coherent.length);
 				for(int j = 0; j < CCVarray[i].coherent.length; j++)
 				{
@@ -140,7 +154,6 @@ public class Indexer {
 			writer.close();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -149,12 +162,12 @@ public class Indexer {
 	public static ArrayList<ProcessedImage> read() throws IOException {
 		ArrayList<ProcessedImage> processedImages =  new ArrayList<ProcessedImage>();
 		readIndexCCV(processedImages);
-		
+		readIndexColor(processedImages);
 		
 		return processedImages;
 	}
 	
-	public static ArrayList<Result[]> readIndexCCV(
+	public static void readIndexCCV(
 			ArrayList<ProcessedImage> imgList) throws IOException {
 		
 		String[] coherent = new String[3];
@@ -162,8 +175,10 @@ public class Indexer {
 		String[] incoherent = new String[3];
 		String[] incoherentSize = new String[3];
 		
-		ArrayList<Result[]> allResult = new ArrayList<Result[]>();
-	
+		if (!new File(INDEX_CCV_PATH).exists()) {
+			return; 
+		}
+		
 		BufferedReader br = new BufferedReader(new FileReader(INDEX_CCV_PATH));
 		
 		String filePath = br.readLine();
@@ -194,38 +209,48 @@ public class Indexer {
 			filePath = br.readLine();
 		}
 		br.close();
-	
-		return allResult;
+	}
+
+	public static void readIndexColor(
+			ArrayList<ProcessedImage> imgList) throws IOException {
+		if (!new File(INDEX_COLOR_PATH).exists()) {
+			return; 
+		}
+		
+		
+		String redLine = null;
+		String greenLine = null;
+		String blueLine = null;
+
+		BufferedReader br = new BufferedReader(
+				new FileReader(INDEX_COLOR_PATH));
+		
+		String filePath = br.readLine();
+		int index = 0;
+		while (filePath != null) {
+			ProcessedImage pi = imgList.get(index);
+			
+			redLine = br.readLine();
+			greenLine = br.readLine();
+			blueLine = br.readLine();
+			
+			int[][] hist = new int[NUMBER_OF_COLOURS][SIZE];
+			hist[0] = scan(redLine);
+			hist[1] = scan(greenLine);
+			hist[2] = scan(blueLine);
+			
+			pi.setColorHist(hist);
+			
+			br.readLine();
+			filePath = br.readLine();
+			index++;
+		}
+		br.close();
 	}
 
 	public static String getFileName(String filePath) {
 		int index = filePath.lastIndexOf('\\');
 		return filePath.substring(index + 1);
-	}
-	
-	public static int[][] readIndex(String fileNum, String filename) throws IOException {
-		String redLine = null;
-		String greenLine = null;
-		String blueLine = null;
-		int[][] hist = new int[NUMBER_OF_COLOURS][SIZE];
-		
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
-			while(br.readLine()!=fileNum);
-			redLine = br.readLine();
-			greenLine = br.readLine();
-			blueLine = br.readLine();
-			br.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		hist[0] = scan(redLine);
-		hist[1] = scan(greenLine);
-		hist[2] = scan(blueLine);
-		
-		return hist;
 	}
 	
 	private static int[] scan(String line) {

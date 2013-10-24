@@ -19,11 +19,13 @@ public class ImagePanel extends JPanel {
 	private double scale;
 	
 	private DefaultListModel<Image> model;
+	private DefaultListModel<String> modelString;
 	private Searcher searcher;
 
-	ImagePanel(DefaultListModel<Image> model) {
+	ImagePanel(DefaultListModel<Image> model, DefaultListModel<String> modelString) {
 		setTransferHandler(new ImageTransferHandler(this));
 		this.model = model;
+		this.modelString = modelString;
 		this.searcher = new Searcher();
 	}
 
@@ -35,17 +37,18 @@ public class ImagePanel extends JPanel {
 				height = ((BufferedImage) image).getHeight();
 				// Scale down height to 100
 				scale = 100.0 / height;
-				
-				// TODO (David) modify this
 				Image input = ImageIO.read(new File(file.getAbsolutePath()));
-				// TOO do we need to resize it first?
+				
+				// Search similar images
 				String[] results = searcher.search((BufferedImage) input);
 				
 				model.clear();
+				modelString.clear();
 				for (String resultPath : results) {
 					Image img = ImageIO.read(new File(resultPath));
 					img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
 					model.addElement(img);
+					modelString.addElement(Indexer.getFileName(resultPath));
 				}
 				
 			} catch (Exception e) {

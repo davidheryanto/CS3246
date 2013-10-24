@@ -28,10 +28,12 @@ import javax.swing.event.ChangeListener;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JSeparator;
 
 public class Main {
 
 	private JFrame frame;
+	private DefaultListModel<String> modelString;
 	private DefaultListModel<Image> model;
 	private Searcher searcher;
 	
@@ -60,62 +62,6 @@ public class Main {
 	 */
 	public Main() throws IOException {
 		initialize();
-		
-		//    -------------------Test Sobel Filter-------------
-		//		try {
-		//			BufferedImage img = ImageIO.read(new File("18.jpg"));
-		//			BufferedImage result = FilterSobel.apply(img);
-		//			ImageHelper.print(result);
-		//			
-		//		} catch (IOException e) {
-		//			e.printStackTrace();
-		//		}
-		
-		// 		--------------------Test-------------------------
-		//		try {
-		//			ColorCoherence.setQuantizationLevel(64);
-		//			ColorCoherence.setThreshold(32); // assume image is 100x100
-		//			
-		//			ProcessedImage p1 = new ProcessedImage();
-		//			BufferedImage img = ImageIO.read(new File("18.jpg"));
-		//			img = ImageHelper.resize(img, 100);
-		//			ColorCoherence.extract(img);
-		//			Result[] results = ColorCoherence.getResults();
-		//			p1.setCCV(results);
-		//			
-		//			ProcessedImage p2 = new ProcessedImage();
-		//			img = ImageIO.read(new File("19.jpg"));
-		//			img = ImageHelper.resize(img, 100);
-		//			ColorCoherence.extract(img);
-		//			results = ColorCoherence.getResults();
-		//			p2.setCCV(results);
-		//			
-		//			ProcessedImage p3 = new ProcessedImage();
-		//			img = ImageIO.read(new File("17.jpg"));
-		//			img = ImageHelper.resize(img, 100);
-		//			ColorCoherence.extract(img);
-		//			results = ColorCoherence.getResults();
-		//			p3.setCCV(results);
-		//			
-		//			ProcessedImage p4 = new ProcessedImage();
-		//			img = ImageIO.read(new File("t3.jpg"));
-		//			img = ImageHelper.resize(img, 100);
-		//			ColorCoherence.extract(img);
-		//			results = ColorCoherence.getResults();
-		//			p4.setCCV(results);
-		//			
-		//			
-		//			double score_1_2 = CCVSimilarity.getScore(p1, p2);
-		//			double score_1_3 = CCVSimilarity.getScore(p1, p3);
-		//			double score_1_4 = CCVSimilarity.getScore(p1, p4);
-		//			
-		//			System.out.printf("%.3f\t%.3f\t%.3f%n", 
-		//					score_1_2, score_1_3, score_1_4);
-		//			
-		//			
-		//		} catch (IOException e) {
-		//			e.printStackTrace();
-		//		}
 	}
 
 	/**
@@ -133,7 +79,19 @@ public class Main {
 		imagePanel.setLayout(new BorderLayout(0, 0));
 
 		model = new DefaultListModel<>();
-		JPanel dropArea = new ImagePanel(model);
+		modelString = new DefaultListModel<>();
+		
+		JList<String> resultJList = new JList<>(modelString);
+		resultJList.setBorder(null);
+		resultJList.setBackground(SystemColor.inactiveCaptionBorder);
+		resultJList.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		JScrollPane leftScrollPane = new JScrollPane(resultJList);
+		leftScrollPane.setPreferredSize(new Dimension(150, 130));
+		leftScrollPane.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		frame.getContentPane().add(leftScrollPane, BorderLayout.WEST);
+		
+		
+		JPanel dropArea = new ImagePanel(model, modelString);
 		dropArea.setBackground(Color.WHITE);
 		imagePanel.add(dropArea, BorderLayout.SOUTH);
 		dropArea.setPreferredSize(new Dimension(10, 100));
@@ -163,11 +121,14 @@ public class Main {
 		JList<Image> imageList = new JList<>(model);
 		imageList.setBackground(SystemColor.control);
 		imageList.setCellRenderer(new IconListRenderer());
-		imageList.setBorder(new EmptyBorder(0, 150, 0, 0));
+		imageList.setBorder(new EmptyBorder(0, 0, 0, 0));
 		
 		JScrollPane scrollPane = new JScrollPane(imageList);
 		scrollPane.setBorder(null);
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		
+		JSeparator separator = new JSeparator();
+		scrollPane.setColumnHeaderView(separator);
 		// End search results
 		// ---------------------------------
 
@@ -214,6 +175,8 @@ public class Main {
 			}
 		});
 		optionPanel.add(btnIndexImages);
+		
+		
 	}
 
 	private void setSystemLookAndFeel() {

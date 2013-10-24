@@ -55,9 +55,15 @@ public class ProcessedImage {
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-	    return (o instanceof ProcessedImage && 
-	    		this.getFileName() == ((ProcessedImage) o).getFileName());
+	public boolean equals(Object other) {
+		if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof ProcessedImage))return false;
+	    ProcessedImage otherP = (ProcessedImage)other;
+	    if (otherP.getFileName().equals(fileName)) {
+	    	return true;
+	    }
+	    return false;
 	}
 
 }
