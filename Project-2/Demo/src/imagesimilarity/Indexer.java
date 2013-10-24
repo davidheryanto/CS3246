@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
@@ -171,36 +172,41 @@ public class Indexer {
 		return hist;
 	}
 	
-	public static Result[] readIndexCCV(String fileNum, String filename) throws IOException {
+	public static ArrayList<Result[]> readIndexCCV() throws IOException {
 		String[] coherent = new String[3];
 		String[] coherentSize = new String[3];
 		String[] incoherent = new String[3];
 		String[] incoherentSize = new String[3];
-		Result[] results = new Result[3];
 		
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
-			while(br.readLine()!=fileNum);
+		ArrayList<Result[]> allResult = new ArrayList<Result[]>();
+
+		BufferedReader br = new BufferedReader(new FileReader(INDEX_CCV_PATH));
+		
+		String fileName = br.readLine();
+		while (fileName != null) {
+			Result[] results = new Result[3];
+			
+			System.out.println("Reading ccv index for " + fileName);
+			
 			for(int i = 0; i < 3; i++)
 			{
 				coherentSize[i] = br.readLine();
 				coherent[i] = br.readLine();
 				incoherentSize[i] = br.readLine();
 				incoherent[i] = br.readLine();
+				
+				results[i] = new Result();
+				results[i].coherent = scan(coherent[i], coherentSize[i]);
+				results[i].incoherent = scan(incoherent[i], incoherentSize[i]);
 			}
-			br.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			allResult.add(results);
+			br.readLine(); // Line containing "***********************"
+			fileName = br.readLine();
 		}
-		
-		for(int i = 0; i < 3; i++)
-		{
-			results[i].coherent = scan(coherent[i], coherentSize[i]);
-			results[i].incoherent = scan(incoherent[i], incoherentSize[i]);
-		}
-		
-		return results;
+		br.close();
+
+		return allResult;
 	}
 	
 	private static int[] scan(String line) {

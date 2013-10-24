@@ -5,6 +5,7 @@ import imagesimilarity.ColorCoherence.Result;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Searcher {
@@ -15,6 +16,28 @@ public class Searcher {
 	private static boolean isCheckedNormalHistogram = true; // default;
 	private static boolean isCheckedCCV;
 	private static boolean isCheckedEdge;
+	
+	private static ArrayList<ProcessedImage> processedImages;
+	
+	public Searcher() {
+		processedImages = new ArrayList<ProcessedImage>();
+		
+		ArrayList<Result[]> ccvIndex = null;
+		try {
+			ccvIndex = Indexer.readIndexCCV();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Init all processed images
+		for (Result[] ccv : ccvIndex) {
+			ProcessedImage img = new ProcessedImage();
+			img.setCCV(ccv);
+			processedImages.add(img);
+		}
+		
+	}
+	
 	
 	public static void setCheckedNormalHistogram(boolean isCheckedNormalHistogram) {
 		Searcher.isCheckedNormalHistogram = isCheckedNormalHistogram;
@@ -31,9 +54,8 @@ public class Searcher {
 	public String[] search(BufferedImage inputImage) throws IOException {
 		String[] rankedResults;// = new String[20];
 		double[] scores;
-		ProcessedImage img = new ProcessedImage();
 		
-		img = processImage(inputImage);
+		
 		
 //		scores = computeSimilarity(img);	
 //		
@@ -114,9 +136,9 @@ public class Searcher {
 			}
 			if(isCheckedCCV & !isCheckedEdge)
 			{
-				Result[] results = Indexer.readIndexCCV(Integer.toString(i+1), CCVIndex);
-				img2.setCCV(results);
-				scores[i] = CCVSimilarity.getScore(img1, img2);
+//				Result[] results = Indexer.readIndexCCV(Integer.toString(i+1), CCVIndex);
+//				img2.setCCV(results);
+//				scores[i] = CCVSimilarity.getScore(img1, img2);
 			}
 			if(!isCheckedCCV & isCheckedEdge)
 			{

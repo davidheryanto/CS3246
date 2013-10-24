@@ -277,6 +277,11 @@ public class ColorCoherence {
 		int[] coherent;
 		int[] incoherent;
 		
-		Result(){};
+		Result() {};
+		
+		Result(int[] coherent, int[] incoherent) {
+			this.coherent = coherent;
+			this.incoherent = incoherent;
+		}
 	}
 }
