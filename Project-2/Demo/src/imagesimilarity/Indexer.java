@@ -41,7 +41,7 @@ public class Indexer {
 			}
 			
 			BufferedImage img = ImageIO.read(file);
-			indexCCV(img, file.getName());
+			indexCCV(img, file.getAbsolutePath());
 			System.out.println(file.getName() + " indexed");
 		}
 	}
@@ -103,14 +103,14 @@ public class Indexer {
 		}
 	}
 	
-	public static void indexCCV(BufferedImage img, String fileName) {
+	public static void indexCCV(BufferedImage img, String filePath) {
 		img = ImageHelper.resize(img, 100);
 		ColorCoherence.extract(img);
 		Result[] CCVarray = ColorCoherence.getResults();
 		
 		try {
 			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(INDEX_CCV_PATH,true)));
-			writer.println(fileName);	//print image number
+			writer.println(filePath);	//print image number
 			
 			for(int i = 0; i < CCVarray.length; i++)
 			{
@@ -145,6 +145,64 @@ public class Indexer {
 		}
 	}
 	
+	
+	public static ArrayList<ProcessedImage> read() throws IOException {
+		ArrayList<ProcessedImage> processedImages =  new ArrayList<ProcessedImage>();
+		readIndexCCV(processedImages);
+		
+		
+		return processedImages;
+	}
+	
+	public static ArrayList<Result[]> readIndexCCV(
+			ArrayList<ProcessedImage> imgList) throws IOException {
+		
+		String[] coherent = new String[3];
+		String[] coherentSize = new String[3];
+		String[] incoherent = new String[3];
+		String[] incoherentSize = new String[3];
+		
+		ArrayList<Result[]> allResult = new ArrayList<Result[]>();
+	
+		BufferedReader br = new BufferedReader(new FileReader(INDEX_CCV_PATH));
+		
+		String filePath = br.readLine();
+		while (filePath != null) {
+			Result[] results = new Result[3];
+			
+			// System.out.println("Reading ccv index for " + fileName);
+			
+			for(int i = 0; i < 3; i++)
+			{
+				coherentSize[i] = br.readLine();
+				coherent[i] = br.readLine();
+				incoherentSize[i] = br.readLine();
+				incoherent[i] = br.readLine();
+				
+				results[i] = new Result();
+				results[i].coherent = scan(coherent[i], coherentSize[i]);
+				results[i].incoherent = scan(incoherent[i], incoherentSize[i]);
+			}
+			
+			ProcessedImage pi = new ProcessedImage();
+			pi.setCCV(results);
+			pi.setFilePath(filePath);
+			pi.setFileName(getFileName(filePath));
+			imgList.add(pi);
+			
+			br.readLine(); // Line containing "***********************"
+			filePath = br.readLine();
+		}
+		br.close();
+	
+		return allResult;
+	}
+
+	public static String getFileName(String filePath) {
+		int index = filePath.lastIndexOf('\\');
+		return filePath.substring(index + 1);
+	}
+	
 	public static int[][] readIndex(String fileNum, String filename) throws IOException {
 		String redLine = null;
 		String greenLine = null;
@@ -168,43 +226,6 @@ public class Indexer {
 		hist[2] = scan(blueLine);
 		
 		return hist;
-	}
-	
-	public static ArrayList<Result[]> readIndexCCV() throws IOException {
-		String[] coherent = new String[3];
-		String[] coherentSize = new String[3];
-		String[] incoherent = new String[3];
-		String[] incoherentSize = new String[3];
-		
-		ArrayList<Result[]> allResult = new ArrayList<Result[]>();
-
-		BufferedReader br = new BufferedReader(new FileReader(INDEX_CCV_PATH));
-		
-		String fileName = br.readLine();
-		while (fileName != null) {
-			Result[] results = new Result[3];
-			
-			// System.out.println("Reading ccv index for " + fileName);
-			
-			for(int i = 0; i < 3; i++)
-			{
-				coherentSize[i] = br.readLine();
-				coherent[i] = br.readLine();
-				incoherentSize[i] = br.readLine();
-				incoherent[i] = br.readLine();
-				
-				results[i] = new Result();
-				results[i].coherent = scan(coherent[i], coherentSize[i]);
-				results[i].incoherent = scan(incoherent[i], incoherentSize[i]);
-			}
-			
-			allResult.add(results);
-			br.readLine(); // Line containing "***********************"
-			fileName = br.readLine();
-		}
-		br.close();
-
-		return allResult;
 	}
 	
 	private static int[] scan(String line) {

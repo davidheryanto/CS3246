@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Searcher {
 	
@@ -20,22 +21,12 @@ public class Searcher {
 	private static ArrayList<ProcessedImage> processedImages;
 	
 	public Searcher() {
-		processedImages = new ArrayList<ProcessedImage>();
-		
-		ArrayList<Result[]> ccvIndex = null;
 		try {
-			ccvIndex = Indexer.readIndexCCV();
+			processedImages = Indexer.read();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// Init all processed images
-		for (Result[] ccv : ccvIndex) {
-			ProcessedImage img = new ProcessedImage();
-			img.setCCV(ccv);
-			processedImages.add(img);
-		}
-		
 	}
 	
 	
@@ -52,27 +43,33 @@ public class Searcher {
 	}
 	
 	public String[] search(BufferedImage inputImage) throws IOException {
-		String[] rankedResults;// = new String[20];
+		int resultCount = 30;
+		
+		String[] rankedResults = new String[resultCount];
 		double[] scores;
+		
+		ArrayList<ScoreImage> scoreImages = new ArrayList<ScoreImage>();
 		
 		ProcessedImage input = processImage(inputImage);
 		
 		for (ProcessedImage index : processedImages) {
 			double score = CCVSimilarity.getScore(input, index);
-			System.out.println(score);
+			String filePath = index.getFilePath();
+			scoreImages.add(new ScoreImage(score, filePath));
 		}
 		
-//		scores = computeSimilarity(img);	
-//		
-//		rankedResults = sortScores(scores);
+		Collections.sort(scoreImages);
+		int count = 0;
+		for (ScoreImage si : scoreImages) {
+			// limit top 30
+			if (count >= resultCount) {
+				break;
+			}
+			rankedResults[count] = si.getFilePath();
+			count += 1;
+		}
 		
-		// Testing, can remove this now
-		// * the returned result shd be the ABSOLUTE filepath of the results images
-		// below RELATIVE only for testing
-		String[] test = {"t1.jpg", "16.jpg"};
-		return test;
-		
-//		return rankedResults;
+		return rankedResults;
 	}
 	
 	private ProcessedImage processImage(BufferedImage image) {

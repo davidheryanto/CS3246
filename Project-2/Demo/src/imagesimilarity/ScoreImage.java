@@ -5,6 +5,10 @@ import java.util.Collections;
 
 public class ScoreImage implements Comparable<ScoreImage> {
 	
+	ScoreImage(double score, String filePath) {
+		this.setScore(score);
+		this.setFilePath(filePath);
+	}
 	
 	public static void main(String[] args) {
 		
@@ -32,45 +36,29 @@ public class ScoreImage implements Comparable<ScoreImage> {
 		System.out.println();
 	}
 	
+	private double score;
+	private String filePath;
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private int score;
-	private String fileName;
-	
-	public int getScore() {
+	public double getScore() {
 		return score;
 	}
-	public void setScore(int score) {
+	public void setScore(double score) {
 		this.score = score;
 	}
-	public String getFileName() {
-		return fileName;
+	public String getFilePath() {
+		return filePath;
 	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 	
-	ScoreImage(int score, String filename) {
-		this.setScore(score);
-		this.setFileName(filename);
-	}
 	@Override
 	public int compareTo(ScoreImage that) {
-		return this.getScore() - that.getScore();
+		return (int) (that.getScore() - this.getScore());
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("%s [%d]", this.fileName, this.score);
+		return String.format("%s [%d]", this.filePath, this.score);
 	}
 }
