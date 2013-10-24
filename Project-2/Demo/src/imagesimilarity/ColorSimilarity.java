@@ -34,7 +34,10 @@ public class ColorSimilarity {
 							double dist = Math.sqrt( Math.pow(y[i][j][k]-y[ii][jj][kk], 2) + 
 										Math.pow(cb[i][j][k]-cb[ii][jj][kk], 2) + 
 										Math.pow(cr[i][j][k]-cr[ii][jj][kk], 2) );
-							colorSim[n1][n2] = 1 - (dist/Tcolor);
+							if(dist > Tcolor)
+								colorSim[n1][n2] = 0;
+							else
+								colorSim[n1][n2] = 1 - (dist/Tcolor);
 							n2++;
 						}
 					n1++;
