@@ -8,7 +8,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.SystemColor;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -122,7 +121,7 @@ public class Main {
 	private void initialize() throws IOException {
 		setSystemLookAndFeel();
 		frame = new JFrame();
-		frame.setBounds(500, 50, 500, 700);
+		frame.setBounds(500, 20, 500, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel imagePanel = new JPanel();
@@ -177,7 +176,7 @@ public class Main {
 		chckbxNormalHistogram.setSelected(true);
 		chckbxNormalHistogram.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				searcher.setCheckedNormalHistogram(chckbxNormalHistogram.isSelected());
+				Searcher.setCheckedNormalHistogram(chckbxNormalHistogram.isSelected());
 			}
 		});
 		chckbxNormalHistogram.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -186,7 +185,7 @@ public class Main {
 		final JCheckBox chckbxCcv = new JCheckBox("Color Coherence");
 		chckbxCcv.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				searcher.setCheckedCCV(chckbxCcv.isSelected());
+				Searcher.setCheckedCCV(chckbxCcv.isSelected());
 			}
 		});
 		chckbxCcv.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -195,7 +194,7 @@ public class Main {
 		final JCheckBox chckbxEdgeDetection = new JCheckBox("Edge Detection");
 		chckbxEdgeDetection.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				searcher.setCheckedEdge(chckbxEdgeDetection.isSelected());
+				Searcher.setCheckedEdge(chckbxEdgeDetection.isSelected());
 			}
 		});
 		chckbxEdgeDetection.setFont(new Font("Segoe UI", Font.PLAIN, 14));

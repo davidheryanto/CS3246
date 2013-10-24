@@ -11,20 +11,20 @@ public class Searcher {
 	private static final String EdgeIndex = "EdgeIndex.txt"; //temp
 	private static final String NormalIndex = "Index.txt"; //temp
 	private static final String CCVIndex = "CCVIndex.txt"; //temp
-	private boolean isCheckedNormalHistogram = true; // default;
-	private boolean isCheckedCCV;
-	private boolean isCheckedEdge;
+	private static boolean isCheckedNormalHistogram = true; // default;
+	private static boolean isCheckedCCV;
+	private static boolean isCheckedEdge;
 	
-	public void setCheckedNormalHistogram(boolean isCheckedNormalHistogram) {
-		this.isCheckedNormalHistogram = isCheckedNormalHistogram;
+	public static void setCheckedNormalHistogram(boolean isCheckedNormalHistogram) {
+		Searcher.isCheckedNormalHistogram = isCheckedNormalHistogram;
 	}
 	
-	public void setCheckedCCV(boolean isCheckedCCV) {
-		this.isCheckedCCV = isCheckedCCV;
+	public static void setCheckedCCV(boolean isCheckedCCV) {
+		Searcher.isCheckedCCV = isCheckedCCV;
 	}
 	
-	public void setCheckedEdge(boolean isCheckedEdge) {
-		this.isCheckedEdge = isCheckedEdge;
+	public static void setCheckedEdge(boolean isCheckedEdge) {
+		Searcher.isCheckedEdge = isCheckedEdge;
 	}
 	
 	public String[] search(BufferedImage inputImage) throws IOException {
