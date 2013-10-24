@@ -25,6 +25,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Main {
 
@@ -121,7 +124,7 @@ public class Main {
 	private void initialize() throws IOException {
 		setSystemLookAndFeel();
 		frame = new JFrame();
-		frame.setBounds(500, 20, 500, 700);
+		frame.setBounds(500, 20, 550, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel imagePanel = new JPanel();
@@ -172,7 +175,7 @@ public class Main {
 		frame.getContentPane().add(optionPanel, BorderLayout.SOUTH);
 		optionPanel.setLayout(new GridLayout(1, 0, 0, 0));
 
-		final JCheckBox chckbxNormalHistogram = new JCheckBox("Normal Histogram");
+		final JCheckBox chckbxNormalHistogram = new JCheckBox("Color Histogram");
 		chckbxNormalHistogram.setSelected(true);
 		chckbxNormalHistogram.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -199,6 +202,18 @@ public class Main {
 		});
 		chckbxEdgeDetection.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		optionPanel.add(chckbxEdgeDetection);
+		
+		JButton btnIndexImages = new JButton("Index Images");
+		btnIndexImages.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					Indexer.index();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		optionPanel.add(btnIndexImages);
 	}
 
 	private void setSystemLookAndFeel() {

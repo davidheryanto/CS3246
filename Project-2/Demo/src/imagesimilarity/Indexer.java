@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,7 +14,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import javax.imageio.ImageIO;
+
 public class Indexer {
+	// Images to be indexed is located in Project-2/Demo/data/dataset"
+	private static String DATA_PATH = "data/dataset";
+	private static String INDEX_COLOR_PATH = "index/color.txt";
+	private static String INDEX_EDGE_PATH = "index/edge.txt";
+	private static String INDEX_CCV_PATH = "index/ccv.txt";
 	
 	private static int SIZE = 256;
 	// Red, Green, Blue   
@@ -23,7 +31,28 @@ public class Indexer {
 	private static int GREEN = 1;
 	private static int BLUE = 2;
 	
-	public static void index(BufferedImage image, int fileNum, String outputFile) {
+	public static void index() throws IOException {
+		// Create index for color histogram
+		File folder = new File(DATA_PATH);
+		for (File file : folder.listFiles()) {
+			if (!isImage(file)) {
+				continue;
+			}
+			
+			BufferedImage img = ImageIO.read(file);
+			index(img, file.getName());
+		}
+	}
+	
+	public static boolean isImage(File file) {
+		String fileName = file.getName();
+		int index = fileName.indexOf(".");
+		String extension = fileName.substring(index + 1);
+		
+		return extension.equals("jpg") || extension.equals("jpeg");
+	}
+	
+	public static void index(BufferedImage image, String fileName) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		int[][] hist = new int[NUMBER_OF_COLOURS][SIZE];
@@ -44,8 +73,8 @@ public class Indexer {
 			}
 		
 		try {
-			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true)));
-			writer.println(fileNum);	//print image number
+			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(INDEX_COLOR_PATH,true)));
+			writer.println(fileName);	//print image number
 			
 			for(int i = 0; i < NUMBER_OF_COLOURS; i++)
 			{
