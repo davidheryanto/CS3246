@@ -3,30 +3,30 @@ package imagesimilarity;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Test implements Comparable<Test> {
+public class ScoreImage implements Comparable<ScoreImage> {
 	
 	
 	public static void main(String[] args) {
 		
-		ArrayList<Test> list = new ArrayList<Test>();
+		ArrayList<ScoreImage> list = new ArrayList<ScoreImage>();
 		
-		list.add(new Test(56, "test_1"));
-		list.add(new Test(91, "test_2"));
-		list.add(new Test(6, "test_3"));
-		list.add(new Test(100, "test_4"));
-		list.add(new Test(90, "test_5"));
-		list.add(new Test(21, "test_6"));
-		list.add(new Test(12, "test_7"));
+		list.add(new ScoreImage(56, "test_1"));
+		list.add(new ScoreImage(91, "test_2"));
+		list.add(new ScoreImage(6, "test_3"));
+		list.add(new ScoreImage(100, "test_4"));
+		list.add(new ScoreImage(90, "test_5"));
+		list.add(new ScoreImage(21, "test_6"));
+		list.add(new ScoreImage(12, "test_7"));
 		
 		System.out.println("Before sorting:");
-		for (Test t : list) {
+		for (ScoreImage t : list) {
 			System.out.print(t + "\t");
 		}
 		System.out.println();
 		
 		Collections.sort(list);
 		System.out.println("\nAfter sorting:");
-		for (Test t : list) {
+		for (ScoreImage t : list) {
 			System.out.print(t + "\t");
 		}
 		System.out.println();
@@ -60,12 +60,12 @@ public class Test implements Comparable<Test> {
 		this.fileName = fileName;
 	}
 	
-	Test(int score, String filename) {
+	ScoreImage(int score, String filename) {
 		this.setScore(score);
 		this.setFileName(filename);
 	}
 	@Override
-	public int compareTo(Test that) {
+	public int compareTo(ScoreImage that) {
 		return this.getScore() - that.getScore();
 	}
 	

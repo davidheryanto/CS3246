@@ -3,7 +3,7 @@ package imagesimilarity;
 import imagesimilarity.ColorCoherence.Result;
 
 public class ProcessedImage {
-	private String filePath;
+	private String fileName;
 	private Result[] CCV;
 	private int[][] edgeHist;
 	private int[][] colorHist;
@@ -12,12 +12,12 @@ public class ProcessedImage {
 		
 	}
 	
-	public String getFilePath() {
-		return filePath;
+	public String getFileName() {
+		return fileName;
 	}
 	
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 	
 	public Result[] getCCV() {

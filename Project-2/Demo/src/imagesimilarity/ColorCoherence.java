@@ -28,9 +28,9 @@ public class ColorCoherence {
 	// -------------
 
 	// Default values
-	private static int quantizationLevel = 16;
+	private static int quantizationLevel = 64;
 	// The threshold determines whether a pixel block is coherent
-	private static int threshold = 4;
+	private static int threshold = 32;
 
 	public static void setQuantizationLevel(int level) {
 		ColorCoherence.quantizationLevel = level;

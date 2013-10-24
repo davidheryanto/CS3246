@@ -105,8 +105,6 @@ public class Indexer {
 	
 	public static void indexCCV(BufferedImage img, String fileName) {
 		img = ImageHelper.resize(img, 100);
-		ColorCoherence.setQuantizationLevel(64);
-		ColorCoherence.setThreshold(32);
 		ColorCoherence.extract(img);
 		Result[] CCVarray = ColorCoherence.getResults();
 		
@@ -186,7 +184,7 @@ public class Indexer {
 		while (fileName != null) {
 			Result[] results = new Result[3];
 			
-			System.out.println("Reading ccv index for " + fileName);
+			// System.out.println("Reading ccv index for " + fileName);
 			
 			for(int i = 0; i < 3; i++)
 			{

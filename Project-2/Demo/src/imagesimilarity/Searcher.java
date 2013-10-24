@@ -55,7 +55,12 @@ public class Searcher {
 		String[] rankedResults;// = new String[20];
 		double[] scores;
 		
+		ProcessedImage input = processImage(inputImage);
 		
+		for (ProcessedImage index : processedImages) {
+			double score = CCVSimilarity.getScore(input, index);
+			System.out.println(score);
+		}
 		
 //		scores = computeSimilarity(img);	
 //		
@@ -88,6 +93,7 @@ public class Searcher {
 		
 		if(isCheckedCCV)
 		{
+			// Will this destroy the current image??
 			image = ImageHelper.resize(image, 100);
 			ColorCoherence.extract(image);
 			Result[] results = ColorCoherence.getResults();
