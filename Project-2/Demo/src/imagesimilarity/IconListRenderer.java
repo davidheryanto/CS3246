@@ -17,23 +17,37 @@ public class IconListRenderer extends DefaultListCellRenderer {
 	public Component getListCellRendererComponent(
 			JList<?> list, Object value, int index,
 			boolean isSelected, boolean cellHasFocus) {
+		
 		JLabel label = (JLabel) super.getListCellRendererComponent(
 				list, value, index, isSelected, cellHasFocus);
+		
 		Icon icon = getIcon(value);
 		label.setIcon(icon);
+		
+		String title = getTitle(value);
+		label.setText(title);
 		return label;
 	}
 
-	private Icon getIcon(Object filePath) {
-		Image img = null;
-		try {
-			img = ImageIO.read(new File((String) filePath));
-			img = img.getScaledInstance(-1, 100, Image.SCALE_SMOOTH);
-		} catch (IOException e) {
-			e.printStackTrace();
+	private Icon getIcon(Object img) {
+		if (img instanceof Image) {
+			return new ImageIcon((Image) img);
 		}
 		
-		return new ImageIcon(img);
+		return null;
+	}
+	
+	private String getTitle(Object filePath) {
+		String title = "";
+		if (filePath instanceof String) {
+			String path = (String) filePath;
+			int index = path.lastIndexOf('\\');
+			if (index > 0) {
+				title = path.substring(index + 1);
+			}
+		}
+		
+		return title;
 	}
 
 }

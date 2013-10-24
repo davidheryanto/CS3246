@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -16,9 +17,11 @@ public class ImagePanel extends JPanel {
 	private int width;
 	private int height;
 	private double scale;
+	private DefaultListModel<Image> model;
 
-	ImagePanel() {
+	ImagePanel(DefaultListModel<Image> model) {
 		setTransferHandler(new ImageTransferHandler(this));
+		this.model = model;
 	}
 
 	void addFiles(File[] files) {
@@ -29,6 +32,11 @@ public class ImagePanel extends JPanel {
 				height = ((BufferedImage) image).getHeight();
 				// Scale down height to 100
 				scale = 100.0 / height;
+				
+				// TODO (David) modify this
+				Image img = ImageIO.read(new File(file.getAbsolutePath()));
+				img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
+				model.addElement(img);
 				
 			} catch (Exception e) {
 				e.printStackTrace();

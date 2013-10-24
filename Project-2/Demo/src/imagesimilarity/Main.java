@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -29,10 +30,10 @@ import javax.swing.event.ChangeListener;
 public class Main {
 
 	private JFrame frame;
-	private DefaultListModel<String> model;
+	private DefaultListModel<Image> model;
 	private Searcher searcher;
 	
-	public DefaultListModel<String> getModel() {
+	public DefaultListModel<Image> getModel() {
 		return this.model;
 	}
 
@@ -55,7 +56,7 @@ public class Main {
 	/**
 	 * Create the application.
 	 */
-	public Main() {
+	public Main() throws IOException {
 		initialize();
 		searcher = new Searcher();
 		
@@ -69,10 +70,6 @@ public class Main {
 		//		} catch (IOException e) {
 		//			e.printStackTrace();
 		//		}
-		
-		
-		
-//		
 		
 		// 		--------------------Test-------------------------
 		//		try {
@@ -124,7 +121,7 @@ public class Main {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize() throws IOException {
 		setSystemLookAndFeel();
 		frame = new JFrame();
 		frame.setBounds(500, 50, 500, 700);
@@ -135,7 +132,8 @@ public class Main {
 		frame.getContentPane().add(imagePanel, BorderLayout.NORTH);
 		imagePanel.setLayout(new BorderLayout(0, 0));
 
-		JPanel dropArea = new ImagePanel();
+		model = new DefaultListModel<>();
+		JPanel dropArea = new ImagePanel(model);
 		dropArea.setBackground(Color.WHITE);
 		imagePanel.add(dropArea, BorderLayout.SOUTH);
 		dropArea.setPreferredSize(new Dimension(10, 100));
@@ -149,12 +147,20 @@ public class Main {
 
 		// Search results
 		// ---------------------------------
-		model = new DefaultListModel<>();
-		model.addElement("0.jpg");
-		model.addElement("16.jpg");
-		model.addElement("20.jpg");
+		// Test manual input
+		Image img = ImageIO.read(new File("0.jpg"));
+		img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
+		model.addElement(img);
 		
-		JList<String> imageList = new JList<>(model);
+		img = ImageIO.read(new File("16.jpg"));
+		img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
+		model.addElement(img);
+		
+		img = ImageIO.read(new File("18.jpg"));
+		img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
+		model.addElement(img);
+		
+		JList<Image> imageList = new JList<>(model);
 		imageList.setBackground(SystemColor.control);
 		imageList.setCellRenderer(new IconListRenderer());
 		imageList.setBorder(new EmptyBorder(0, 150, 0, 0));

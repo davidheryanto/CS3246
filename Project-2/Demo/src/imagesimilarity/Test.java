@@ -13,7 +13,7 @@ public class Test implements Comparable<Test> {
 		list.add(new Test(56, "test_1"));
 		list.add(new Test(91, "test_2"));
 		list.add(new Test(6, "test_3"));
-		list.add(new Test(9, "test_4"));
+		list.add(new Test(100, "test_4"));
 		list.add(new Test(90, "test_5"));
 		list.add(new Test(21, "test_6"));
 		list.add(new Test(12, "test_7"));
