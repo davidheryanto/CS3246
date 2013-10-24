@@ -26,50 +26,42 @@ public class Searcher {
 	}
 	
 	
-	public static void setCheckedNormalHistogram(boolean isCheckedNormalHistogram) {
-		Searcher.isCheckedNormalHistogram = isCheckedNormalHistogram;
-	}
-	
-	public static void setCheckedCCV(boolean isCheckedCCV) {
-		Searcher.isCheckedCCV = isCheckedCCV;
-	}
-	
-	public static void setCheckedEdge(boolean isCheckedEdge) {
-		Searcher.isCheckedEdge = isCheckedEdge;
-	}
-	
 	public String[] search(BufferedImage inputImage) throws IOException {
 		int resultCount = 21;
-		String[] rankedResults = new String[resultCount];
-		
 		ProcessedImage input = processImage(inputImage);
 		ArrayList<ScoreImage> scoreImages = new ArrayList<ScoreImage>();
 		
-		if (isCheckedCCV) {
+		if (isCheckedCCV && isCheckedEdge) {
+			for (ProcessedImage index : processedImages) {
+				double score = CCVSimilarity.getScore(input, index);
+				score += EdgeSimilarity.getScore(input, index) / 4;
+				
+				String filePath = index.getFilePath();
+				scoreImages.add(new ScoreImage(score, filePath));
+			}
+		} else if (isCheckedCCV) {
 			for (ProcessedImage index : processedImages) {
 				double score = CCVSimilarity.getScore(input, index);
 				String filePath = index.getFilePath();
 				scoreImages.add(new ScoreImage(score, filePath));
 			}
-		}
-		
-		if (isCheckedNormalHistogram) {
+		} else if (isCheckedNormalHistogram) {
 			for (ProcessedImage index : processedImages) {
 				double score = ColorSimilarity.getScore(input, index);
 				String filePath = index.getFilePath();
 				scoreImages.add(new ScoreImage(score, filePath));
 			}
-		}
-		
-		if (isCheckedEdge) {
+		} else if (isCheckedEdge) {
 			for (ProcessedImage index : processedImages) {
 				double score = EdgeSimilarity.getScore(input, index);
 				String filePath = index.getFilePath();
 				scoreImages.add(new ScoreImage(score, filePath));
 			}
 		}
+	
 		
 		Collections.sort(scoreImages);
+		String[] rankedResults = new String[resultCount];
 		int count = 0;
 		for (ScoreImage si : scoreImages) {
 			if (count >= resultCount) {
@@ -84,6 +76,19 @@ public class Searcher {
 		}
 		
 		return rankedResults;
+	}
+
+
+	public static void setCheckedNormalHistogram(boolean isCheckedNormalHistogram) {
+		Searcher.isCheckedNormalHistogram = isCheckedNormalHistogram;
+	}
+	
+	public static void setCheckedCCV(boolean isCheckedCCV) {
+		Searcher.isCheckedCCV = isCheckedCCV;
+	}
+	
+	public static void setCheckedEdge(boolean isCheckedEdge) {
+		Searcher.isCheckedEdge = isCheckedEdge;
 	}
 	
 	private ProcessedImage processImage(BufferedImage image) {

@@ -278,7 +278,6 @@ public class Indexer {
 			return; 
 		}
 		
-		
 		String redLine = null;
 		String greenLine = null;
 		String blueLine = null;
