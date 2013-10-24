@@ -40,7 +40,8 @@ public class Indexer {
 			}
 			
 			BufferedImage img = ImageIO.read(file);
-			index(img, file.getName());
+			indexCCV(img, file.getName());
+			System.out.println(file.getName() + " indexed");
 		}
 	}
 	
@@ -101,11 +102,16 @@ public class Indexer {
 		}
 	}
 	
-	public static void indexCCV(Result[] CCVarray, int fileNum, String outputFile) {
+	public static void indexCCV(BufferedImage img, String fileName) {
+		img = ImageHelper.resize(img, 100);
+		ColorCoherence.setQuantizationLevel(64);
+		ColorCoherence.setThreshold(32);
+		ColorCoherence.extract(img);
+		Result[] CCVarray = ColorCoherence.getResults();
 		
 		try {
-			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true)));
-			writer.println(fileNum);	//print image number
+			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(INDEX_CCV_PATH,true)));
+			writer.println(fileName);	//print image number
 			
 			for(int i = 0; i < CCVarray.length; i++)
 			{

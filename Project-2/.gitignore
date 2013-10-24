@@ -1,7 +1,10 @@
 .metadata/
 .classpath
 .project
+index/
+data/
+data-backup/
 bin/
-Data/
+*.jpg
 *.db
  
