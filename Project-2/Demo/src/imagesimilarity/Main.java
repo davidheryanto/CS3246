@@ -58,8 +58,6 @@ public class Main {
 	 */
 	public Main() throws IOException {
 		initialize();
-		searcher = new Searcher();
-		
 		
 		//    -------------------Test Sobel Filter-------------
 		//		try {

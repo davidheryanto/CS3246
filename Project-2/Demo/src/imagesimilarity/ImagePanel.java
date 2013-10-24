@@ -17,11 +17,14 @@ public class ImagePanel extends JPanel {
 	private int width;
 	private int height;
 	private double scale;
+	
 	private DefaultListModel<Image> model;
+	private Searcher searcher;
 
 	ImagePanel(DefaultListModel<Image> model) {
 		setTransferHandler(new ImageTransferHandler(this));
 		this.model = model;
+		this.searcher = new Searcher();
 	}
 
 	void addFiles(File[] files) {
@@ -34,9 +37,16 @@ public class ImagePanel extends JPanel {
 				scale = 100.0 / height;
 				
 				// TODO (David) modify this
-				Image img = ImageIO.read(new File(file.getAbsolutePath()));
-				img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
-				model.addElement(img);
+				Image input = ImageIO.read(new File(file.getAbsolutePath()));
+				// TOO do we need to resize it first?
+				String[] results = searcher.search((BufferedImage) input);
+				
+				model.clear();
+				for (String resultPath : results) {
+					Image img = ImageIO.read(new File(resultPath));
+					img = img.getScaledInstance(-1, 100, Image.SCALE_FAST);
+					model.addElement(img);
+				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();

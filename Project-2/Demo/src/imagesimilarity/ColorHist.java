@@ -26,8 +26,7 @@ public class ColorHist extends JFrame {
 	public static void main(String[] args) {
 		ColorHist example = new ColorHist();
 	}
-
-
+	
 	private ImagePanel dropArea1;
 	private ImagePanel dropArea2;
 	
@@ -99,11 +98,9 @@ public class ColorHist extends JFrame {
 		gridLayout.setRows(4); 
 		contentPane.setLayout(gridLayout);
 		
-		dropArea1 = new ImagePanel();
 		dropArea1.setBorder(new LineBorder(Color.GRAY, 1));
 		dropArea1.setBackground(Color.BLACK);
 		
-		dropArea2 = new ImagePanel();
 		dropArea2.setBorder(new LineBorder(Color.GRAY, 1));
 		dropArea2.setBackground(Color.BLACK);
 		

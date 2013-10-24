@@ -34,11 +34,17 @@ public class Searcher {
 		
 		//TODO: Process input image
 		
-		scores = computeSimilarity(img);	
+//		scores = computeSimilarity(img);	
+//		
+//		rankedResults = sortScores(scores);
 		
-		rankedResults = sortScores(scores);
+		// Testing, can remove this now
+		// * the returned result shd be the ABSOLUTE filepath of the results images
+		// below RELATIVE only for testing
+		String[] test = {"t1.jpg", "16.jpg"};
+		return test;
 		
-		return rankedResults;
+//		return rankedResults;
 	}
 	
 	private double[] computeSimilarity(ProcessedImage img1) throws IOException {
