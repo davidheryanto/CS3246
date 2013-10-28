@@ -27,8 +27,8 @@ class DetectFace {
 
 		// Create a face detector from the cascade file in the resources
 		// directory.
-		CascadeClassifier faceDetector = new CascadeClassifier(new File("lbpcascade_frontalface.xml").getPath());
-		Mat image = Highgui.imread(new File("lena.png").getPath());
+		CascadeClassifier faceDetector = new CascadeClassifier(new File("data/lbpcascade_frontalface.xml").getPath());
+		Mat image = Highgui.imread(new File("data/lena.png").getPath());
 
 		// Detect faces in the image.
 		// MatOfRect is a special container class for Rect.
@@ -43,7 +43,7 @@ class DetectFace {
 		}
 
 		// Save the visualized detection.
-		String filename = "faceDetection.png";
+		String filename = "data/faceDetection.png";
 		System.out.println(String.format("Writing %s", filename));
 		Highgui.imwrite(filename, image);
 	}
