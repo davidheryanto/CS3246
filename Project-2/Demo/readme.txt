@@ -1,0 +1,1 @@
+java -Xss3m -cp "bin" imagesimilarity.Main
