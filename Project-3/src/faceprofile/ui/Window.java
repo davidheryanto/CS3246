@@ -1,63 +1,69 @@
 package faceprofile.ui;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.Observable;
+import java.awt.BorderLayout;
 
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JPanel;
+
+import faceprofile.logic.Listener;
 
 
-public class Window extends Observable {
+public class Window {
 
-	private JFrame frame;
-	private FileNameExtensionFilter imgFilter = new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "bmp", "gif", "png");
+	private static JFrame frame;
+	private static JPanel panel;
+	private static JMenuItem openImageMenu;
+	private static JMenuItem detectFaceMenu;
 
-	/**
-	 * Create the application.
-	 */
-	public Window() {
-		initialize();
-		this.frame.setVisible(true);
+	private Window() {
+		
+	}
+	
+	public static JFrame getFrame() {
+		return frame;
+	}
+
+	public static JPanel getPanel() {
+		return panel;
+	}
+	
+	public static void setDetectFaceMenuEnabled(boolean state) {
+		detectFaceMenu.setEnabled(state);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @wbp.parser.entryPoint JavaDoc
 	 */
-	private void initialize() {
+	public static void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
+
+		JMenu menu = new JMenu("File");
+		menuBar.add(menu);
+
+		openImageMenu = new JMenuItem("Open Image");
+		openImageMenu.addActionListener(Listener.getInstance());
+		menu.add(openImageMenu);
 		
-		JMenu mnNewMenu = new JMenu("File");
-		menuBar.add(mnNewMenu);
+		detectFaceMenu = new JMenuItem("Detect Face");
+		detectFaceMenu.setEnabled(false);
+		detectFaceMenu.addActionListener(Listener.getInstance());
+		menu.add(detectFaceMenu);
+
+		panel = new JPanel();
+		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Open Image");
-		mntmNewMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				File defaultPath = new File("data");
-				JFileChooser fc = new JFileChooser(defaultPath);
-				fc.setFileFilter(imgFilter);
-				
-				if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-					File file = fc.getSelectedFile();
-					
-					// Notify the observers that image has been selected
-					Window.this.setChanged();
-					Window.this.notifyObservers(file);
-				}
-			}
-		});
-		mnNewMenu.add(mntmNewMenuItem);
+		frame.setVisible(true);
 	}
 
 	
+
 	
 }
