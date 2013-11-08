@@ -20,11 +20,11 @@ import faceprofile.ui.Window;
 public class Listener implements ActionListener {
 	private static Listener instance = new Listener();
 	private static File fileRead;
-	
+
 	private Listener() {
-		
+
 	}
-	
+
 	public static Listener getInstance() {
 		return instance;
 	}
@@ -62,24 +62,23 @@ public class Listener implements ActionListener {
 			showImage(fileRead);
 		}
 	}
-	
+
 	private File getFile(FileNameExtensionFilter imgFilter) {
 		File defaultPath = new File("data");
 		JFileChooser fc = new JFileChooser(defaultPath);
-		
 		fc.setFileFilter(imgFilter);
-		
+
 		if (fc.showOpenDialog(Window.getFrame()) == JFileChooser.APPROVE_OPTION) {
 			fileRead = fc.getSelectedFile();
 		}
-		
+
 		return fileRead;
 	}
-	
+
 	private void showImage(BufferedImage img) {
 		JFrame frame = Window.getFrame();
 		JPanel panel = Window.getPanel();
-		
+
 		Image resizedImg = getResizedImage(img, 400);
 		JLabel picLabel = new JLabel(new ImageIcon(resizedImg));
 
@@ -104,6 +103,4 @@ public class Listener implements ActionListener {
 
 		return img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
 	}
-
-
 }
