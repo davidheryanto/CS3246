@@ -45,18 +45,21 @@ public class Window {
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 
-		JMenu menu = new JMenu("File");
-		menuBar.add(menu);
+		JMenu fileMenu = new JMenu("File");
+		menuBar.add(fileMenu);
 
 		openImageMenu = new JMenuItem("Open Image");
 		openImageMenu.addActionListener(Listener.getInstance());
-		menu.add(openImageMenu);
+		fileMenu.add(openImageMenu);
 		
+		JMenu actionMenu = new JMenu("Action");
+		menuBar.add(actionMenu);
+
 		detectFaceMenu = new JMenuItem("Detect Face");
 		detectFaceMenu.setEnabled(false);
 		detectFaceMenu.addActionListener(Listener.getInstance());
-		menu.add(detectFaceMenu);
-
+		actionMenu.add(detectFaceMenu);
+		
 		panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		
