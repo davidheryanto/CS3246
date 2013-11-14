@@ -1,9 +1,9 @@
-package faceprofile;
+package crowdanalytics;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import faceprofile.ui.Window;
+import crowdanalytics.ui.Window;
 
 public class Main {
 	public static Logger LOGGER;

@@ -1,4 +1,4 @@
-package faceprofile.logic;
+package crowdanalytics.logic;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import faceprofile.ui.Window;
+import crowdanalytics.ui.Window;
 
 public class Listener implements ActionListener {
 	private static Listener instance = new Listener();

@@ -1,4 +1,5 @@
-package faceprofile.ui;
+package crowdanalytics.ui;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
@@ -7,7 +8,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import faceprofile.logic.Listener;
+import crowdanalytics.logic.Listener;
 
 
 public class Window {
