@@ -22,7 +22,8 @@ import peopleanalytics.Main;
 
 
 public class FaceDetection {
-
+	public static String PATH_CASCADE_CLASSIFIER = "data/lbpcascade_frontalface.xml";
+	
 	public FaceDetection() {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
@@ -32,7 +33,7 @@ public class FaceDetection {
 
 		// Create a face detector from the cascade file in the resources
 		// directory.
-		CascadeClassifier faceDetector = new CascadeClassifier(new File("data/lbpcascade_frontalface.xml").getPath());
+		CascadeClassifier faceDetector = new CascadeClassifier(new File(PATH_CASCADE_CLASSIFIER).getPath());
 		Mat image = Highgui.imread(file.getPath());
 
 		// Detect faces in the image.
