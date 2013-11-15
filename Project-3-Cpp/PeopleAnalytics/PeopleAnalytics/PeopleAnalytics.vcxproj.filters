@@ -18,5 +18,8 @@
     <ClCompile Include="GenderClassifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SmileDetector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
