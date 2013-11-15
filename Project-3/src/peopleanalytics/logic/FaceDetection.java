@@ -1,4 +1,4 @@
-package crowdanalytics.logic;
+package peopleanalytics.logic;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -17,7 +17,7 @@ import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 import org.opencv.objdetect.CascadeClassifier;
 
-import crowdanalytics.Main;
+import peopleanalytics.Main;
 
 
 

@@ -1,4 +1,4 @@
-package crowdanalytics.ui;
+package peopleanalytics.ui;
 
 import java.awt.BorderLayout;
 
@@ -8,7 +8,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import crowdanalytics.logic.Listener;
+import peopleanalytics.logic.Listener;
 
 
 public class Window {

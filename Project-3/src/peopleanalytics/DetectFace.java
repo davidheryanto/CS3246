@@ -1,4 +1,4 @@
-package crowdanalytics;
+package peopleanalytics;
 
 import java.io.File;
 

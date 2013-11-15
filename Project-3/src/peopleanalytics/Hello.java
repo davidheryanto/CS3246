@@ -1,4 +1,4 @@
-package crowdanalytics;
+package peopleanalytics;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;

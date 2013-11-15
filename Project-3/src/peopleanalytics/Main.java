@@ -1,9 +1,9 @@
-package crowdanalytics;
+package peopleanalytics;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import crowdanalytics.ui.Window;
+import peopleanalytics.ui.Window;
 
 public class Main {
 	public static Logger LOGGER;
