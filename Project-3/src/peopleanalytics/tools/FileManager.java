@@ -1,27 +1,52 @@
 package peopleanalytics.tools;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
 public class FileManager {
-	public static void main(String[] args) {
-		writeCSV("belle.csv");
+	public static void main(String[] args) throws IOException {
+		writeCSV("female.csv");
 	}
 	
 	
-	public static void writeCSV(String CSVFilePath) {
-		try {
-			CSVWriter writer = new CSVWriter(new FileWriter(CSVFilePath));
-			String[] entries =  "first#second#third".split("#");
-			writer.writeNext(entries);
-			writer.close();
+	public static void writeCSV(String CSVFilePath) throws IOException {
+		CSVWriter writer = new CSVWriter(new FileWriter(CSVFilePath), ',');
+		File folder = new File("female");
+		List<String[]> entryList = new ArrayList<>();
+		
+		for (File f : folder.listFiles()) {
+			System.out.println(f.getAbsolutePath());
 			
-		} catch (IOException e) {
-			e.printStackTrace();
+			String[] entry = {f.getAbsolutePath(), "1"};
+			entryList.add(entry);
 		}
 		
+		writer.writeAll(entryList);
+		writer.close();
+		
+		
+		
+		
+//		
+//		
+//		
+//		
+//		
+//		try {
+//			CSVWriter writer = new CSVWriter(new FileWriter(CSVFilePath));
+//			String[] entries =  "first#second#third".split("#");
+//			writer.writeNext(entries);
+//			writer.close();
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
 	}
 	
 	
