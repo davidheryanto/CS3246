@@ -40,7 +40,7 @@ public class Listener implements ActionListener {
 		case "Detect Face" :
 			FaceDetection faceDetection = new FaceDetection();
 			try {
-				BufferedImage img = faceDetection.detect(fileRead);
+				BufferedImage img = faceDetection.run(fileRead);
 				showImage(img);
 			} catch (IOException e1) {
 				e1.printStackTrace();

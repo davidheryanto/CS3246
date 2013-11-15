@@ -28,7 +28,7 @@ public class FaceDetection {
 	}
 
 
-	public BufferedImage detect(File file) throws IOException {
+	public BufferedImage run(File file) throws IOException {
 
 		// Create a face detector from the cascade file in the resources
 		// directory.
