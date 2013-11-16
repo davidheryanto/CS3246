@@ -39,6 +39,7 @@ int main(int argc, const char** argv)
 	RunGenderDetection();
 	cout << "Gender detection finished" << endl;
 
+
 	getchar();
 
 	return 0;
@@ -69,7 +70,7 @@ void RunGenderDetection()
 	{
 		int index_last_backslash = test_images[i].find_last_of('\\');
 		string person_name = test_images[i].substr(index_last_backslash + 1);
-		Mat test_image = imread(test_images[i], 0);
+		Mat test_image = imread(test_images[i], CV_LOAD_IMAGE_GRAYSCALE);
 		int predicted_label = genderDetection.GetGender(test_image);
 
 		cout << "Predicted label for " << person_name << ": ";

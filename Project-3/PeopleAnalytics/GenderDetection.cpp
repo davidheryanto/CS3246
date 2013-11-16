@@ -66,7 +66,7 @@ void GenderDetection::ReadCsv(string csvPath)
 
 		if (!path.empty() && !class_label.empty())
 		{
-			images.push_back(imread(path, 0));
+			images.push_back(imread(path, CV_LOAD_IMAGE_GRAYSCALE));
 			labels.push_back(atoi(class_label.c_str()));
 		}
 	}
