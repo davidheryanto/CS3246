@@ -1,0 +1,5 @@
+syntax: glob
+vs2010
+bin
+xcode/DerivedData
+docs
