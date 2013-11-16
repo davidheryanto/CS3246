@@ -11,6 +11,8 @@
 #define GENDER_MALE 0
 #define GENDER_FEMALE 1
 #define CSV_SEPARATOR ','
+#define NORMALIZE_MIN 0
+#define NORMALIZE_MAX 255
 
 class GenderDetection
 {
@@ -29,6 +31,6 @@ private:
 	cv::Ptr<cv::FaceRecognizer> model;
 
 	void ReadCsv(std::string csvPath);
-	cv::Mat Normalize(cv::InputArray src, int min, int max);
+	cv::Mat Normalize(cv::InputArray src);
 
 };

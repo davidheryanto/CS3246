@@ -63,17 +63,17 @@ void GenderDetection::ReadCsv(string csvPath)
 	}
 }
 
-Mat GenderDetection::Normalize(InputArray src, int min, int max)
+Mat GenderDetection::Normalize(InputArray src)
 {
 	Mat _src = src.getMat();
 	// Create and return normalized image:
 	Mat dst;
 	switch (_src.channels()) {
 	case 1:
-		cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
+		cv::normalize(_src, dst, NORMALIZE_MIN, NORMALIZE_MAX, NORM_MINMAX, CV_8UC1);
 		break;
 	case 3:
-		cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC3);
+		cv::normalize(_src, dst, NORMALIZE_MIN, NORMALIZE_MAX, NORM_MINMAX, CV_8UC3);
 		break;
 	default:
 		_src.copyTo(dst);

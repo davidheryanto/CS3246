@@ -99,7 +99,7 @@ void detectAndDisplay(Mat frame)
 	//-- Detect faces
 	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
 
-	for (int i = 0; i < faces.size(); i++)
+	for (size_t i = 0; i < faces.size(); i++)
 	{
 		Point center(faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5);
 		ellipse(frame, center, Size(faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar(255, 0, 255), 4, 8, 0);
@@ -110,7 +110,7 @@ void detectAndDisplay(Mat frame)
 		//-- In each face, detect eyes
 		eyes_cascade.detectMultiScale(faceROI, eyes, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
 
-		for (int j = 0; j < eyes.size(); j++)
+		for (size_t j = 0; j < eyes.size(); j++)
 		{
 			Point center(faces[i].x + eyes[j].x + eyes[j].width*0.5, faces[i].y + eyes[j].y + eyes[j].height*0.5);
 			int radius = cvRound((eyes[j].width + eyes[j].height)*0.25);
@@ -120,7 +120,7 @@ void detectAndDisplay(Mat frame)
 		//--In each face, detect smile
 		std::vector<Rect> smile;
 		smileCascade.detectMultiScale(faceROI, smile, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-		for (int k = 0; k<smile.size(); k++)
+		for (size_t k = 0; k<smile.size(); k++)
 		{
 			Point center(faces[i].x + smile[k].x + smile[k].width*0.5, faces[i].y + smile[k].y + smile[k].height*0.5);
 			ellipse(frame, center, Size(smile[k].width*0.5, smile[k].height*0.5), 0, 0, 360, Scalar(0, 255, 255), 4, 8, 0);
