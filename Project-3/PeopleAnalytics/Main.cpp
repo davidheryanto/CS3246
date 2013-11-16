@@ -7,7 +7,8 @@
 #include <iostream>
 #include <stdio.h>
 
-#define GENDER_TRAINING_PATH "C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Gender-training.csv"
+
+#define GENDER_TRAINING_PATH "Data\\Gender-training.csv"
 
 using namespace std;
 using namespace cv;
@@ -37,6 +38,7 @@ int main(int argc, const char** argv)
 {
 	runGenderDetection();
 	cout << "Gender detection finished" << endl;
+
 	getchar();
 
 	return 0;
@@ -49,17 +51,17 @@ void runGenderDetection()
 
 	String testImages[] =
 	{
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\ayumi-hamasaki.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\ayumi-hamasaki-2.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\ben-afflect.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\ben-stiller.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\downey-jr.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\jack-johnson.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\mika-nakashima.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\richard-gere.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\taylor-swift.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\utada-hikaru.jpg",
-		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\yozoh.jpg"
+		"Data\\Test-images\\ayumi-hamasaki.jpg",
+		"Data\\Test-images\\ayumi-hamasaki-2.jpg",
+		"Data\\Test-images\\ben-afflect.jpg",
+		"Data\\Test-images\\ben-stiller.jpg",
+		"Data\\Test-images\\downey-jr.jpg",
+		"Data\\Test-images\\jack-johnson.jpg",
+		"Data\\Test-images\\mika-nakashima.jpg",
+		"Data\\Test-images\\richard-gere.jpg",
+		"Data\\Test-images\\taylor-swift.jpg",
+		"Data\\Test-images\\utada-hikaru.jpg",
+		"Data\\Test-images\\yozoh.jpg"
 	};
 
 	int len = sizeof(testImages) / sizeof(*testImages);
