@@ -18,8 +18,22 @@
     <ClCompile Include="GenderClassifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="SmileDetector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+=======
+    <ClCompile Include="WebcamCapture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+>>>>>>> 859b64d06283ab791de0251525b383263a2bae01
   </ItemGroup>
 </Project>
