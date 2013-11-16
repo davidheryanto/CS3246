@@ -4,6 +4,13 @@
 #include "opencv2\contrib\contrib.hpp"
 #include "opencv2\highgui\highgui.hpp"
 
+#include <iostream>
+#include <fstream>
+
+#define CSV_SEPARATOR ','
+#define NORMALIZE_MIN 0
+#define NORMALIZE_MAX 255
+
 class SmileDetection
 {
 public:
