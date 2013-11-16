@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0112873F-02FF-4EA0-B5F2-447947E2842F}</ProjectGuid>
+    <ProjectGuid>{3C32609F-E1AA-486C-BA4D-C6D49642B419}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Main</RootNamespace>
+    <RootNamespace>PeopleAnalytics</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -78,6 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
