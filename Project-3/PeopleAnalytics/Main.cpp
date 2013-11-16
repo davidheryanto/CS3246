@@ -41,16 +41,28 @@ passing each face to GenderDetection and SmileDetection to get the data for each
 
 */
 
-void RunGenderDetection();
+GenderDetection gender_detection;
+CascadeClassifier face_detection;
+
+void testGenderDetection();
+
+void initGenderDetection();
+void initFaceDetection();
+void initWebcam();
 
 int main(int argc, const char** argv)
 {
-	GenderDetection genderDetection;
-	genderDetection.train(PATH_GENDER_TRAINING);
+	initGenderDetection();
+	initFaceDetection();
 
+	initWebcam();
+
+	return 0;
+}
+
+void initWebcam()
+{
 	Mat frame;
-	CascadeClassifier haar_casacde;
-	haar_casacde.load(PATH_HAAR_CASCADE_FRONT_FACE);
 	VideoCapture videoCapture(DEVICE_ID);
 
 	if (!videoCapture.isOpened())
@@ -68,9 +80,7 @@ int main(int argc, const char** argv)
 		cvtColor(original, gray, CV_BGR2GRAY);
 
 		vector<Rect_<int>> faces;
-		haar_casacde.detectMultiScale(gray, faces);
-
-		cout << "Faces count " << faces.size() << endl;
+		face_detection.detectMultiScale(gray, faces);
 
 		// We have positions of all faces at this point.
 		for (size_t i = 0; i < faces.size(); i++)
@@ -78,38 +88,46 @@ int main(int argc, const char** argv)
 			Rect face_i = faces[i];
 			Mat face = gray(face_i);
 			Mat face_resized;
-			
+
 			resize(face, face_resized, Size(IMG_WIDTH, IMG_HEIGHT), 1.0, 1.0, INTER_CUBIC);
-			int prediction = genderDetection.getGender(face_resized);
+			int gender_prediction = gender_detection.getGender(face_resized);
 
 			// And finally write all we've found out to the original image!
 			// First of all draw a green rectangle around the detected face:
 			rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
-			string box_text = format("Prediction = %d", prediction);
+			string box_text = format("Prediction = %d", gender_prediction);
 			// Calculate the position for annotated text (make sure we don't
 			// put illegal values in there):
 			int pos_x = std::max(face_i.tl().x - 10, 0);
 			int pos_y = std::max(face_i.tl().y - 10, 0);
 			// And now put it into the image:
-			putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2);
+			putText(original, box_text, Point(pos_x, pos_y), CV_FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2);
 		}
 
-		imshow("Gender detection", original);
+		imshow("People Analytics", original);
 		char key = (char)waitKey(KEY_DELAY);
 		if (key == (KEY_ESCAPE))
 		{
 			break;
 		}
 	}
-
-	return 0;
 }
 
-void runGenderDetection()
+void initFaceDetection()
 {
-	GenderDetection genderDetection;
-	genderDetection.train(PATH_GENDER_TRAINING);
+	face_detection.load(PATH_HAAR_CASCADE_FRONT_FACE);
+}
+
+void initGenderDetection()
+{
+	gender_detection.train(PATH_GENDER_TRAINING);
+}
+
+void testGenderDetection()
+{
+	GenderDetection gender_detection;
+	gender_detection.train(PATH_GENDER_TRAINING);
 
 	String test_images[] =
 	{
@@ -132,7 +150,7 @@ void runGenderDetection()
 		int index_last_backslash = test_images[i].find_last_of('\\');
 		string person_name = test_images[i].substr(index_last_backslash + 1);
 		Mat test_image = imread(test_images[i], CV_LOAD_IMAGE_GRAYSCALE);
-		int predicted_label = genderDetection.getGender(test_image);
+		int predicted_label = gender_detection.getGender(test_image);
 
 		cout << "Predicted label for " << person_name << ": ";
 		switch (predicted_label)
