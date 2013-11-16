@@ -29,6 +29,6 @@ private:
 	std::vector<int> labels;
 	cv::Ptr<cv::FaceRecognizer> model;
 
-	void ReadCsv(std::string csvPath);
-	cv::Mat Normalize(cv::InputArray src);
+	void readCsv(std::string csvPath);
+	cv::Mat normalize(cv::InputArray src);
 };

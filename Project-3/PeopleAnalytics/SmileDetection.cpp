@@ -19,7 +19,7 @@ bool isSmiling(Mat face)
 	return false;
 }
 
-void SmileDetection::ReadCsv(string csvPath)
+void SmileDetection::readCsv(string csvPath)
 {
 	string line, path, class_label;
 	ifstream file(csvPath.c_str(), ifstream::in);
@@ -44,7 +44,7 @@ void SmileDetection::ReadCsv(string csvPath)
 }
 
 
-Mat SmileDetection::Normalize(InputArray src)
+Mat SmileDetection::normalize(InputArray src)
 {
 	Mat _src = src.getMat();
 	// Create and return normalized image:

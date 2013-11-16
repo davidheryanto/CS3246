@@ -24,9 +24,9 @@ public:
 	// face is assumed to have size 150px X 150px
 	// aligned properly.
 	// Returns the gender of the face using FisherFaceRecognizer.
-	int GetGender(cv::Mat face);
+	int getGender(cv::Mat face);
 
-	void Train(std::string csvPath);
+	void train(std::string csvPath);
 
 
 private:
@@ -34,7 +34,7 @@ private:
 	std::vector<int> labels;
 	cv::Ptr<cv::FaceRecognizer> model;
 
-	void ReadCsv(std::string csvPath);
-	cv::Mat Normalize(cv::InputArray src);
+	void readCsv(std::string csvPath);
+	cv::Mat normalize(cv::InputArray src);
 
 };
