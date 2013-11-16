@@ -17,6 +17,10 @@
 class GenderDetection
 {
 public:
+	GenderDetection();
+
+	~GenderDetection();
+
 	// face is assumed to have size 150px X 150px
 	// aligned properly.
 	// Returns the gender of the face using FisherFaceRecognizer.

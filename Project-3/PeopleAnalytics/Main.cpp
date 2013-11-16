@@ -2,26 +2,15 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
+#include "GenderDetection.h"
+
 #include <iostream>
 #include <stdio.h>
 
+#define GENDER_TRAINING_PATH "C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Gender-training.csv"
 
 using namespace std;
 using namespace cv;
-
-/** Function Headers */
-void detectAndDisplay(Mat frame);
-
-/** Global variables */
-String face_cascade_name = "data\\haarcascades\\haarcascade_frontalface_alt.xml";
-String eyes_cascade_name = "data\\haarcascades\\haarcascade_eye_tree_eyeglasses.xml";
-String smile_cascade_name = "data\\haarcascades\\haarcascade_smile.xml";
-
-CascadeClassifier face_cascade;
-CascadeClassifier eyes_cascade;
-CascadeClassifier smileCascade;
-string window_name = "Capture - Face detection";
-RNG rng(12345);
 
 
 /*
@@ -42,94 +31,54 @@ passing each face to GenderDetection and SmileDetection to get the data for each
 
 */
 
+void runGenderDetection();
 
-
-
-
-
-
-
-
-
-
-/** @function main */
 int main(int argc, const char** argv)
 {
-	CvCapture* capture;
-	Mat frame;
+	runGenderDetection();
+	cout << "Gender detection finished" << endl;
+	getchar();
 
-	//-- 1. Load the cascades
-	if (!face_cascade.load(face_cascade_name)){ printf("--(!)Error loading\n"); return -1; };
-	if (!eyes_cascade.load(eyes_cascade_name)){ printf("--(!)Error loading\n"); return -1; };
-	if (!smileCascade.load(smile_cascade_name)){ printf("--(!)Error loading\n"); return -1; };
-	//-- 2. Read the video stream
-	capture = cvCaptureFromCAM(-1);
-	if (capture)
-	{
-		while (true)
-		{
-			frame = cvQueryFrame(capture);
-
-			//-- 3. Apply the classifier to the frame
-			if (!frame.empty())
-			{
-				detectAndDisplay(frame);
-			}
-			else
-			{
-				printf(" --(!) No captured frame -- Break!"); break;
-			}
-
-			int c = waitKey(10);
-			if ((char)c == 'c') { break; }
-		}
-	}
 	return 0;
 }
 
-/** @function detectAndDisplay */
-void detectAndDisplay(Mat frame)
+void runGenderDetection()
 {
-	std::vector<Rect> faces;
-	Mat frame_gray;
+	GenderDetection genderDetection;
+	genderDetection.Train(GENDER_TRAINING_PATH);
 
-	cvtColor(frame, frame_gray, CV_BGR2GRAY);
-	equalizeHist(frame_gray, frame_gray);
-
-	//-- Detect faces
-	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-
-	for (size_t i = 0; i < faces.size(); i++)
+	String testImages[] =
 	{
-		Point center(faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5);
-		ellipse(frame, center, Size(faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar(255, 0, 255), 4, 8, 0);
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\ayumi-hamasaki.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\ayumi-hamasaki-2.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\ben-afflect.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\ben-stiller.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\downey-jr.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\jack-johnson.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\mika-nakashima.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\richard-gere.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\taylor-swift.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\utada-hikaru.jpg",
+		"C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\Test-images\\yozoh.jpg"
+	};
 
-		Mat faceROI = frame_gray(faces[i]);
-		std::vector<Rect> eyes;
+	int len = sizeof(testImages) / sizeof(*testImages);
+	for (int i = 0; i < len; i++)
+	{
+		int index_last_backslash = testImages[i].find_last_of('\\');
+		string person_name = testImages[i].substr(index_last_backslash + 1);
+		Mat test_image = imread(testImages[i], 0);
+		int predictedLabel = genderDetection.GetGender(test_image);
 
-		//-- In each face, detect eyes
-		eyes_cascade.detectMultiScale(faceROI, eyes, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-
-		for (size_t j = 0; j < eyes.size(); j++)
+		cout << "Predicted label for " << person_name << ": ";
+		if (predictedLabel > 0)
 		{
-			Point center(faces[i].x + eyes[j].x + eyes[j].width*0.5, faces[i].y + eyes[j].y + eyes[j].height*0.5);
-			int radius = cvRound((eyes[j].width + eyes[j].height)*0.25);
-			circle(frame, center, radius, Scalar(255, 0, 0), 4, 8, 0);
+			cout << "female";
 		}
-
-		//--In each face, detect smile
-		std::vector<Rect> smile;
-		smileCascade.detectMultiScale(faceROI, smile, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-		for (size_t k = 0; k<smile.size(); k++)
+		else
 		{
-			Point center(faces[i].x + smile[k].x + smile[k].width*0.5, faces[i].y + smile[k].y + smile[k].height*0.5);
-			ellipse(frame, center, Size(smile[k].width*0.5, smile[k].height*0.5), 0, 0, 360, Scalar(0, 255, 255), 4, 8, 0);
-
+			cout << "male";
 		}
-
-
-
+		cout << endl;
 	}
-	//-- Show what you got
-	imshow(window_name, frame);
 }

@@ -1,5 +1,6 @@
 package peopleanalytics.logic;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -7,17 +8,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.MatOfRect;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.highgui.Highgui;
-import org.opencv.objdetect.CascadeClassifier;
+import org.w3c.dom.css.Rect;
 
 import peopleanalytics.Main;
+
+import com.googlecode.javacv.cpp.opencv_objdetect.CascadeClassifier;
 
 
 

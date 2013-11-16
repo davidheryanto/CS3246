@@ -3,11 +3,20 @@
 using namespace std;
 using namespace cv;
 
+GenderDetection::GenderDetection()
+{
+
+}
+
+GenderDetection::~GenderDetection()
+{
+
+}
 
 int GenderDetection::GetGender(Mat face)
 {
-	int predictedLabel = model->predict(face);
-	return predictedLabel;
+	int predicted_label = model->predict(face);
+	return predicted_label;
 }
 
 void GenderDetection::Train(string csvPath)
@@ -41,7 +50,7 @@ void GenderDetection::Train(string csvPath)
 
 void GenderDetection::ReadCsv(string csvPath)
 {
-	string line, path, classlabel;
+	string line, path, class_label;
 	ifstream file(csvPath.c_str(), ifstream::in);
 	if (!file)
 	{
@@ -53,12 +62,12 @@ void GenderDetection::ReadCsv(string csvPath)
 	{
 		stringstream liness(line);
 		getline(liness, path, CSV_SEPARATOR);
-		getline(liness, classlabel);
+		getline(liness, class_label);
 
-		if (!path.empty() && !classlabel.empty())
+		if (!path.empty() && !class_label.empty())
 		{
 			images.push_back(imread(path, 0));
-			labels.push_back(atoi(classlabel.c_str()));
+			labels.push_back(atoi(class_label.c_str()));
 		}
 	}
 }
