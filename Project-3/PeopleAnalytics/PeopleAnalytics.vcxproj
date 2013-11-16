@@ -79,7 +79,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GenderDetection.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="SmileDetection.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GenderDetection.h" />
+    <ClInclude Include="SmileDetection.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

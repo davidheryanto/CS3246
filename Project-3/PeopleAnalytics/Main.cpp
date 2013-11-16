@@ -22,6 +22,35 @@ CascadeClassifier smileCascade;
 string window_name = "Capture - Face detection";
 RNG rng(12345);
 
+
+/*
+
+@William, 
+Can you write your faceCount function in the Main class instead?
+I think it's more appropriate here... So after you run your faceDetection algo
+you'll get the coordinates of each face, so you can call the helper function
+to get Mat that represents each face. Then we can just pass each Mat (i.e. each face)
+to GenderDetection and SmileDetection.
+
+Main should open up webcam capture, then capture a frame every N miliseconds.
+For each frame, it runs a face detection algorithm, getting all the faces in the frame
+along with their coordinates. (Main will get the faceCount then)
+
+Then Main calls helper function to align, rotate and resize each face to 150x150, before
+passing each face to GenderDetection and SmileDetection to get the data for each face.
+
+*/
+
+
+
+
+
+
+
+
+
+
+
 /** @function main */
 int main(int argc, const char** argv)
 {
