@@ -13,17 +13,17 @@ GenderDetection::~GenderDetection()
 
 }
 
-int GenderDetection::GetGender(Mat face)
+int GenderDetection::getGender(Mat face)
 {
 	int predicted_label = model->predict(face);
 	return predicted_label;
 }
 
-void GenderDetection::Train(string csvPath)
+void GenderDetection::train(string csvPath)
 {
 	try
 	{
-		ReadCsv(csvPath);
+		readCsv(csvPath);
 	}
 	catch (Exception& e)
 	{
@@ -48,7 +48,7 @@ void GenderDetection::Train(string csvPath)
 }
 
 
-void GenderDetection::ReadCsv(string csvPath)
+void GenderDetection::readCsv(string csvPath)
 {
 	string line, path, class_label;
 	ifstream file(csvPath.c_str(), ifstream::in);
@@ -72,7 +72,7 @@ void GenderDetection::ReadCsv(string csvPath)
 	}
 }
 
-Mat GenderDetection::Normalize(InputArray src)
+Mat GenderDetection::normalize(InputArray src)
 {
 	Mat _src = src.getMat();
 	// Create and return normalized image:
