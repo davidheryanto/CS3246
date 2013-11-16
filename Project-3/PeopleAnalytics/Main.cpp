@@ -97,15 +97,26 @@ void initWebcam()
 			Rect face_i = faces[i];
 			Mat face = gray(face_i);
 			Mat face_resized;
+			string gender;
 
 			resize(face, face_resized, Size(IMG_WIDTH, IMG_HEIGHT), 1.0, 1.0, INTER_CUBIC);
-			int gender_prediction = gender_detection.getGender(face_resized);
+			switch (gender_detection.getGender(face_resized))
+			{
+			case GENDER_MALE:
+				gender = "Male";
+				break;
+			case GENDER_FEMALE:
+				gender = "Female";
+				break;
+			default:
+				gender = "Gender unspecified";
+			}
 
 			// And finally write all we've found out to the original image!
 			// First of all draw a green rectangle around the detected face:
 			rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
-			string box_text = format("Prediction = %d", gender_prediction);
+			string box_text = format("Gender = %s", gender.c_str());
 			// Calculate the position for annotated text (make sure we don't
 			// put illegal values in there):
 			int pos_x = std::max(face_i.tl().x - 10, 0);
