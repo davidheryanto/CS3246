@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <vector>
 
 #define DEVICE_ID -1 // -1 means default webcam in PC
 
@@ -13,7 +14,10 @@
 #define IMG_HEIGHT 150
 
 #define PATH_GENDER_TRAINING "Data\\Gender-training.csv"
-#define PATH_HAAR_CASCADE_FRONT_FACE = "Data\\haarcascades\\haarcascade_frontalface_default.xml"
+#define PATH_HAAR_CASCADE_FRONT_FACE "Data\\haarcascades\\haarcascade_frontalface_default.xml"
+
+#define KEY_DELAY 20
+#define KEY_ESCAPE 27
 
 using namespace std;
 using namespace cv;
@@ -41,16 +45,17 @@ void RunGenderDetection();
 
 int main(int argc, const char** argv)
 {
-	/*runGenderDetection();
-	cout << "Gender detection finished" << endl;*/
+	GenderDetection genderDetection;
+	genderDetection.train(PATH_GENDER_TRAINING);
 
 	Mat frame;
 	CascadeClassifier haar_casacde;
+	haar_casacde.load(PATH_HAAR_CASCADE_FRONT_FACE);
 	VideoCapture videoCapture(DEVICE_ID);
 
 	if (!videoCapture.isOpened())
 	{
-		cerr << "Default webcam cannot be opened. Try update DEVICE_ID." << endl;
+		cerr << "Default webcam cannot be opened. Try updating DEVICE_ID." << endl;
 	}
 
 	while (true)
@@ -64,10 +69,39 @@ int main(int argc, const char** argv)
 
 		vector<Rect_<int>> faces;
 		haar_casacde.detectMultiScale(gray, faces);
+
+		cout << "Faces count " << faces.size() << endl;
+
+		// We have positions of all faces at this point.
+		for (size_t i = 0; i < faces.size(); i++)
+		{
+			Rect face_i = faces[i];
+			Mat face = gray(face_i);
+			Mat face_resized;
+			
+			resize(face, face_resized, Size(IMG_WIDTH, IMG_HEIGHT), 1.0, 1.0, INTER_CUBIC);
+			int prediction = genderDetection.getGender(face_resized);
+
+			// And finally write all we've found out to the original image!
+			// First of all draw a green rectangle around the detected face:
+			rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
+			// Create the text we will annotate the box with:
+			string box_text = format("Prediction = %d", prediction);
+			// Calculate the position for annotated text (make sure we don't
+			// put illegal values in there):
+			int pos_x = std::max(face_i.tl().x - 10, 0);
+			int pos_y = std::max(face_i.tl().y - 10, 0);
+			// And now put it into the image:
+			putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2);
+		}
+
+		imshow("Gender detection", original);
+		char key = (char)waitKey(KEY_DELAY);
+		if (key == (KEY_ESCAPE))
+		{
+			break;
+		}
 	}
-
-
-	getchar();
 
 	return 0;
 }
