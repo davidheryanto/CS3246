@@ -70,16 +70,17 @@ void runGenderDetection()
 		int index_last_backslash = testImages[i].find_last_of('\\');
 		string person_name = testImages[i].substr(index_last_backslash + 1);
 		Mat test_image = imread(testImages[i], 0);
-		int predictedLabel = genderDetection.GetGender(test_image);
+		int predicted_label = genderDetection.GetGender(test_image);
 
 		cout << "Predicted label for " << person_name << ": ";
-		if (predictedLabel > 0)
+		switch (predicted_label)
 		{
-			cout << "female";
-		}
-		else
-		{
-			cout << "male";
+		case GENDER_MALE:
+			cout << "Male";
+			break;
+		case GENDER_FEMALE:
+			cout << "Female";
+			break;
 		}
 		cout << endl;
 	}

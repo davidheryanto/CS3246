@@ -7,3 +7,7 @@
 // Returns true if the face is smiling
 // by utilizing FisherFaceRecognizer method.
 bool isSmiling(cv::Mat face);
+
+
+
+
