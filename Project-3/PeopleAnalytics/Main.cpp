@@ -32,11 +32,11 @@ passing each face to GenderDetection and SmileDetection to get the data for each
 
 */
 
-void runGenderDetection();
+void RunGenderDetection();
 
 int main(int argc, const char** argv)
 {
-	runGenderDetection();
+	RunGenderDetection();
 	cout << "Gender detection finished" << endl;
 
 	getchar();
@@ -44,12 +44,12 @@ int main(int argc, const char** argv)
 	return 0;
 }
 
-void runGenderDetection()
+void RunGenderDetection()
 {
 	GenderDetection genderDetection;
 	genderDetection.Train(GENDER_TRAINING_PATH);
 
-	String testImages[] =
+	String test_images[] =
 	{
 		"Data\\Test-images\\ayumi-hamasaki.jpg",
 		"Data\\Test-images\\ayumi-hamasaki-2.jpg",
@@ -64,12 +64,12 @@ void runGenderDetection()
 		"Data\\Test-images\\yozoh.jpg"
 	};
 
-	int len = sizeof(testImages) / sizeof(*testImages);
+	int len = sizeof(test_images) / sizeof(*test_images);
 	for (int i = 0; i < len; i++)
 	{
-		int index_last_backslash = testImages[i].find_last_of('\\');
-		string person_name = testImages[i].substr(index_last_backslash + 1);
-		Mat test_image = imread(testImages[i], 0);
+		int index_last_backslash = test_images[i].find_last_of('\\');
+		string person_name = test_images[i].substr(index_last_backslash + 1);
+		Mat test_image = imread(test_images[i], 0);
 		int predicted_label = genderDetection.GetGender(test_image);
 
 		cout << "Predicted label for " << person_name << ": ";
