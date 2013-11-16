@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -53,7 +53,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OPENCV_DIR)\..\..\include;$(OPENCV_DIR)\..\..\include\opencv;$(OPENCV_DIR)\..\..\include\opencv2</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\David\Git\School\CS3246\Project-3-Cpp\PeopleAnalytics\PeopleAnalytics;$(OPENCV_DIR)\..\..\include;$(OPENCV_DIR)\..\..\include\opencv;$(OPENCV_DIR)\..\..\include\opencv2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -85,6 +85,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GenderClassifier.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="WebcamCapture.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -48,6 +48,12 @@ static Mat norm_0_255(InputArray _src) {
 	return dst;
 }
 
+static void pubMethod()
+{
+
+
+}
+
 static void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ',') {
 	std::ifstream file(filename.c_str(), ifstream::in);
 	if (!file) {
@@ -75,7 +81,7 @@ static void read_csv(const string& filename, vector<Mat>& images, vector<int>& l
 	}
 }
 
-int main(int argc, const char *argv[]) {
+int main2(int argc, const char *argv[]) {
 	// Check for valid command line arguments, print usage
 	// if no arguments were given.
 	if (argc < 2) {
