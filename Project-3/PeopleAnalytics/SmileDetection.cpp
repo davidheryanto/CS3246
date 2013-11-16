@@ -13,10 +13,47 @@ SmileDetection::~SmileDetection()
 
 }
 
-bool isSmiling(Mat face)
+bool SmileDetection::isSmiling(Mat face)
 {
+	int predicted = model->predict(face);
+
+	switch (predicted)
+	{
+	case SMILE_TRUE:
+		return true;
+	case SMILE_FALSE:
+		return false;
+	}
 
 	return false;
+}
+
+void SmileDetection::train(string csvPath)
+{
+	try
+	{
+		readCsv(csvPath);
+	}
+	catch (Exception& e)
+	{
+		cerr << "Error opening file \"" << csvPath << "\". Reason: " << e.msg << endl;
+		exit(1);
+	}
+
+	if (images.size() <= 1)
+	{
+		string error_message = "Needs at least 2 images to work. Please add more images to the data set.";
+		CV_Error(CV_StsError, error_message);
+	}
+
+	// Get the height from the first image. We'll need this
+	// later in code to reshape the images to their original
+	// size:
+	int height = images[0].rows;
+
+	// Create a Fisherface model and train it with the data set.
+	model = createFisherFaceRecognizer();
+	model->train(images, labels);
 }
 
 void SmileDetection::readCsv(string csvPath)

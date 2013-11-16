@@ -10,6 +10,8 @@
 #define CSV_SEPARATOR ','
 #define NORMALIZE_MIN 0
 #define NORMALIZE_MAX 255
+#define SMILE_FALSE 0
+#define SMILE_TRUE 1
 
 class SmileDetection
 {
@@ -23,6 +25,8 @@ public:
 	// Returns true if the face is smiling
 	// by utilizing FisherFaceRecognizer method.
 	bool isSmiling(cv::Mat face);
+
+	void train(std::string csvPath);
 
 private:
 	std::vector<cv::Mat> images;

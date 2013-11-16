@@ -3,6 +3,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include "GenderDetection.h"
+#include "SmileDetection.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -13,7 +14,8 @@
 #define IMG_WIDTH 150
 #define IMG_HEIGHT 150
 
-#define PATH_GENDER_TRAINING "Data\\Gender-training.csv"
+#define PATH_GENDER_TRAINING "Data\\gender-training.csv"
+#define PATH_SMILE_TRAINING "Data\\smile-training.csv"
 #define PATH_HAAR_CASCADE_FRONT_FACE "Data\\haarcascades\\haarcascade_frontalface_default.xml"
 
 #define KEY_DELAY 20
@@ -43,11 +45,13 @@ passing each face to GenderDetection and SmileDetection to get the data for each
 
 
 GenderDetection gender_detection;
+SmileDetection smile_detection;
 CascadeClassifier face_detection;
 
 void testGenderDetection();
 
 void initGenderDetection();
+void initSmileDetection();
 void initFaceDetection();
 void initWebcam();
 
@@ -55,6 +59,7 @@ int main(int argc, const char** argv)
 {
 	initGenderDetection();
 	initFaceDetection();
+	initSmileDetection();
 
 	initWebcam();
 
@@ -139,6 +144,11 @@ void initFaceDetection()
 	face_detection.load(PATH_HAAR_CASCADE_FRONT_FACE);
 }
 
+void initSmileDetection()
+{
+	smile_detection.train(PATH_SMILE_TRAINING);
+}
+
 void initGenderDetection()
 {
 	gender_detection.train(PATH_GENDER_TRAINING);
@@ -151,17 +161,17 @@ void testGenderDetection()
 
 	String test_images[] =
 	{
-		"Data\\Test-images\\ayumi-hamasaki.jpg",
-		"Data\\Test-images\\ayumi-hamasaki-2.jpg",
-		"Data\\Test-images\\ben-afflect.jpg",
-		"Data\\Test-images\\ben-stiller.jpg",
-		"Data\\Test-images\\downey-jr.jpg",
-		"Data\\Test-images\\jack-johnson.jpg",
-		"Data\\Test-images\\mika-nakashima.jpg",
-		"Data\\Test-images\\richard-gere.jpg",
-		"Data\\Test-images\\taylor-swift.jpg",
-		"Data\\Test-images\\utada-hikaru.jpg",
-		"Data\\Test-images\\yozoh.jpg"
+		"Data\\test-images\\ayumi-hamasaki.jpg",
+		"Data\\test-images\\ayumi-hamasaki-2.jpg",
+		"Data\\test-images\\ben-afflect.jpg",
+		"Data\\test-images\\ben-stiller.jpg",
+		"Data\\test-images\\downey-jr.jpg",
+		"Data\\test-images\\jack-johnson.jpg",
+		"Data\\test-images\\mika-nakashima.jpg",
+		"Data\\test-images\\richard-gere.jpg",
+		"Data\\test-images\\taylor-swift.jpg",
+		"Data\\test-images\\utada-hikaru.jpg",
+		"Data\\test-images\\yozoh.jpg"
 	};
 
 	int len = sizeof(test_images) / sizeof(*test_images);
