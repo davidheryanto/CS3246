@@ -85,6 +85,14 @@ void initWebcam()
 		// We have positions of all faces at this point.
 		for (size_t i = 0; i < faces.size(); i++)
 		{
+			// -----------------------------------
+			// TODO 
+			// Do further checks on the faces
+			// whether they are really faces. How ??
+			// Check duration, tracking??
+			// -----------------------------------
+
+
 			Rect face_i = faces[i];
 			Mat face = gray(face_i);
 			Mat face_resized;
