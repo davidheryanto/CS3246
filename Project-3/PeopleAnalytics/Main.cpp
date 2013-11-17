@@ -7,6 +7,7 @@
 #include "Timer.h"
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <math.h>
 
@@ -39,7 +40,7 @@ void testGenderDetection();
 void initGenderDetection();
 void initSmileDetection();
 void initFaceDetection();
-void initWebcam();
+void startCapturing
 
 int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces);
 
@@ -50,12 +51,12 @@ int main(int argc, const char** argv)
 	initGenderDetection();
 	initSmileDetection();
 	initFaceDetection();
-	initWebcam();
+	startCapturing();
 
 	return 0;
 }
 
-void initWebcam()
+void startCapturing()
 {
 	Mat frame;
 	VideoCapture videoCapture(DEVICE_ID);
@@ -186,12 +187,6 @@ void initWebcam()
 		{
 			break;
 		}
-
-
-
-
-
-
 
 
 		// cout << "Time b/w frames: " << timer.getElapsedTimeInMilliSec() << " ms" << endl;
