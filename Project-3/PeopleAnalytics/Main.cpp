@@ -44,7 +44,8 @@ void initFaceDetection();
 void startCapturing();
 
 int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces);
-
+bool is_file_exists(string file_path);
+void initOutputFile(ofstream& output_file);
 
 
 int main(int argc, const char** argv)
@@ -57,33 +58,27 @@ int main(int argc, const char** argv)
 	return 0;
 }
 
+
 void startCapturing()
 {
-	ofstream outputFile;
-	outputFile.open(PATH_OUTPUT_FILE);
-	outputFile << "current_time"
-		<< "," << "view_duration"
-		<< "," << "faces_count"
-		<< "," << "new_faces_count"
-		<< "," << "male_count"
-		<< "," << "female_count"
-		<< "," << "interest"
-		<< endl;
-
-
+	ofstream output_file;
 	Mat frame;
-	VideoCapture videoCapture(DEVICE_ID);
-	if (!videoCapture.isOpened())
+	vector<Rect> faces;
+	vector<Rect> prev_faces;
+	VideoCapture video_capture(DEVICE_ID);
+
+
+	initOutputFile(output_file);
+
+	if (!video_capture.isOpened())
 	{
 		cerr << "Default webcam cannot be opened. Try updating DEVICE_ID." << endl;
 		exit(1);
 	}
 
-	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 350);
-	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 350);
+	video_capture.set(CV_CAP_PROP_FRAME_HEIGHT, 350);
+	video_capture.set(CV_CAP_PROP_FRAME_WIDTH, 350);
 
-	vector<Rect> faces;
-	vector<Rect> prev_faces;
 	double current_time = 0.0; // in ms
 
 	while (true)
@@ -97,7 +92,7 @@ void startCapturing()
 
 		timer.start();
 
-		videoCapture >> frame;
+		video_capture >> frame;
 		Mat original = frame.clone();
 		flip(original, original, 1); // Horizontal flip
 
@@ -171,7 +166,7 @@ void startCapturing()
 			// The number of detected neighbors depends on image size (and also illumination, etc.). The
 			// following steps use a floating minimum and maximum of neighbors. Intensity thus estimated will be
 			//accurate only after a first smile has been displayed by the user.
-			const int smile_neighbors = (int) smile_objects.size();
+			const int smile_neighbors = (int)smile_objects.size();
 			static int max_neighbors = -1;
 			static int min_neighbors = -1;
 			if (min_neighbors == -1) min_neighbors = smile_neighbors;
@@ -207,23 +202,23 @@ void startCapturing()
 		double view_duration = timer.getElapsedTimeInMilliSec();
 		double interest = smile_intensity / faces_count;
 		current_time += view_duration;
-		
+
 		if (faces_count > 0 && interest >= 0)
 		{
-		outputFile << current_time
-			<< "," << view_duration
-			<< "," << faces_count
-			<< "," << new_faces_count
-			<< "," << male_count
-			<< "," << female_count
-			<< "," << interest
-			<< endl;
+			output_file << current_time
+				<< "," << view_duration
+				<< "," << faces_count
+				<< "," << new_faces_count
+				<< "," << male_count
+				<< "," << female_count
+				<< "," << interest
+				<< endl;
 		}
 
 		timer.stop();
 	}
 
-	outputFile.close();
+	output_file.close();
 }
 
 void initFaceDetection()
@@ -324,4 +319,33 @@ int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces)
 	}
 
 	return current_faces_count;
+}
+
+
+bool is_file_exists(string file_path)
+{
+	std::ifstream infile(file_path);
+	return infile.good();
+}
+
+void initOutputFile(ofstream& output_file)
+{
+	string filePath = (string)PATH_OUTPUT_FILE;
+	if (is_file_exists(PATH_OUTPUT_FILE))
+	{
+		output_file.open(PATH_OUTPUT_FILE, ios::app); // Append mode.
+	}
+	else
+	{
+		output_file.open(PATH_OUTPUT_FILE);
+		// Write the column headings
+		output_file << "current_time"
+			<< "," << "view_duration"
+			<< "," << "faces_count"
+			<< "," << "new_faces_count"
+			<< "," << "male_count"
+			<< "," << "female_count"
+			<< "," << "interest"
+			<< endl;
+	}
 }
