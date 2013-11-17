@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <vector>
 
-#define DEVICE_ID -1 // -1 means default webcam in PC
+#define DEVICE_ID 0 // -1 means default webcam in PC
 
 #define IMG_WIDTH 150
 #define IMG_HEIGHT 150
@@ -17,6 +17,7 @@
 #define PATH_GENDER_TRAINING "Data\\gender-training.csv"
 #define PATH_SMILE_TRAINING "Data\\smile-training.csv"
 #define PATH_HAAR_CASCADE_FRONT_FACE "Data\\haarcascades\\haarcascade_frontalface_default.xml"
+#define PATH_HAAR_CASCADE_MOUTH "Data\\haarcascades\\haarcascade_smile.xml"
 
 #define KEY_DELAY 20
 #define KEY_ESCAPE 27
@@ -27,7 +28,7 @@ using namespace cv;
 
 /*
 
-@William, 
+@William,
 Can you write your faceCount function in the Main class instead?
 I think it's more appropriate here... So after you run your faceDetection algo
 you'll get the coordinates of each face, so you can call the helper function
@@ -47,19 +48,25 @@ passing each face to GenderDetection and SmileDetection to get the data for each
 GenderDetection gender_detection;
 SmileDetection smile_detection;
 CascadeClassifier face_detection;
+CascadeClassifier mouth_detection;
 
 void testGenderDetection();
 
 void initGenderDetection();
 void initSmileDetection();
+
 void initFaceDetection();
+void initMouthDetection();
+
 void initWebcam();
 
 int main(int argc, const char** argv)
 {
 	initGenderDetection();
-	initFaceDetection();
 	initSmileDetection();
+
+	initFaceDetection();
+	initMouthDetection();
 
 	initWebcam();
 
@@ -70,11 +77,13 @@ void initWebcam()
 {
 	Mat frame;
 	VideoCapture videoCapture(DEVICE_ID);
-
 	if (!videoCapture.isOpened())
 	{
 		cerr << "Default webcam cannot be opened. Try updating DEVICE_ID." << endl;
 	}
+
+	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 300);
+	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 300);
 
 	while (true)
 	{
@@ -103,25 +112,41 @@ void initWebcam()
 			Mat face = gray(face_i);
 			Mat face_resized;
 			string gender;
+			string smile;
 
 			resize(face, face_resized, Size(IMG_WIDTH, IMG_HEIGHT), 1.0, 1.0, INTER_CUBIC);
-			switch (gender_detection.getGender(face_resized))
+
+			/*switch (gender_detection.getGender(face_resized))
 			{
 			case GENDER_MALE:
-				gender = "Male";
-				break;
+			gender = "Male";
+			break;
 			case GENDER_FEMALE:
-				gender = "Female";
-				break;
+			gender = "Female";
+			break;
 			default:
-				gender = "Gender unspecified";
+			gender = "Gender unspecified";
+			}*/
+
+			Point center(faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5);
+			Mat faceROI = gray(face_i);
+			std::vector<Rect> smiles;
+
+			//-- In each face, detect eyes
+			mouth_detection.detectMultiScale(faceROI, smiles, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
+
+			for (size_t j = 0; j < smiles.size(); j++)
+			{
+				Point center(faces[i].x + smiles[j].x + smiles[j].width*0.5, faces[i].y + smiles[j].y + smiles[j].height*0.5);
+				int radius = cvRound((smiles[j].width + smiles[j].height)*0.25);
+				circle(original, center, radius, Scalar(255, 0, 0), 4, 8, 0);
 			}
 
 			// And finally write all we've found out to the original image!
 			// First of all draw a green rectangle around the detected face:
 			rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
-			string box_text = format("Gender = %s", gender.c_str());
+			string box_text = format("Gender = %s %s", "", smile.c_str());
 			// Calculate the position for annotated text (make sure we don't
 			// put illegal values in there):
 			int pos_x = std::max(face_i.tl().x - 10, 0);
@@ -142,6 +167,11 @@ void initWebcam()
 void initFaceDetection()
 {
 	face_detection.load(PATH_HAAR_CASCADE_FRONT_FACE);
+}
+
+void initMouthDetection()
+{
+	mouth_detection.load(PATH_HAAR_CASCADE_MOUTH);
 }
 
 void initSmileDetection()
