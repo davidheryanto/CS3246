@@ -1,7 +1,7 @@
 #include "opencv2/objdetect/objdetect.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2\core\core.hpp"
+#include "opencv2/core/core.hpp"
 
 #include "opencv2/highgui/highgui_c.h"
 
@@ -189,7 +189,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
 			//|CASCADE_DO_ROUGH_SEARCH
 			| CASCADE_SCALE_IMAGE
 			,
-			Size(30, 30));
+			Size(80, 80));
 		for (vector<Rect>::const_iterator r = faces2.begin(); r != faces2.end(); r++)
 		{
 			faces.push_back(Rect(smallImg.cols - r->x - r->width, r->y, r->width, r->height));
@@ -218,6 +218,9 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
 			color, 3, 8, 0);
 
 		const int half_height = cvRound((float)r->height / 2);
+		cout << r->y << "\t" << r->y + half_height << endl;
+
+
 		r->y = r->y + half_height;
 		r->height = half_height;
 		smallImgROI = smallImg(*r);
@@ -229,6 +232,13 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
 			| CASCADE_SCALE_IMAGE
 			,
 			Size(30, 30));
+
+		for (vector<Rect>::iterator r = nestedObjects.begin(); r != nestedObjects.end(); r++, i++)
+		{
+			rectangle(img, *r, CV_RGB(0, 255, 0), 1);
+		}
+
+
 
 		// The number of detected neighbors depends on image size (and also illumination, etc.). The
 		// following steps use a floating minimum and maximum of neighbors. Intensity thus estimated will be
@@ -246,5 +256,6 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
 		rectangle(img, cvPoint(0, img.rows), cvPoint(img.cols / 10, img.rows - rect_height), col, -1);
 	}
 
+	flip(img, img, 1); // Flip horzontal.
 	cv::imshow("result", img);
 }

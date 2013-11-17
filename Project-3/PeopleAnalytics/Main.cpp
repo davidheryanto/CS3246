@@ -4,10 +4,11 @@
 
 #include "GenderDetection.h"
 #include "SmileDetection.h"
+#include "Timer.h"
 
 #include <iostream>
-#include <stdio.h>
 #include <vector>
+#include <math.h>
 
 #define DEVICE_ID 0 // -1 means default webcam in PC
 
@@ -16,58 +17,39 @@
 
 #define PATH_GENDER_TRAINING "Data\\gender-training.csv"
 #define PATH_SMILE_TRAINING "Data\\smile-training.csv"
-#define PATH_HAAR_CASCADE_FRONT_FACE "Data\\haarcascades\\haarcascade_frontalface_default.xml"
-#define PATH_HAAR_CASCADE_MOUTH "Data\\haarcascades\\haarcascade_smile.xml"
+#define PATH_HAAR_CASCADE_FRONT_FACE "Data\\haarcascades\\haarcascade_frontalface_alt.xml"
+#define PATH_HAAR_CASCADE_SMILE "Data\\haarcascades\\haarcascade_smile.xml"
 
 #define KEY_DELAY 20
 #define KEY_ESCAPE 27
 
+#define THRESHOLD_UNIQUE_FACE 20 // Min % diff in size and position for new faces to be unique.
+
 using namespace std;
 using namespace cv;
 
-
-/*
-
-@William,
-Can you write your faceCount function in the Main class instead?
-I think it's more appropriate here... So after you run your faceDetection algo
-you'll get the coordinates of each face, so you can call the helper function
-to get Mat that represents each face. Then we can just pass each Mat (i.e. each face)
-to GenderDetection and SmileDetection.
-
-Main should open up webcam capture, then capture a frame every N miliseconds.
-For each frame, it runs a face detection algorithm, getting all the faces in the frame
-along with their coordinates. (Main will get the faceCount then)
-
-Then Main calls helper function to align, rotate and resize each face to 150x150, before
-passing each face to GenderDetection and SmileDetection to get the data for each face.
-
-*/
-
-
 GenderDetection gender_detection;
-SmileDetection smile_detection;
+CascadeClassifier smile_detection;
 CascadeClassifier face_detection;
-CascadeClassifier mouth_detection;
+
+Timer timer;
 
 void testGenderDetection();
 
 void initGenderDetection();
 void initSmileDetection();
-
 void initFaceDetection();
-void initMouthDetection();
-
 void initWebcam();
+
+int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces);
+
+
 
 int main(int argc, const char** argv)
 {
 	initGenderDetection();
 	initSmileDetection();
-
 	initFaceDetection();
-	initMouthDetection();
-
 	initWebcam();
 
 	return 0;
@@ -80,33 +62,52 @@ void initWebcam()
 	if (!videoCapture.isOpened())
 	{
 		cerr << "Default webcam cannot be opened. Try updating DEVICE_ID." << endl;
+		exit(1);
 	}
 
-	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 300);
-	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 300);
+	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 350);
+	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 350);
+
+	vector<Rect> faces;
+	vector<Rect> prev_faces;
+	int current_time = 0;
 
 	while (true)
 	{
+		int faces_count = 0;
+		int new_faces_count = 0;
+		int male_count = 0;
+		int female_count = 0;
+		double smile_intensity = 0;
+		double duration = 0.0;
+
+		timer.start();
+
 		videoCapture >> frame;
 		Mat original = frame.clone();
+		flip(original, original, 1); // Horizontal flip
 
 		// Convert current frame to grayscale
 		Mat gray;
 		cvtColor(original, gray, CV_BGR2GRAY);
 
-		vector<Rect_<int>> faces;
-		face_detection.detectMultiScale(gray, faces);
+
+		prev_faces = faces; // Keep the old faces
+		face_detection.detectMultiScale(
+			gray,
+			faces,
+			1.1, // scale factor	
+			3, // min_neighbours	 
+			0 | CASCADE_SCALE_IMAGE,
+			Size(50, 50)); // min_size
+
+		faces_count = (int)faces.size();
+		// Check how many of these new faces are unique
+		new_faces_count = getNewFacesCount(faces, prev_faces);
 
 		// We have positions of all faces at this point.
 		for (size_t i = 0; i < faces.size(); i++)
 		{
-			// -----------------------------------
-			// TODO 
-			// Do further checks on the faces
-			// whether they are really faces. How ??
-			// Check duration, tracking??
-			// -----------------------------------
-
 
 			Rect face_i = faces[i];
 			Mat face = gray(face_i);
@@ -114,43 +115,67 @@ void initWebcam()
 			string gender;
 			string smile;
 
-			resize(face, face_resized, Size(IMG_WIDTH, IMG_HEIGHT), 1.0, 1.0, INTER_CUBIC);
 
-			/*switch (gender_detection.getGender(face_resized))
+			// For the new faces find the gender
+			// Resize image for detection using Fisherface method
+			resize(face, face_resized, Size(IMG_WIDTH, IMG_HEIGHT), 1.0, 1.0, INTER_CUBIC);
+			switch (gender_detection.getGender(face_resized))
 			{
 			case GENDER_MALE:
-			gender = "Male";
-			break;
+				gender = "Male";
+				male_count += 1;
+				break;
 			case GENDER_FEMALE:
-			gender = "Female";
-			break;
+				gender = "Female";
+				female_count += 1;
+				break;
 			default:
-			gender = "Gender unspecified";
-			}*/
-
-			Point center(faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5);
-			Mat faceROI = gray(face_i);
-			std::vector<Rect> smiles;
-
-			//-- In each face, detect eyes
-			mouth_detection.detectMultiScale(faceROI, smiles, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-
-			for (size_t j = 0; j < smiles.size(); j++)
-			{
-				Point center(faces[i].x + smiles[j].x + smiles[j].width*0.5, faces[i].y + smiles[j].y + smiles[j].height*0.5);
-				int radius = cvRound((smiles[j].width + smiles[j].height)*0.25);
-				circle(original, center, radius, Scalar(255, 0, 0), 4, 8, 0);
+				gender = "";
 			}
+
+			// Now.. 
+			// Find the smile intensity of each face
+			// NOTE : Intensity only valid after first smile is detected
+			vector<Rect> smile_objects;
+
+			int half_height = cvRound((float)faces[i].height / 2);
+			faces[i].y = faces[i].y + half_height;
+			faces[i].height = half_height;
+			// Create region of interest (mouth)
+			Mat mouth_area = gray(faces[i]);
+
+			smile_detection.detectMultiScale(
+				mouth_area,
+				smile_objects,
+				1.1,
+				0,
+				0 | CASCADE_SCALE_IMAGE,
+				Size(30, 30));
+
+			// The number of detected neighbors depends on image size (and also illumination, etc.). The
+			// following steps use a floating minimum and maximum of neighbors. Intensity thus estimated will be
+			//accurate only after a first smile has been displayed by the user.
+			const int smile_neighbors = (int) smile_objects.size();
+			static int max_neighbors = -1;
+			static int min_neighbors = -1;
+			if (min_neighbors == -1) min_neighbors = smile_neighbors;
+			max_neighbors = max(max_neighbors, smile_neighbors);
+
+			// Draw rectangle on the left side of the image reflecting smile intensity
+			float intensityZeroOne = ((float)smile_neighbors - min_neighbors) / (max_neighbors - min_neighbors + 1);
+
+
 
 			// And finally write all we've found out to the original image!
 			// First of all draw a green rectangle around the detected face:
 			rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
-			string box_text = format("Gender = %s %s", "", smile.c_str());
+			string box_text = format("%s %s: %.3f", gender.c_str(), smile.c_str(), intensityZeroOne);
 			// Calculate the position for annotated text (make sure we don't
 			// put illegal values in there):
-			int pos_x = std::max(face_i.tl().x - 10, 0);
-			int pos_y = std::max(face_i.tl().y - 10, 0);
+			int pos_x = max(face_i.tl().x - 10, 0);
+			int pos_y = max(face_i.tl().y - 10, 0);
+
 			// And now put it into the image:
 			putText(original, box_text, Point(pos_x, pos_y), CV_FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2);
 		}
@@ -161,22 +186,35 @@ void initWebcam()
 		{
 			break;
 		}
+
+
+
+
+
+
+
+
+		// cout << "Time b/w frames: " << timer.getElapsedTimeInMilliSec() << " ms" << endl;
+		timer.stop();
 	}
 }
 
 void initFaceDetection()
 {
-	face_detection.load(PATH_HAAR_CASCADE_FRONT_FACE);
-}
-
-void initMouthDetection()
-{
-	mouth_detection.load(PATH_HAAR_CASCADE_MOUTH);
+	if (!face_detection.load(PATH_HAAR_CASCADE_FRONT_FACE))
+	{
+		cerr << "ERROR: Could not load face cascade. Check cascade file path." << endl;
+		exit(1);
+	}
 }
 
 void initSmileDetection()
 {
-	smile_detection.train(PATH_SMILE_TRAINING);
+	if (!smile_detection.load(PATH_HAAR_CASCADE_SMILE))
+	{
+		cerr << "ERROR: Could not load smile cascade. Check cascade file path." << endl;
+		exit(1);
+	}
 }
 
 void initGenderDetection()
@@ -224,4 +262,41 @@ void testGenderDetection()
 		}
 		cout << endl;
 	}
+}
+
+int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces)
+{
+
+
+	int current_faces_count = (int)current_faces.size();
+
+	if (prev_faces.size() <= 0)
+	{
+		// In previous frame no faces detected
+		// So we assume all the faces in current frame are new.
+		return current_faces_count;
+	}
+
+	// If a current_face are similar to any of the prev_faces in terms of size and position
+	// Then that current_face is not unique.
+	for (vector<Rect>::size_type i = 0; i < current_faces.size(); i++)
+	{
+		double threshold_y = THRESHOLD_UNIQUE_FACE / 100.0 * current_faces[i].height;
+		double threshold_x = THRESHOLD_UNIQUE_FACE / 100.0 * current_faces[i].width;
+
+		for (vector<Rect>::size_type j = 0; j < prev_faces.size(); j++)
+		{
+			if (abs(current_faces[i].height - prev_faces[j].height) < threshold_y &&
+				abs(current_faces[i].y - prev_faces[j].y) < threshold_y &&
+				abs(current_faces[i].width - prev_faces[j].width) < threshold_x &&
+				abs(current_faces[i].x - prev_faces[j].x) < threshold_x)
+			{
+				// current_face is the same as prev_face
+				current_faces_count -= 1;
+				break;
+			}
+		}
+	}
+
+	return current_faces_count;
 }
