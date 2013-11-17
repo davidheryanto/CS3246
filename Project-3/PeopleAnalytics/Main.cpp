@@ -20,6 +20,7 @@
 #define PATH_SMILE_TRAINING "Data\\smile-training.csv"
 #define PATH_HAAR_CASCADE_FRONT_FACE "Data\\haarcascades\\haarcascade_frontalface_alt.xml"
 #define PATH_HAAR_CASCADE_SMILE "Data\\haarcascades\\haarcascade_smile.xml"
+#define PATH_OUTPUT_FILE "Data\\output.csv"
 
 #define KEY_DELAY 20
 #define KEY_ESCAPE 27
@@ -40,7 +41,7 @@ void testGenderDetection();
 void initGenderDetection();
 void initSmileDetection();
 void initFaceDetection();
-void startCapturing
+void startCapturing();
 
 int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces);
 
@@ -58,6 +59,18 @@ int main(int argc, const char** argv)
 
 void startCapturing()
 {
+	ofstream outputFile;
+	outputFile.open(PATH_OUTPUT_FILE);
+	outputFile << "current_time"
+		<< "," << "view_duration"
+		<< "," << "faces_count"
+		<< "," << "new_faces_count"
+		<< "," << "male_count"
+		<< "," << "female_count"
+		<< "," << "interest"
+		<< endl;
+
+
 	Mat frame;
 	VideoCapture videoCapture(DEVICE_ID);
 	if (!videoCapture.isOpened())
@@ -71,7 +84,7 @@ void startCapturing()
 
 	vector<Rect> faces;
 	vector<Rect> prev_faces;
-	int current_time = 0;
+	double current_time = 0.0; // in ms
 
 	while (true)
 	{
@@ -105,6 +118,7 @@ void startCapturing()
 		faces_count = (int)faces.size();
 		// Check how many of these new faces are unique
 		new_faces_count = getNewFacesCount(faces, prev_faces);
+		cout << new_faces_count << endl;
 
 		// We have positions of all faces at this point.
 		for (size_t i = 0; i < faces.size(); i++)
@@ -140,10 +154,11 @@ void startCapturing()
 			vector<Rect> smile_objects;
 
 			int half_height = cvRound((float)faces[i].height / 2);
-			faces[i].y = faces[i].y + half_height;
-			faces[i].height = half_height;
+			Rect rect_mouth = faces[i];
+			rect_mouth.y = rect_mouth.y + half_height;
+			rect_mouth.height = half_height;
 			// Create region of interest (mouth)
-			Mat mouth_area = gray(faces[i]);
+			Mat mouth_area = gray(rect_mouth);
 
 			smile_detection.detectMultiScale(
 				mouth_area,
@@ -163,15 +178,16 @@ void startCapturing()
 			max_neighbors = max(max_neighbors, smile_neighbors);
 
 			// Draw rectangle on the left side of the image reflecting smile intensity
-			float intensityZeroOne = ((float)smile_neighbors - min_neighbors) / (max_neighbors - min_neighbors + 1);
+			float intensity_zero_one = ((float)smile_neighbors - min_neighbors) / (max_neighbors - min_neighbors + 1);
 
+			smile_intensity += intensity_zero_one;
 
 
 			// And finally write all we've found out to the original image!
 			// First of all draw a green rectangle around the detected face:
 			rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
-			string box_text = format("%s %s: %.3f", gender.c_str(), smile.c_str(), intensityZeroOne);
+			string box_text = format("%s %s: %.3f", gender.c_str(), smile.c_str(), intensity_zero_one);
 			// Calculate the position for annotated text (make sure we don't
 			// put illegal values in there):
 			int pos_x = max(face_i.tl().x - 10, 0);
@@ -188,10 +204,26 @@ void startCapturing()
 			break;
 		}
 
+		double view_duration = timer.getElapsedTimeInMilliSec();
+		double interest = smile_intensity / faces_count;
+		current_time += view_duration;
+		
+		if (faces_count > 0 && interest >= 0)
+		{
+		outputFile << current_time
+			<< "," << view_duration
+			<< "," << faces_count
+			<< "," << new_faces_count
+			<< "," << male_count
+			<< "," << female_count
+			<< "," << interest
+			<< endl;
+		}
 
-		// cout << "Time b/w frames: " << timer.getElapsedTimeInMilliSec() << " ms" << endl;
 		timer.stop();
 	}
+
+	outputFile.close();
 }
 
 void initFaceDetection()
@@ -261,8 +293,6 @@ void testGenderDetection()
 
 int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces)
 {
-
-
 	int current_faces_count = (int)current_faces.size();
 
 	if (prev_faces.size() <= 0)
