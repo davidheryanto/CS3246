@@ -10,6 +10,7 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
+#include <time.h>
 
 #define DEVICE_ID 0 // -1 means default webcam in PC
 
@@ -46,6 +47,7 @@ void startCapturing();
 int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces);
 bool is_file_exists(string file_path);
 void initOutputFile(ofstream& output_file);
+const std::string getCurrentDateTime();
 
 
 int main(int argc, const char** argv)
@@ -67,39 +69,33 @@ void startCapturing()
 	vector<Rect> prev_faces;
 	VideoCapture video_capture(DEVICE_ID);
 
-
 	initOutputFile(output_file);
-
 	if (!video_capture.isOpened())
 	{
 		cerr << "Default webcam cannot be opened. Try updating DEVICE_ID." << endl;
 		exit(1);
 	}
-
 	video_capture.set(CV_CAP_PROP_FRAME_HEIGHT, 350);
 	video_capture.set(CV_CAP_PROP_FRAME_WIDTH, 350);
 
-	double current_time = 0.0; // in ms
-
 	while (true)
 	{
+		timer.start();
+
 		int faces_count = 0;
 		int new_faces_count = 0;
 		int male_count = 0;
 		int female_count = 0;
 		double smile_intensity = 0;
 		double duration = 0.0;
-
-		timer.start();
+		Mat original;
+		Mat gray;
 
 		video_capture >> frame;
-		Mat original = frame.clone();
+		original = frame.clone();
 		flip(original, original, 1); // Horizontal flip
-
 		// Convert current frame to grayscale
-		Mat gray;
 		cvtColor(original, gray, CV_BGR2GRAY);
-
 
 		prev_faces = faces; // Keep the old faces
 		face_detection.detectMultiScale(
@@ -109,22 +105,26 @@ void startCapturing()
 			3, // min_neighbours	 
 			0 | CASCADE_SCALE_IMAGE,
 			Size(50, 50)); // min_size
-
 		faces_count = (int)faces.size();
+
 		// Check how many of these new faces are unique
 		new_faces_count = getNewFacesCount(faces, prev_faces);
-		cout << new_faces_count << endl;
+		cout << new_faces_count;
 
 		// We have positions of all faces at this point.
 		for (size_t i = 0; i < faces.size(); i++)
 		{
-
-			Rect face_i = faces[i];
-			Mat face = gray(face_i);
+			Mat face = gray(faces[i]);
 			Mat face_resized;
+			Mat mouth_area;
+
 			string gender;
 			string smile;
 
+			vector<Rect> smile_objects;
+			Rect rect_mouth;
+
+			int half_height;
 
 			// For the new faces find the gender
 			// Resize image for detection using Fisherface method
@@ -143,18 +143,16 @@ void startCapturing()
 				gender = "";
 			}
 
-			// Now.. 
-			// Find the smile intensity of each face
-			// NOTE : Intensity only valid after first smile is detected
-			vector<Rect> smile_objects;
+			// Finish processing gender.
 
-			int half_height = cvRound((float)faces[i].height / 2);
-			Rect rect_mouth = faces[i];
+			half_height = cvRound((float)faces[i].height / 2);
+			rect_mouth = faces[i];
 			rect_mouth.y = rect_mouth.y + half_height;
 			rect_mouth.height = half_height;
 			// Create region of interest (mouth)
-			Mat mouth_area = gray(rect_mouth);
-
+			mouth_area = gray(rect_mouth);
+			// Find the smile intensity of each face
+			// NOTE : Intensity only valid after first smile is detected
 			smile_detection.detectMultiScale(
 				mouth_area,
 				smile_objects,
@@ -171,25 +169,37 @@ void startCapturing()
 			static int min_neighbors = -1;
 			if (min_neighbors == -1) min_neighbors = smile_neighbors;
 			max_neighbors = max(max_neighbors, smile_neighbors);
-
-			// Draw rectangle on the left side of the image reflecting smile intensity
 			float intensity_zero_one = ((float)smile_neighbors - min_neighbors) / (max_neighbors - min_neighbors + 1);
-
 			smile_intensity += intensity_zero_one;
-
 
 			// And finally write all we've found out to the original image!
 			// First of all draw a green rectangle around the detected face:
-			rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
+			rectangle(original, faces[i], CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
 			string box_text = format("%s %s: %.3f", gender.c_str(), smile.c_str(), intensity_zero_one);
 			// Calculate the position for annotated text (make sure we don't
 			// put illegal values in there):
-			int pos_x = max(face_i.tl().x - 10, 0);
-			int pos_y = max(face_i.tl().y - 10, 0);
+			int pos_x = max(faces[i].tl().x - 10, 0);
+			int pos_y = max(faces[i].tl().y - 10, 0);
 
 			// And now put it into the image:
 			putText(original, box_text, Point(pos_x, pos_y), CV_FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2);
+		}
+		
+		// Finish processing faces.
+
+		double interest = smile_intensity / faces_count; // Normalize the smile_intensity
+		if (faces_count > 0 && interest >= 0)
+		{
+			// Only write to output if there is at least one face
+			output_file << getCurrentDateTime()
+				<< "," << (int) timer.getElapsedTimeInMilliSec()
+				<< "," << faces_count
+				<< "," << new_faces_count
+				<< "," << male_count
+				<< "," << female_count
+				<< "," << interest
+				<< endl;
 		}
 
 		imshow("People Analytics", original);
@@ -199,26 +209,21 @@ void startCapturing()
 			break;
 		}
 
-		double view_duration = timer.getElapsedTimeInMilliSec();
-		double interest = smile_intensity / faces_count;
-		current_time += view_duration;
-
-		if (faces_count > 0 && interest >= 0)
-		{
-			output_file << current_time
-				<< "," << view_duration
-				<< "," << faces_count
-				<< "," << new_faces_count
-				<< "," << male_count
-				<< "," << female_count
-				<< "," << interest
-				<< endl;
-		}
-
 		timer.stop();
 	}
 
 	output_file.close();
+}
+
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string getCurrentDateTime() {
+	time_t     now = time(0);
+	struct tm  tstruct;
+	char       buf[80];
+	tstruct = *localtime(&now);
+	strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+	return buf;
 }
 
 void initFaceDetection()
@@ -321,7 +326,6 @@ int getNewFacesCount(vector<Rect> current_faces, vector<Rect> prev_faces)
 	return current_faces_count;
 }
 
-
 bool is_file_exists(string file_path)
 {
 	std::ifstream infile(file_path);
@@ -340,12 +344,12 @@ void initOutputFile(ofstream& output_file)
 		output_file.open(PATH_OUTPUT_FILE);
 		// Write the column headings
 		output_file << "current_time"
-			<< "," << "view_duration"
+			<< "," << "view_duration (ms)"
 			<< "," << "faces_count"
 			<< "," << "new_faces_count"
 			<< "," << "male_count"
 			<< "," << "female_count"
-			<< "," << "interest"
+			<< "," << "interest (max 1.0)"
 			<< endl;
 	}
 }
