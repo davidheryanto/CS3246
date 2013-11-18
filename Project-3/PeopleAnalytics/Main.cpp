@@ -104,13 +104,15 @@ void startCapturing()
 			1.1, // scale factor	
 			3, // min_neighbours	 
 			0 | CASCADE_SCALE_IMAGE,
-			Size(50, 50)); // min_size
+			Size(60, 60),
+			Size(160, 160)); // min_size
 		faces_count = (int)faces.size();
 
 		// Check how many of these new faces are unique
 		new_faces_count = getNewFacesCount(faces, prev_faces);
-		cout << new_faces_count;
+		// cout << new_faces_count;
 
+		cout << "----------------------" << endl;
 		// We have positions of all faces at this point.
 		for (size_t i = 0; i < faces.size(); i++)
 		{
@@ -169,24 +171,37 @@ void startCapturing()
 				1.1,
 				0,
 				0 | CASCADE_SCALE_IMAGE,
-				Size(30, 30));
+				Size(20, 20));
 
 			// The number of detected neighbors depends on image size (and also illumination, etc.). The
 			// following steps use a floating minimum and maximum of neighbors. Intensity thus estimated will be
 			//accurate only after a first smile has been displayed by the user.
-			const int smile_neighbors = (int)smile_objects.size();
-			static int max_neighbors = -1;
+			// const int smile_neighbors = (int)smile_objects.size();
+
+
+			/*static int max_neighbors = -1;
 			static int min_neighbors = -1;
 			if (min_neighbors == -1) min_neighbors = smile_neighbors;
 			max_neighbors = max(max_neighbors, smile_neighbors);
-			float intensity_zero_one = ((float)smile_neighbors - min_neighbors) / (max_neighbors - min_neighbors + 1);
-			smile_intensity += intensity_zero_one;
+			float intensity_zero_one = ((float)smile_neighbors - min_neighbors) / (max_neighbors - min_neighbors + 1);*/
+
+			int max_neighbors = 130;
+			int smile_neighbors = (int)smile_objects.size();
+			float intensity = (float)smile_neighbors / max_neighbors * 10;
+			int intensity_normalized = intensity >= 10.0 ? 9 : (int)intensity;
+
+			smile_intensity += intensity_normalized;
+
+
+			cout << smile_neighbors << "\tintensity_sum_per_frame: " << smile_intensity << endl;
+
+
 
 			// And finally write all we've found out to the original image!
 			// First of all draw a green rectangle around the detected face:
 			rectangle(original, faces[i], CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
-			string box_text = format("%s %s: %d", gender.c_str(), smile.c_str(), (int) (intensity_zero_one*10));
+			string box_text = format("%s %s: %d", gender.c_str(), smile.c_str(), intensity_normalized);
 			// Calculate the position for annotated text 
 			// (make sure we don'tput illegal values in there):
 			int pos_x = max(faces[i].tl().x - 10, 0);
@@ -195,7 +210,8 @@ void startCapturing()
 			// And now put it into the image:
 			putText(original, box_text, Point(pos_x, pos_y), CV_FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2);
 		}
-		
+		cout << "----------------------" << endl;
+
 		// Finish processing faces.
 
 		int interest = (int) (smile_intensity / faces_count) * 10; // Normalize the smile_intensity
