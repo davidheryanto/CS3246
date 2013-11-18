@@ -26,7 +26,7 @@
 #define KEY_DELAY 20
 #define KEY_ESCAPE 27
 
-#define THRESHOLD_UNIQUE_FACE 20 // Min % diff in size and position for new faces to be unique.
+#define THRESHOLD_UNIQUE_FACE 40 // Min % diff in size and position for new faces to be unique.
 
 using namespace std;
 using namespace cv;
@@ -63,6 +63,12 @@ int main(int argc, const char** argv)
 
 void startCapturing()
 {
+	int total_unique_faces = 0;
+	int total_faces = 0;
+	int total_duration = 0;
+	int total_smile_intensity = 0;
+	int avg_smile_intensity = 0;
+
 	ofstream output_file;
 	Mat frame;
 	vector<Rect> faces;
@@ -104,15 +110,16 @@ void startCapturing()
 			1.1, // scale factor	
 			3, // min_neighbours	 
 			0 | CASCADE_SCALE_IMAGE,
-			Size(60, 60),
+			Size(40, 40),
 			Size(160, 160)); // min_size
 		faces_count = (int)faces.size();
+		total_faces += (int)faces.size();
 
 		// Check how many of these new faces are unique
 		new_faces_count = getNewFacesCount(faces, prev_faces);
+		total_unique_faces += new_faces_count;
 		// cout << new_faces_count;
 
-		cout << "----------------------" << endl;
 		// We have positions of all faces at this point.
 		for (size_t i = 0; i < faces.size(); i++)
 		{
@@ -191,9 +198,9 @@ void startCapturing()
 			int intensity_normalized = intensity >= 10.0 ? 9 : (int)intensity;
 
 			smile_intensity += intensity_normalized;
+			total_smile_intensity += intensity_normalized;
 
-
-			cout << smile_neighbors << "\tintensity_sum_per_frame: " << smile_intensity << endl;
+			// cout << smile_neighbors << "\tintensity_sum_per_frame: " << smile_intensity << endl;
 
 
 
@@ -201,25 +208,42 @@ void startCapturing()
 			// First of all draw a green rectangle around the detected face:
 			rectangle(original, faces[i], CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
-			string box_text = format("%s %s: %d", gender.c_str(), smile.c_str(), intensity_normalized);
+			string box_text = format("%s  %d :)", gender.c_str(), intensity_normalized);
 			// Calculate the position for annotated text 
 			// (make sure we don'tput illegal values in there):
 			int pos_x = max(faces[i].tl().x - 10, 0);
 			int pos_y = max(faces[i].tl().y - 10, 0);
 
 			// And now put it into the image:
-			putText(original, box_text, Point(pos_x, pos_y), CV_FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0, 255, 0), 2);
+			putText(original, box_text, Point(pos_x, pos_y), CV_FONT_HERSHEY_PLAIN + CV_FONT_ITALIC, 1.0, CV_RGB(0, 255, 0), 1);
 		}
-		cout << "----------------------" << endl;
 
 		// Finish processing faces.
+		if (faces.size() > 0)
+		{
+			total_duration += (int)timer.getElapsedTimeInMilliSec() * faces.size();
+		}
 
-		int interest = (int) (smile_intensity / faces_count) * 10; // Normalize the smile_intensity
+		if (total_faces > 0)
+		{
+			avg_smile_intensity = total_smile_intensity / total_faces;
+		}
+
+
+
+
+		// cout << total_unique_faces << " " << total_duration / 1000 << " " << avg_smile_intensity << endl;
+		string stat = format("faces:%d  duration:%d s  interest:%d", total_unique_faces, total_duration / 1000, avg_smile_intensity);
+		putText(original, stat, Point(15, 12), CV_FONT_HERSHEY_PLAIN , 1.0, CV_RGB(0, 200, 0), 1);
+
+
+
+		int interest = (int)(smile_intensity / faces_count) * 10; // Normalize the smile_intensity
 		if (faces_count > 0 && interest >= 0)
 		{
 			// Only write to output if there is at least one face
 			output_file << getCurrentDateTime()
-				<< "," << (int) timer.getElapsedTimeInMilliSec()
+				<< "," << (int)timer.getElapsedTimeInMilliSec()
 				<< "," << faces_count
 				<< "," << new_faces_count
 				<< "," << male_count
