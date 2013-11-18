@@ -10,13 +10,13 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 public class FileManager {
 	public static void main(String[] args) throws IOException {
-		writeCSV("C:\\Users\\David\\Desktop\\smile.csv");
+		writeCSV("C:\\Users\\David\\Desktop\\female.csv");
 	}
 	
 	
 	public static void writeCSV(String CSVFilePath) throws IOException {
 		CSVWriter writer = new CSVWriter(new FileWriter(CSVFilePath), ',');
-		File folder = new File("C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\smile");
+		File folder = new File("C:\\Users\\David\\Git\\School\\CS3246\\Project-3\\PeopleAnalytics\\Data\\asian-female");
 		List<String[]> entryList = new ArrayList<>();
 		
 		for (File f : folder.listFiles()) {
