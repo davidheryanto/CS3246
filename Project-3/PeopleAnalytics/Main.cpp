@@ -126,6 +126,16 @@ void startCapturing()
 
 			int half_height;
 
+
+			// Adjust the square for the face detect pos
+			//Rect rect_face_crop;
+			//Mat face_crop;
+			//rect_face_crop = faces[i];
+			//rect_face_crop.y = rect_face_crop.y + 10;
+			//// Create region of interest (mouth)
+			//face_crop = gray(rect_face_crop);
+
+
 			// For the new faces find the gender
 			// Resize image for detection using Fisherface method
 			resize(face, face_resized, Size(IMG_WIDTH, IMG_HEIGHT), 1.0, 1.0, INTER_CUBIC);
@@ -176,9 +186,9 @@ void startCapturing()
 			// First of all draw a green rectangle around the detected face:
 			rectangle(original, faces[i], CV_RGB(0, 255, 0), 1);
 			// Create the text we will annotate the box with:
-			string box_text = format("%s %s: %.3f", gender.c_str(), smile.c_str(), intensity_zero_one);
-			// Calculate the position for annotated text (make sure we don't
-			// put illegal values in there):
+			string box_text = format("%s %s: %d", gender.c_str(), smile.c_str(), (int) (intensity_zero_one*10));
+			// Calculate the position for annotated text 
+			// (make sure we don'tput illegal values in there):
 			int pos_x = max(faces[i].tl().x - 10, 0);
 			int pos_y = max(faces[i].tl().y - 10, 0);
 
@@ -188,7 +198,7 @@ void startCapturing()
 		
 		// Finish processing faces.
 
-		double interest = smile_intensity / faces_count; // Normalize the smile_intensity
+		int interest = (int) (smile_intensity / faces_count) * 10; // Normalize the smile_intensity
 		if (faces_count > 0 && interest >= 0)
 		{
 			// Only write to output if there is at least one face
